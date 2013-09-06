@@ -1,0 +1,66 @@
+﻿/* ============================== Bootstrap Overrides ======================= */
+/* - Use this to override/alter any of bootstrap's component's styles */
+/* - Add override's for Bootstrap variables to the customvariables.less file */
+/* Buttons */
+.btn-default {
+    .box-shadow-inset-top(lighten(@btn-default-border, @btn-inset-percent));
+    background-color: @cream;
+}
+ 
+.btn-primary {
+    .box-shadow-inset-top(lighten(@btn-primary-border, @btn-inset-percent));
+}
+
+.btn-success {
+    .box-shadow-inset-top(lighten(@btn-success-border, @btn-inset-percent));
+}
+
+.btn-info {
+    .box-shadow-inset-top(lighten(@btn-info-border, @btn-inset-percent));
+}
+
+.btn-warning {
+    .box-shadow-inset-top(lighten(@btn-warning-border, @btn-inset-percent));
+}
+
+.btn-danger {
+    .box-shadow-inset-top(lighten(@btn-danger-border, @btn-inset-percent));
+}
+/* Page Header */
+.page-header {
+    margin: 20px 0 20px;
+
+    > h3 {
+        margin: 0 0 20px 0;
+        .font-script;
+
+        > i {
+            font-size: 30px;
+            .border-radius(@border-radius-base);
+            border: 1px solid @gray;
+            padding: 10px;
+            display: inline-block;
+            background: @btn-primary-bg;
+            color: @btn-primary-color;
+        }
+    }
+}
+/* Alerts */
+.alert {
+    > i {
+        float: left;
+        margin-right: 10px;
+    }
+}
+/* Brand Header */
+.brand-header {
+    font-size: 30px;
+    margin: 0;
+
+    > a {
+        display: block;
+        height: @navbar-height;
+        padding: 10px 0 0 10px;
+        .font-script;
+    }
+}

@@ -1,0 +1,28 @@
+﻿@model CmsLite.TestApp.Models.Pages.HomeModel
+@{
+    ViewBag.Title = Model.Title;
+}
+<style type="text/css">
+    #wrapper
+    {
+        width: 1000px;
+        margin: 0 auto;
+    }
+    #page
+    {
+        clear: both;
+    }
+    #content
+    {
+        float: left;
+        width: 700px;
+    }
+</style>
+<div id="wrapper">
+    <div id="page">
+        <div id="content">
+            @Html.Raw(Model.Poopshannks)
+            @Html.Raw(Model.BannerTextMiddle)
+        </div>
+    </div>
+</div>

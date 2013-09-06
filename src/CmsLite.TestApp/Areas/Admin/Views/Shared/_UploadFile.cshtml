@@ -1,0 +1,9 @@
+﻿@using (Html.BeginForm("Media", "Admin", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "file-upload" }))
+{
+    @Html.ValidationSummary(false)
+
+    <input type="text" name="name" />
+    <input type="file" name="file" />
+    
+    <button type="submit">Upload File</button>
+}

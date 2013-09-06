@@ -1,0 +1,7 @@
+﻿@model CmsLite.TestApp.Models.Pages.EmployeeModel
+@{
+    ViewBag.Title = Model.FirstName + " " + Model.LastName;
+}
+<h2>
+    @Model.FirstName @Model.LastName</h2>
+@Html.Raw(Model.EmployeeBio)

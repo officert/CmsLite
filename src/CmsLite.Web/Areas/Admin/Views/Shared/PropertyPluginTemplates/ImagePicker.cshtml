@@ -1,0 +1,9 @@
+﻿@using CmsLite.Web.Cms.HtmlHelpers
+@model CmsLite.Web.Areas.Admin.ViewModels.PropertyViewModel
+
+@Html.Content().PluginScripts.Add("richtexteditor/ckeditor/ckeditor.js")
+@Html.Content().PluginScripts.Add("richtexteditor/RichTextEditor.js")
+
+@Html.FileInputFor(x => x.Text)
+
+@Html.HiddenFor(m => m.Id)

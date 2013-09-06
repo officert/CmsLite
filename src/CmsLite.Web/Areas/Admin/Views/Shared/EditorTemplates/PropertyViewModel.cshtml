@@ -1,0 +1,16 @@
+﻿@model CmsLite.Web.Areas.Admin.ViewModels.PropertyViewModel
+@{
+    var tabName = (string)ViewData["tabName"];
+}
+@if (tabName == Model.TabName)
+{
+    <div class="property">
+        <div class="property-info">
+            <p class="property-name">@Model.DisplayName</p>
+            <p class="property-desc">@Model.Description</p>
+        </div>
+        <div class="property-control">
+            @Html.Partial("PropertyPluginTemplates/" + Model.CmsPropertyName)
+        </div>
+    </div>
+}

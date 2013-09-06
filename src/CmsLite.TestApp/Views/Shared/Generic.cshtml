@@ -1,0 +1,7 @@
+﻿@model CmsLite.Web.Models.AboutModel
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<h2>@Model.Title</h2>
+@Html.Raw(Model.AboutText)

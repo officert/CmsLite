@@ -1,0 +1,30 @@
+﻿/* Icons */
+i {
+    margin-right: 14px;
+    font-size: @font-size-icons;
+}
+/* Navs */
+.nav-list-sidebar {
+}
+/* Content Area */
+.content-area {
+    padding-left: 20px;
+}
+/* Arrows */
+.arrow-inset {
+    &:after {
+        left: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+        margin-left: -29px;
+        border-color: rgba(136, 183, 213, 0);
+        border-right-color: @gray-dark;
+        border-width: 15px;
+        top: 50%;
+        margin-top: -15px;
+    }
+}
