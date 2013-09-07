@@ -29,7 +29,7 @@ namespace CmsLite.Core.Cms
             _callingAssembly = Assembly.GetCallingAssembly();
         }
 
-        public void Start()
+        public void CmsInit()
         {
             IocConfig.Configure(_kernel);
 

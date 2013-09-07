@@ -18,7 +18,7 @@ namespace CmsLite.TestApp
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            Start();
+            CmsInit();
         }
     }
 }
