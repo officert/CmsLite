@@ -1,0 +1,160 @@
+﻿/* ===================================
+    LESS CSS Library
+====================================== */
+/* ================================== Corners ================================= */
+.corners( @topLeft, @topRight, @bottomLeft, @bottomRight )
+{
+	-webkit-border-radius: @arguments;
+	-moz-border-radius: @arguments;
+	border-radius: @arguments;
+}
+.corners-all( @radius : 5px)
+{
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+}
+.corners-top( @radius : 5px)
+{
+	-webkit-border-radius: @radius @radius 0 0;
+	-moz-border-radius: @radius @radius 0 0;
+	border-radius: @radius @radius 0 0;
+}
+.corners-bottom( @radius : 5px)
+{
+	-webkit-border-radius: 0 0 @radius @radius ;
+	-moz-border-radius: 0 0 @radius @radius ;
+	border-radius: 0 0 @radius @radius ;
+}
+.corners-left( @radius : 5px)
+{
+	-webkit-border-radius: 0 @radius 0 0;
+	-moz-border-radius: 0 @radius 0 0;
+	border-radius: 0 @radius 0 0;
+}
+.corners-noleft( @radius : 5px)
+{
+	-webkit-border-radius: 0 @radius @radius @radius;
+	-moz-border-radius: 0 @radius @radius @radius;
+	border-radius: 0 @radius @radius @radius;
+}
+.corners-noright( @radius : 5px)
+{
+	-webkit-border-radius: @radius @radius 0 @radius;
+	-moz-border-radius: @radius @radius 0 @radius;
+	border-radius: @radius @radius 0 @radius;
+}
+/* ================================== Gradients =============================== */
+.gradient(@startColor, @startColorPercent, @endColor, @endColorPercent)
+{
+	background: @startColor; /* Old browsers */
+	background: -moz-linear-gradient(top,  @startColor @startColorPercent, @endColor @endColorPercent); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(@startColorPercent,@startColor), color-stop(@endColorPercent,@endColor)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  @startColor @startColorPercent, @endColor @endColorPercent); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  @startColor @startColorPercent, @endColor @endColorPercent); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  @startColor @startColorPercent, @endColor @endColorPercent); /* IE10+ */
+	background: linear-gradient(top,  @startColor @startColorPercent, @endColor @endColorPercent); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=@startColor, endColorstr=@endColor); /* IE6-9 */
+}
+/* ================================== Shadows ================================= */
+.shadow(@horizontalOffset, @verticalOffset, @blurRadius, @spreadRadius, @color)
+{
+	-webkit-box-shadow: @horizontalOffset @verticalOffset @blurRadius @spreadRadius @color;
+       -moz-box-shadow: @horizontalOffset @verticalOffset @blurRadius @spreadRadius @color;
+        -ms-box-shadow: @horizontalOffset @verticalOffset @blurRadius @spreadRadius @color;
+         -o-box-shadow: @horizontalOffset @verticalOffset @blurRadius @spreadRadius @color;
+            box-shadow: @horizontalOffset @verticalOffset @blurRadius @spreadRadius @color;
+}
+.shadow-all(@color: #ccc)
+{
+	.shadow(4px, 4px, 4px, 4px, @color);
+}
+.shadow-bottom()
+{
+	.shadow(0px, 6px, 4px, -4px , #ccc);
+}
+.shadow-top()
+{
+	.shadow(0px, -6px, 4px, -4px , #ccc);
+}
+.shadow-insetTop(@color: #F2A7A7)
+{
+	-moz-box-shadow: inset -1px 1px 0px @color;
+	-webkit-box-shadow: inset -1px 1px 0px @color;
+	box-shadow: inset -1px 1px 0px @color;
+}
+.shadow-insetBottom(@color: #F2A7A7)
+{
+	-moz-box-shadow: inset -1px 1px 0px @color;
+	-webkit-box-shadow: inset -1px 1px 0px @color;
+	box-shadow: inset 1px -1px 0px @color;
+}
+/* ================================== Transition ============================== */
+.transition(@time : 0.3s)
+{
+  -webkit-transition: all @time ease-out;  /* Safari 3.2+, Chrome */
+     -moz-transition: all @time ease-out;  /* Firefox 4-15 */
+       -o-transition: all @time ease-out;  /* Opera 10.5–12.00 */
+          transition: all @time ease-out;  /* Firefox 16+, Opera 12.50+ */
+}
+/* ================================== Transform =============================== */
+.rotate(@degrees)
+{
+	-webkit-transform: rotate(@degrees);
+	   -moz-transform: rotate(@degrees);
+	    -ms-transform: rotate(@degrees);
+	     -o-transform: rotate(@degrees);
+}
+/* ================================== Animation =============================== */
+.animate(@time : 2s)
+{
+  -webkit-animation: myanim @time infinite; /* Safari 5, Chrome */
+     -moz-animation: myanim @time infinite; /* Firefox 5-15 */
+       -o-animation: myanim @time infinite; /* Opera 12+ */
+          animation: myanim @time infinite; /* Safari 5, Chrome, Firefox 16+ */
+}
+/* ================================== Skew ==================================== */
+.skew(@degrees)
+{
+	-webkit-transform: skew(@degrees);
+	   -moz-transform: skew(@degrees);
+	    -ms-transform: skew(@degrees);
+	     -o-transform: skew(@degrees);
+}
+/* ================================== Opacity ================================= */
+.opacity(@opacity : 0.5, @opacityIE : 50)
+{
+	    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=@opacityIE)";		/* IE 8 */
+	        filter: alpha(opacity= @opacityIE);											/* IE 5-7 */
+	  -moz-opacity: @opacity;															/* FF */
+	-khtml-opacity: @opacity;															/* Safari 1.x */
+	       opacity: @opacity;															/* Good browsers */
+}
+/* ================================== Inset =================================== */
+.inset()
+{
+	 text-shadow: 0 2px 3px #AF2121;
+}
+/* ================================== User Select ============================= */
+.userSelect()
+{
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+
+  /* No support for these yet, use at own risk */
+  -o-user-select: none;
+  user-select: none;          
+}
+/* ================================== Utils =================================== */
+.clearFix()
+{
+	&:after
+	{
+		content: ".";
+		display: block;
+		height: 0;
+		clear: both;
+		visibility: hidden;
+	}
+}

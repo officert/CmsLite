@@ -72,6 +72,21 @@ task Nuget-Pack {
 
 #CmsLite Tasks
 
-task CopyDirs {
-	
+task CopyAllMvc -depends CopyViews, CopyScripts, CopyContent {
+}
+
+task CopyViews {
+	Copy-Item $source_dir\CmsLite.Core\Areas\Admin\Views $source_dir\CmsLite.TestApp\Areas\Admin -force -recurse
+}
+
+task CopyScripts {
+	Copy-Item $source_dir\CmsLite.Core\Areas\Admin\Scripts $source_dir\CmsLite.TestApp\Areas\Admin -force -recurse
+}
+
+task CopyContent {
+	Copy-Item $source_dir\CmsLite.Core\Areas\Admin\Content $source_dir\CmsLite.TestApp\Areas\Admin -force -recurse
+}
+
+task DeleteAllMvc {
+	Remove-Item $source_dir\CmsLite.TestApp\Areas\Admin -force -recurse
 }

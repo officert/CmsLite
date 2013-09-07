@@ -205,18 +205,12 @@
     <Content Include="Areas\Admin\Content\bootstrap\mixins.min.css" />
     <Content Include="Areas\Admin\Content\bootstrap\variables.css" />
     <Content Include="Areas\Admin\Content\bootstrap\variables.min.css" />
-    <Content Include="Areas\Admin\Content\cms.css" />
-    <Content Include="Areas\Admin\Content\cms.min.css" />
-    <Content Include="Areas\Admin\Content\css3Mixins.css" />
-    <Content Include="Areas\Admin\Content\css3Mixins.min.css" />
-    <Content Include="Areas\Admin\Content\custombootstrapcomponents.css" />
-    <Content Include="Areas\Admin\Content\custombootstrapcomponents.min.css" />
-    <Content Include="Areas\Admin\Content\customcomponents.css" />
-    <Content Include="Areas\Admin\Content\customcomponents.min.css" />
-    <Content Include="Areas\Admin\Content\custommixins.css" />
-    <Content Include="Areas\Admin\Content\custommixins.min.css" />
-    <Content Include="Areas\Admin\Content\customvariables.css" />
-    <Content Include="Areas\Admin\Content\customvariables.min.css" />
+    <Content Include="Areas\Admin\Content\cms.css">
+      <DependentUpon>cms.less</DependentUpon>
+    </Content>
+    <Content Include="Areas\Admin\Content\cms.min.css">
+      <DependentUpon>cms.less</DependentUpon>
+    </Content>
     <Content Include="Areas\Admin\Content\fontawesome\font-awesome.css" />
     <Content Include="Areas\Admin\Content\fontawesome\font-awesome.min.css" />
     <Content Include="Areas\Admin\Content\font\fontawesome-webfont.svg" />
@@ -229,6 +223,10 @@
     <Content Include="Areas\Admin\Content\images\noise.gif" />
     <Content Include="Areas\Admin\Scripts\libs\bootstrap.js" />
     <Content Include="Areas\Admin\Scripts\libs\bootstrap.min.js" />
+    <Content Include="Areas\Admin\Content\_custombootstrapcomponents.less" />
+    <Content Include="Areas\Admin\Content\_customcomponents.less" />
+    <Content Include="Areas\Admin\Content\_custommixins.less" />
+    <Content Include="Areas\Admin\Content\_customvariables.less" />
     <None Include="Areas\Admin\Scripts\libs\jquery-1.9.1-vsdoc.js" />
     <Content Include="Areas\Admin\Scripts\libs\jquery-1.9.1.js" />
     <Content Include="Areas\Admin\Scripts\libs\jquery-1.9.1.min.js" />
@@ -460,10 +458,6 @@
     <Content Include="Areas\Admin\Content\bootstrap\variables.less" />
     <Content Include="Areas\Admin\Content\bootstrap\wells.less" />
     <Content Include="Areas\Admin\Content\cms.less" />
-    <Content Include="Areas\Admin\Content\custombootstrapcomponents.less" />
-    <Content Include="Areas\Admin\Content\customcomponents.less" />
-    <Content Include="Areas\Admin\Content\custommixins.less" />
-    <Content Include="Areas\Admin\Content\customvariables.less" />
     <Content Include="Areas\Admin\Content\fontawesome\bootstrap.less" />
     <Content Include="Areas\Admin\Content\fontawesome\core.less" />
     <Content Include="Areas\Admin\Content\fontawesome\extras.less" />
