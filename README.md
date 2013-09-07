@@ -3,7 +3,7 @@ CmsLite
 A CMS built on MVC. Easy to use, strongly typed templates using controllers, actions, and models. Write your templates in Visual Studio and CmsLite will turn them into templates to use in your CMS.
 
 ## Section Templates from Controllers
-
+A section template creates a new folder in your CMS. It is a grouping of pages. Any MVC 'ActionResults'
 ```csharp
 [CmsSectionTemplate(Name = "Home Template")]
 public class HomeController : CmsController
