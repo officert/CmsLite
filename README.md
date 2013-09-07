@@ -6,7 +6,7 @@ Write your templates in Visual Studio and CmsLite will turn them into templates 
 ## Section Templates from Controllers
 A section template allows you to create Section Nodes with your CMS. A Section Node is a folder used to 
 group together Page Nodes for your website. Any MVC ActionResults in your Controller that are marked up with 
-the CmsPageTemplate attribute
+the CmsPageTemplate attribute will generate [Page Templates](## Page Templates from Actions).
 ```csharp
 [CmsSectionTemplate(Name = "Home Template")]
 public class HomeController : CmsController
