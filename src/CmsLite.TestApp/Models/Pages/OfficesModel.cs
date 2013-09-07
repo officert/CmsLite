@@ -1,6 +1,5 @@
-﻿using CmsLite.Core.Cms.Attributes;
+﻿using CmsLite.Core.Attributes;
 using CmsLite.Utilities.Cms;
-using CmsLite.Core;
 
 namespace CmsLite.TestApp.Models.Pages
 {

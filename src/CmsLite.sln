@@ -17,8 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmsLite.Integration", "CmsL
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{F8C07BFF-D64B-4A27-9F0D-C005A2068BD3}"
 	ProjectSection(SolutionItems) = preProject
-		BuildNuGet.bat = BuildNuGet.bat
-		cms.nuspec = cms.nuspec
+		..\default.ps1 = ..\default.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C8F8F34-01C4-4D17-ABCE-E525F13AABE4}"
@@ -28,6 +27,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmsLite.Utilities", "CmsLite.Utilities\CmsLite.Utilities.csproj", "{54F6E8E1-7EBB-40A8-B809-A6A487314B8B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmsLite.Core", "CmsLite.Core\CmsLite.Core.csproj", "{D309A23F-7157-40AB-B15E-7E413E40FABB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{814CB714-BA97-4291-A339-FC6615E46DB2}"
+	ProjectSection(SolutionItems) = preProject
+		..\nuget\cms.nuspec = ..\nuget\cms.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{656DE338-C9A5-4EFD-A2CE-1E021EFB7E80}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

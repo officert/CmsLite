@@ -1,4 +1,4 @@
-﻿namespace CmsLite.Core.Cms.Constants
+﻿namespace CmsLite.Core.Constants
 {
     public static class CmsRoutingConstants
     {

@@ -1,13 +1,13 @@
 ﻿using System.Web.Mvc;
-using CmsLite.Core.Cms;
-using CmsLite.Core.Cms.Attributes;
+using CmsLite.Core.Attributes;
+using CmsLite.Core.Controllers;
 using CmsLite.Core.Interfaces;
 using CmsLite.TestApp.Models.Pages;
 
 namespace CmsLite.TestApp.Controllers
 {
     [CmsSectionTemplate(Name = "Employees Template")]
-    public class EmployeesController : CmsController
+    public class EmployeesController : CmsBaseController
     {
         public EmployeesController(IActionInvoker actionInvoker, ICmsModelHelper cmsModelHelper)
             : base(actionInvoker, cmsModelHelper)

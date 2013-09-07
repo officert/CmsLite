@@ -4,21 +4,21 @@ using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using System.Web;
-using CmsLite.Core.Cms.Attributes;
-using CmsLite.Core.Cms.Constants;
+using CmsLite.Core.Attributes;
+using CmsLite.Core.Constants;
 using CmsLite.Core.Interfaces;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Content;
 using CmsLite.Interfaces.Data;
 
-namespace CmsLite.Core.Cms.Helpers
+namespace CmsLite.Core.Helpers
 {
-    public class ModelHelper : ICmsModelHelper
+    public class CmsModelHelper : ICmsModelHelper
     {
         private readonly IDbContext _dbContext;
         private readonly IFileManager _mvcFileManager;
 
-        public ModelHelper(IDbContext dbContext, IFileManager mvcFileManager)
+        public CmsModelHelper(IDbContext dbContext, IFileManager mvcFileManager)
         {
             _dbContext = dbContext;
             _mvcFileManager = mvcFileManager;

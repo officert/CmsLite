@@ -14,13 +14,13 @@
         });
     </script>
 }
-<div id="media" class="flex">
+<div id="media-page">
     <header class="page-header">
         <h3>
             <i class="icon-edit"></i>Media</h3>
 
         <div class="btn-group">
-            <button class="btn" type="button" data-bind="click: uploadFileForm.show"><i class="icon-upload"></i>Add a new file</button>
+            <button class="btn btn-default" type="button" data-bind="click: uploadFileForm.show"><i class="icon-upload"></i>Add a new file</button>
         </div>
     </header>
     <div class="page-content">
@@ -65,18 +65,22 @@
         </table>
     </div>
 </div>
-@using (Html.BeginForm("Media", "Admin", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "upload-file-form", @class = "modal hide" }))
-{
-    <div class="modal-header">
-        <button class="close" type="button" data-bind="click: cms.viewmodel.uploadFileForm.hide"><i class="icon-remove"></i></button>
-        <h4>Add a new page</h4>
+<div id="upload-file-form" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        @using (Html.BeginForm("Media", "Admin", FormMethod.Post, new { @enctype = "multipart/form-data", @class = "modal-content" }))
+        {
+            <div class="modal-header">
+                <button class="close" type="button" data-bind="click: hide"><i class="icon-remove"></i></button>
+                <h4>Upload a new file</h4>
+            </div>
+            <div class="modal-body">
+                @Html.ValidationSummary(false)
+                <input type="file" name="file" />
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-bind="click: hide">Close</button>
+                <button class="btn btn-primary" type="submit"><i class="icon-upload"></i>Upload File</button>
+            </div>
+        }
     </div>
-    <div class="modal-body">
-        @Html.ValidationSummary(false)
-        <input type="file" name="file" />
-    </div>
-    <div class="modal-footer">
-        <button class="btn" data-bind="click: cms.viewmodel.uploadFileForm.hide">Close</button>
-        <button class="btn btn-primary" type="submit"><i class="icon-upload"></i>Upload File</button>
-    </div>
-}
+</div>

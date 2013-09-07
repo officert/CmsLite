@@ -4,7 +4,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
-using CmsLite.Core.Cms.Attributes;
+using CmsLite.Core.Attributes;
+using CmsLite.Core.Controllers;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Content;
 using CmsLite.Interfaces.Data;
@@ -13,9 +14,9 @@ using CmsLite.Resources;
 using CmsLite.Utilities.Cms;
 using CmsLite.Utilities.Extensions;
 
-namespace CmsLite.Core.Cms
+namespace CmsLite.Core.Templating
 {
-    public class FileManager : IFileManager
+    public class CmsTemplateEngine : IFileManager
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISectionNodeService _sectionNodeService;
@@ -24,7 +25,7 @@ namespace CmsLite.Core.Cms
         private readonly IPageTemplateService _pageTemplateService;
         private readonly IPropertyTemplateService _propertyTemplateService;
 
-        public FileManager(IUnitOfWork unitOfWork,
+        public CmsTemplateEngine(IUnitOfWork unitOfWork,
             ISectionNodeService sectionNodeService,
             ISectionTemplateService sectionTemplateService,
             IPageNodeService pageNodeService,
@@ -407,7 +408,7 @@ namespace CmsLite.Core.Cms
 
         private static IEnumerable<Type> GetControllers(Assembly assembly)
         {
-            return assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(CmsController)) && t.GetCustomAttributes(typeof(CmsSectionTemplateAttribute), false).Length > 0).ToList();
+            return assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(CmsBaseController)) && t.GetCustomAttributes(typeof(CmsSectionTemplateAttribute), false).Length > 0).ToList();
         }
 
         private static IEnumerable<MethodInfo> GetActionsForController(Type controller)

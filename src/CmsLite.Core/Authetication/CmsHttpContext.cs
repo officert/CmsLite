@@ -6,7 +6,7 @@ using CmsLite.Interfaces.Authentication;
 
 namespace CmsLite.Core.Authetication
 {
-    public class CmsLiteHttpContext : ICmsLiteHttpContext
+    public class CmsHttpContext : ICmsLiteHttpContext
     {
         public HttpContext Current
         {

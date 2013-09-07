@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using CmsLite.Core.App_Start;
+using CmsLite.Core.Automapper;
 
-namespace CmsLite.Core.Cms.Configuration
+namespace CmsLite.Core.App_Start
 {
     public static class AutoMapperConfiguration
     {

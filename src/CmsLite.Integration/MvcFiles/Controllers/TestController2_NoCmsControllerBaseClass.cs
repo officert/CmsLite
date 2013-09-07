@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
-using CmsLite.Core.Cms.Attributes;
+using CmsLite.Core.Attributes;
 using CmsLite.Integration.MvcFiles.Models;
 
 namespace CmsLite.Integration.MvcFiles.Controllers
@@ -8,7 +8,7 @@ namespace CmsLite.Integration.MvcFiles.Controllers
     [CmsSectionTemplate(Name = "Home Section")]
     public class TestController2_NoCmsControllerBaseClass : Controller
     {
-        //NOTE: because this controller does NOT subclass CmsController it will not be found by the FileManager
+        //NOTE: because this controller does NOT subclass CmsBaseController it will not be found by the FileManager
 
         [CmsPageTemplate(
             Name = "Home", 

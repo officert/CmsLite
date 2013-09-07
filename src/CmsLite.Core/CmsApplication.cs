@@ -6,13 +6,11 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using CmsLite.Core.App_Start;
-using CmsLite.Core.Cms.Configuration;
-using CmsLite.Core.Cms.Razor;
 using CmsLite.Core.Ioc;
 using CmsLite.Interfaces.Content;
 using Ninject;
 
-namespace CmsLite.Core.Cms
+namespace CmsLite.Core
 {
     public class CmsApplication : HttpApplication
     {
@@ -32,6 +30,9 @@ namespace CmsLite.Core.Cms
         public void CmsInit()
         {
             IocConfig.Configure(_kernel);
+            AutoMapperConfiguration.Configure();
+            RazorViewEngineConfig.Configure();
+            RouteConfig.RegisterRoutes(RouteTable.Routes);      //TODO: need to think more about what routes to add to a user's MVC project
 
             ControllerBuilder.Current.SetControllerFactory(new IocControllerFactory(_kernel));                                  //setup ninject as the default MVC controller factory
 
@@ -39,10 +40,6 @@ namespace CmsLite.Core.Cms
             _mvcFileManager = _kernel.Get<IFileManager>();
 
             _mvcFileManager.ProcessMvcFiles(_callingAssembly);
-
-            AutoMapperConfiguration.Configure();
-
-            SetupViewEngine();
 
             _projectAdminAreaDir = GetProjectAdminAreaDir();
 
@@ -54,16 +51,9 @@ namespace CmsLite.Core.Cms
                 _callingProjectAdminAreaDir.Create();
             }
 
-            RouteConfig.RegisterRoutes(RouteTable.Routes);      //TODO: need to think more about what routes to add to a user's MVC project
-
             CopyViews();
             CopyScripts();
             CopyStylesheets();
-        }
-
-        private static void SetupViewEngine()
-        {
-            ViewEngines.Engines.Add(new EmbeddedResourceViewEngine());
         }
 
         private static DirectoryInfo GetProjectAdminAreaDir()

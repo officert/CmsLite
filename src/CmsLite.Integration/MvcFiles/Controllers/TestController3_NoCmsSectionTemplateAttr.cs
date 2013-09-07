@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Web.Mvc;
-using CmsLite.Core.Cms;
-using CmsLite.Core.Cms.Attributes;
+using CmsLite.Core.Attributes;
+using CmsLite.Core.Controllers;
 using CmsLite.Core.Interfaces;
 using CmsLite.Integration.MvcFiles.Models;
 
 namespace CmsLite.Integration.MvcFiles.Controllers
 {
-    public class TestController3_NoCmsSectionTemplateAttr : CmsController
+    public class TestController3NoCmsBaseSectionTemplateAttr : CmsBaseController
     {
         //NOTE: because this controller does NOT have the CmsSectionTemplate attribute it will not be found by the FileManager
 
-        public TestController3_NoCmsSectionTemplateAttr(IActionInvoker actionInvoker, ICmsModelHelper cmsModelHelper) : base(actionInvoker, cmsModelHelper)
+        public TestController3NoCmsBaseSectionTemplateAttr(IActionInvoker actionInvoker, ICmsModelHelper cmsModelHelper) : base(actionInvoker, cmsModelHelper)
         {
         }
 

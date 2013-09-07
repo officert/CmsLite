@@ -2,7 +2,7 @@
 using CmsLite.Core.Areas.Admin.ViewModels;
 using CmsLite.Domains.Entities;
 
-namespace CmsLite.Core.App_Start
+namespace CmsLite.Core.Automapper
 {
     public class AdminProfile : Profile
     {

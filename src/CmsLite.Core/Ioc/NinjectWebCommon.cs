@@ -1,6 +1,6 @@
 using System;
 using System.Web;
-using CmsLite.Core.App_Start;
+using CmsLite.Core.Ioc;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Ninject;
 using Ninject.Web.Common;
@@ -8,7 +8,7 @@ using Ninject.Web.Common;
 [assembly: WebActivator.PreApplicationStartMethod(typeof(NinjectWebCommon), "Start")]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(NinjectWebCommon), "Stop")]
 
-namespace CmsLite.Core.App_Start
+namespace CmsLite.Core.Ioc
 {
     public static class NinjectWebCommon 
     {

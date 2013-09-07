@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Web.Mvc;
-using CmsLite.Core.Cms;
-using CmsLite.Core.Cms.Attributes;
+using CmsLite.Core.Attributes;
+using CmsLite.Core.Controllers;
 using CmsLite.Core.Interfaces;
 using CmsLite.Integration.MvcFiles.Models;
 
 namespace CmsLite.Integration.MvcFiles.Controllers
 {
     [CmsSectionTemplate(Name = "TestController1")]
-    public class TestController1_Valid : CmsController
+    public class TestController1_Valid : CmsBaseController
     {
         public TestController1_Valid(IActionInvoker actionInvoker, ICmsModelHelper cmsModelHelper)
             : base(actionInvoker, cmsModelHelper)

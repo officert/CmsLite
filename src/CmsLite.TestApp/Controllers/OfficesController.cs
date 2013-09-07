@@ -1,15 +1,16 @@
 ﻿using System.Web.Mvc;
-using CmsLite.Core.Cms;
-using CmsLite.Core.Cms.Attributes;
+using CmsLite.Core.Attributes;
+using CmsLite.Core.Controllers;
 using CmsLite.Core.Interfaces;
 using CmsLite.TestApp.Models.Pages;
 
 namespace CmsLite.TestApp.Controllers
 {
     [CmsSectionTemplate(Name = "Offices Template")]
-    public class OfficesController : CmsController
+    public class OfficesController : CmsBaseController
     {
-        public OfficesController(IActionInvoker actionInvoker, ICmsModelHelper cmsModelHelper) : base(actionInvoker, cmsModelHelper)
+        public OfficesController(IActionInvoker actionInvoker, ICmsModelHelper cmsModelHelper)
+            : base(actionInvoker, cmsModelHelper)
         {
         }
 

@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace CmsLite.Core.Cms.Attributes
+namespace CmsLite.Core.Attributes
 {
     public abstract class ModelStateTempDataTransfer : ActionFilterAttribute
     {

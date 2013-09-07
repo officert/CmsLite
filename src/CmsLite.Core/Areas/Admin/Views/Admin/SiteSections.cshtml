@@ -28,9 +28,9 @@
                 <div class="popover-content">
                     <div class="popover-content">
                         <ul>
-                            <li><a href="#" target="_blank" class="context-view" data-bind="attr: { href : url  }"><i class="icon-share-alt"></i>View section</a></li>
-                            <li><a href="#" class="context-remove" data-bind="click: $root.deleteSectionForm.show"><i class="icon-remove"></i>Delete section</a></li>
-                            <li><a href="#" class="context-add" data-bind="click: $root.createPageForm.show"><i class="icon-plus"></i>Create new page</a></li>
+                            <li><a href="#" target="_blank" data-bind="attr: { href : url  }"><i class="icon-share-alt"></i>View section</a></li>
+                            <li><a href="#" data-bind="click: $root.deleteSectionForm.show"><i class="icon-remove"></i>Delete section</a></li>
+                            <li><a href="#" data-bind="click: $root.createPageForm.show"><i class="icon-plus"></i>Create new page</a></li>
                         </ul>
                     </div>
                 </div>
@@ -49,10 +49,10 @@
                 <div class="arrow"></div>
                 <div class="popover-content">
                     <ul>
-                        <li><a href="#" target="_blank" class="context-view" data-bind="attr: { href : url  }"><i class="icon-share-alt"></i>View page</a></li>
-                        <li><a href="#" class="context-remove" data-bind="click: $root.deletePageForm.show"><i class="icon-remove"></i>Delete page</a></li>
-                        <li data-bind="visible: pageTemplates().length > 0"><a href="#" class="context-add" data-bind="    click: $root.createPageForm.show"><i class="icon-plus"></i>Create new page</a></li>
-                        <li><a href="#" class="context-edit" data-bind="attr: { href : editUrl  }"><i class="icon-edit"></i>Edit page</a></li>
+                        <li><a href="#" target="_blank" data-bind="attr: { href : url  }"><i class="icon-share-alt"></i>View page</a></li>
+                        <li><a href="#" data-bind="click: $root.deletePageForm.show"><i class="icon-remove"></i>Delete page</a></li>
+                        <li data-bind="visible: pageTemplates().length > 0"><a href="#" data-bind="    click: $root.createPageForm.show"><i class="icon-plus"></i>Create new page</a></li>
+                        <li><a href="#" data-bind="attr: { href : editUrl  }"><i class="icon-edit"></i>Edit page</a></li>
                     </ul>
                 </div>
             </div>
@@ -68,8 +68,8 @@
         <h3>
             <i class="icon-book"></i>Sections</h3>
         <div class="btn-group">
-            <button class="btn btn-default" type="button" data-bind="click: toggleSectionsOpen, css: { 'active': allAccordionsOpen() }"><i data-bind="    css: !allAccordionsOpen() ? 'icon-expand ' : 'icon-collapse'"></i><span data-bind="    text: !allAccordionsOpen() ? 'Open All' : 'Close All'"></span></button>
-            <button id="create-section-trigger" class="btn btn-default" type="button" data-bind="click: createSectionForm.show"><i class="icon-expand-alt"></i><span>Create a new section</span> </button>
+            <button class="btn btn-default" type="button" data-bind="click: toggleSectionsOpen, css: { 'active': allAccordionsOpen() }"><i data-bind="    css: !allAccordionsOpen() ? 'icon-expand icon-left' : 'icon-collapse icon-left'"></i><span data-bind="    text: !allAccordionsOpen() ? 'Open All' : 'Close All'"></span></button>
+            <button id="create-section-trigger" class="btn btn-default" type="button" data-bind="click: createSectionForm.show"><i class="icon-expand-alt icon-left"></i><span>Create a new section</span> </button>
         </div>
     </header>
     <div class="page-content">

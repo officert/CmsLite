@@ -2,13 +2,13 @@
 using System.Web.Mvc;
 using CmsLite.Core.Interfaces;
 
-namespace CmsLite.Core.Cms
+namespace CmsLite.Core.Controllers
 {
-    public class CmsController : Controller
+    public class CmsBaseController : Controller
     {
         protected readonly ICmsModelHelper CmsModelHelper;
 
-        public CmsController(IActionInvoker actionInvoker, ICmsModelHelper cmsModelHelper)
+        public CmsBaseController(IActionInvoker actionInvoker, ICmsModelHelper cmsModelHelper)
         {
             ActionInvoker = actionInvoker;
             CmsModelHelper = cmsModelHelper;

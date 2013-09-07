@@ -1,18 +1,20 @@
 ﻿using System.Web.Mvc;
 
-namespace CmsLite.Core.Cms.Razor
+namespace CmsLite.Core.App_Start
 {
-    public class EmbeddedResourceViewEngine : RazorViewEngine
+    public static class RazorViewEngineConfig
     {
-        public EmbeddedResourceViewEngine()
+        public static void Configure()
         {
-            ViewLocationFormats = new[]
+            ViewEngines.Engines.Add(new RazorViewEngine
+            {
+                PartialViewLocationFormats = new[]
                                       {
                                           "~/Views/{1}/{0}.cshtml",
                                           "~/Views/Shared/{0}.cshtml",
                                           "~/Areas/Admin/Views/{0}.cshtml"
-                                      };    
-            PartialViewLocationFormats = ViewLocationFormats;
+                                      }
+            });
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using CmsLite.Domains.Entities;
 using CmsLite.Utilities.Cms;
 
-namespace CmsLite.Core.Cms.Helpers
+namespace CmsLite.Core.Helpers
 {
     public static class NodeHelper
     {

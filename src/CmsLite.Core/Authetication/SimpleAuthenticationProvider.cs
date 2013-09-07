@@ -3,11 +3,11 @@ using CmsLite.Interfaces.Authentication;
 
 namespace CmsLite.Core.Authetication
 {
-    public class CmsLiteAuthenticationProvider : IAuthentication
+    public class SimpleAuthenticationProvider : IAuthentication
     {
         private readonly ICmsLiteHttpContext _httpContext;
 
-        public CmsLiteAuthenticationProvider(ICmsLiteHttpContext context)
+        public SimpleAuthenticationProvider(ICmsLiteHttpContext context)
         {
             _httpContext = context;
         }

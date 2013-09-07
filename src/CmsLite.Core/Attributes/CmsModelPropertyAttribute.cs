@@ -1,7 +1,7 @@
 ﻿using System;
 using CmsLite.Utilities.Cms;
 
-namespace CmsLite.Core.Cms.Attributes
+namespace CmsLite.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
     public class CmsModelPropertyAttribute : Attribute

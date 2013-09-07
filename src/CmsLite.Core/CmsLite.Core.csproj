@@ -137,10 +137,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\AdminProfile.cs" />
+    <Compile Include="App_Start\RazorViewEngineConfig.cs" />
+    <Compile Include="Automapper\AdminProfile.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\IocConfig.cs" />
-    <Compile Include="App_Start\NinjectWebCommon.cs" />
+    <Compile Include="Helpers\HtmlHelpers.cs" />
+    <Compile Include="Ioc\NinjectWebCommon.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Attributes\LayoutModelAttribute .cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
@@ -166,27 +168,21 @@
     <Compile Include="Areas\Admin\ViewModels\SectionTemplateViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\SectionViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\UploadFileViewModel.cs" />
-    <Compile Include="Authetication\CmsLiteAuthenticationProvider.cs" />
-    <Compile Include="Authetication\CmsLiteHttpContext.cs" />
-    <Compile Include="Cms\Attributes\CmsModelPropertyAttribute.cs" />
-    <Compile Include="Cms\Attributes\CmsModelTemplateAttribute.cs" />
-    <Compile Include="Cms\Attributes\CmsPageTemplateAttribute.cs" />
-    <Compile Include="Cms\Attributes\CmsSectionTemplateAttribute.cs" />
-    <Compile Include="Cms\Attributes\PostRedirectGetAttributes.cs" />
-    <Compile Include="Cms\CmsActionInvoker.cs" />
-    <Compile Include="Cms\CmsApplication.cs" />
-    <Compile Include="Cms\CmsController.cs" />
-    <Compile Include="Cms\CmsRouteTable.cs" />
-    <Compile Include="Cms\Configuration\AutoMapperConfiguration.cs" />
-    <Compile Include="Cms\Constants\CmsRoutingConstants.cs" />
-    <Compile Include="Cms\FileManager.cs" />
-    <Compile Include="Cms\Helpers\ModelHelper.cs" />
-    <Compile Include="Cms\Helpers\NodeHelper.cs" />
-    <Compile Include="Cms\HtmlHelpers\HtmlHelpers.cs" />
-    <Compile Include="Cms\HtmlHelpers\MvcHtmlHelpers.cs" />
-    <Compile Include="Cms\Razor\EmbeddedResourceViewEngine.cs" />
-    <Compile Include="Extensions\HtmlHelperExtensions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Authetication\SimpleAuthenticationProvider.cs" />
+    <Compile Include="Authetication\CmsHttpContext.cs" />
+    <Compile Include="Attributes\CmsModelPropertyAttribute.cs" />
+    <Compile Include="Attributes\CmsModelTemplateAttribute.cs" />
+    <Compile Include="Attributes\CmsPageTemplateAttribute.cs" />
+    <Compile Include="Attributes\CmsSectionTemplateAttribute.cs" />
+    <Compile Include="Attributes\PostRedirectGetAttributes.cs" />
+    <Compile Include="CmsActionInvoker.cs" />
+    <Compile Include="CmsApplication.cs" />
+    <Compile Include="Controllers\CmsBaseController.cs" />
+    <Compile Include="App_Start\AutoMapperConfig.cs" />
+    <Compile Include="Constants\CmsRoutingConstants.cs" />
+    <Compile Include="Templating\CmsTemplateEngine.cs" />
+    <Compile Include="Helpers\CmsModelHelper.cs" />
+    <Compile Include="Helpers\NodeHelper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -405,13 +401,9 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Scripts\PropertyPlugins\RichTextEditor\ckeditor\plugins\link\images\" />
-    <Folder Include="Controllers\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

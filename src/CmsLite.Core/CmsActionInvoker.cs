@@ -2,12 +2,12 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
-using CmsLite.Core.Cms.Constants;
-using CmsLite.Core.Cms.Helpers;
+using CmsLite.Core.Constants;
+using CmsLite.Core.Helpers;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
 
-namespace CmsLite.Core.Cms
+namespace CmsLite.Core
 {
     public class CmsActionInvoker : ControllerActionInvoker, IActionInvoker
     {
@@ -30,7 +30,7 @@ namespace CmsLite.Core.Cms
                                 .Include(x => x.SectionTemplate)
                                 .Include(x => x.PageNodes.Select(y => y.PageTemplate));
 
-            SectionNode sectionNode = NodeHelper.GetControllerSectionNode(sectionNodeDbSet, routeDataValues[0].Value.ToString());
+            var sectionNode = NodeHelper.GetControllerSectionNode(sectionNodeDbSet, routeDataValues[0].Value.ToString());
             PageNode pageNode = null;
 
             currentRouteData.Values[CmsRoutingConstants.RouteDataNameForSection] = sectionNode.UrlName;

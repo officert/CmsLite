@@ -342,6 +342,7 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Areas\Admin\Views\Shared\_Header.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

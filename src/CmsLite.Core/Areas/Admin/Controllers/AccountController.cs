@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Mail;
 using System.Web.Mvc;
 using CmsLite.Core.Areas.Admin.Models;
-using CmsLite.Core.Cms.Attributes;
+using CmsLite.Core.Attributes;
 using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
 

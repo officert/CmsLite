@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CmsLite.Core.Cms.Attributes
+namespace CmsLite.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public class CmsModelTemplateAttribute : Attribute

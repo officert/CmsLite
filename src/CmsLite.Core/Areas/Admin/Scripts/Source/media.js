@@ -16,24 +16,39 @@
         },
         //upload files
         uploadFileForm: {
+            init: (function () {
+                var form = $('#upload-file-form');
+                form.modal({
+                    show: false
+                });
+                var triggerButton = $('#create-section-trigger');
+                form.on('show.bs.modal', function () {
+                    triggerButton.addClass('active');
+                });
+                form.on('hide.bs.modal', function () {
+                    triggerButton.removeClass('active');
+                });
+
+                //init unobstrusive validation
+                var formElement = form.children('div.modal-dialog').children('form').first();
+                $.validator.unobtrusive.parse(formElement);
+            })(),
             show: function (data) {
                 var form = $('#upload-file-form');
-
-                ko.applyBindings(cms.viewmodel, form[0]);
-
                 form.modal('show');
             },
             hide: function () {
                 var form = $('#upload-file-form');
-
                 form.modal('hide');
             }
         }
     };
     cms.init = function () {
 
-        ko.applyBindings(cms.viewmodel, $('#edit-page')[0]);
+        ko.applyBindings(cms.viewmodel, $('#media-page')[0]);
 
-        //init plugins
+        //setup the create section form view model
+        var uploadFileForm = $('#upload-file-form');
+        ko.applyBindings(cms.viewmodel.uploadFileForm, uploadFileForm[0]);
     };
 } (window, jQuery));
