@@ -1,6 +1,6 @@
 CmsLite
 =======================================
-CmsLite is a CMS built on .NET MVC4. It is easy to use, allowing you to use strongly typed templates using controllers,
+CmsLite is a CMS built on .NET MVC4. It allows you to use strongly typed templates using controllers,
 actions, and models.
 Write your templates in Visual Studio and CmsLite will turn them into templates to use in your CMS.
 
