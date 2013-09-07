@@ -1,8 +1,8 @@
 ﻿using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
+using CmsLite.Core.Cms;
 using CmsLite.TestApp.App_Start;
-using CmsLite.Web.Cms;
 
 namespace CmsLite.TestApp
 {

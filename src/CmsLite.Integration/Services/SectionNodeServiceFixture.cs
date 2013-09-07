@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using CmsLite.Domains.Entities;
-using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
 using CmsLite.Services.Helpers;
 using CmsLite.Utilities.Cms;
-using CmsLite.Web.Cms.Constants;
-using Ninject;
 using NUnit.Framework;
 using SharpTestsEx;
 
 namespace CmsLite.Integration.Services
 {
     [TestFixture]
+    [Category("Integration")]
     public class SectionNodeServiceFixture : ServiceBaseFixture
     {
         private List<int> _createdSectionTemplateIds;

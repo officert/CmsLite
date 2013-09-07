@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmsLite.TestApp", "CmsLite.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmsLite.Utilities", "CmsLite.Utilities\CmsLite.Utilities.csproj", "{54F6E8E1-7EBB-40A8-B809-A6A487314B8B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmsLite.Core", "CmsLite.Core\CmsLite.Core.csproj", "{D309A23F-7157-40AB-B15E-7E413E40FABB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,11 +77,17 @@ Global
 		{54F6E8E1-7EBB-40A8-B809-A6A487314B8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54F6E8E1-7EBB-40A8-B809-A6A487314B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54F6E8E1-7EBB-40A8-B809-A6A487314B8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D309A23F-7157-40AB-B15E-7E413E40FABB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D309A23F-7157-40AB-B15E-7E413E40FABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D309A23F-7157-40AB-B15E-7E413E40FABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D309A23F-7157-40AB-B15E-7E413E40FABB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3A890686-1B16-4CE1-80D0-E2305C7BBA1A} = {5C8F8F34-01C4-4D17-ABCE-E525F13AABE4}
+		{33CDEB9C-6447-47B8-BF69-3BD4F4839395} = {5C8F8F34-01C4-4D17-ABCE-E525F13AABE4}
+		{9F49E67C-822B-4229-B22F-A47AF1DD8877} = {5C8F8F34-01C4-4D17-ABCE-E525F13AABE4}
 	EndGlobalSection
 EndGlobal

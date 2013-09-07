@@ -1,5 +1,5 @@
-﻿using CmsLite.Utilities.Cms;
-using CmsLite.Web.Cms.Attributes;
+﻿using CmsLite.Core.Cms.Attributes;
+using CmsLite.Utilities.Cms;
 
 namespace CmsLite.Integration.MvcFiles.Models
 {

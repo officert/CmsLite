@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.Mvc;
+using CmsLite.Core.Cms.Attributes;
 using CmsLite.Integration.MvcFiles.Models;
-using CmsLite.Web.Cms.Attributes;
 
 namespace CmsLite.Integration.MvcFiles.Controllers
 {

@@ -1,6 +1,6 @@
 ﻿using System;
+using CmsLite.Core.Cms.Attributes;
 using CmsLite.Utilities.Cms;
-using CmsLite.Web.Cms.Attributes;
 
 namespace CmsLite.Integration.MvcFiles.Models
 {

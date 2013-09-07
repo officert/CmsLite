@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CmsLite.Integration</RootNamespace>
     <AssemblyName>CmsLite.Integration</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,10 +31,12 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -110,6 +114,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CmsLite.Core\CmsLite.Core.csproj">
+      <Project>{d309a23f-7157-40ab-b15e-7e413e40fabb}</Project>
+      <Name>CmsLite.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CmsLite.Data\CmsLite.Data.csproj">
       <Project>{a11a4eb0-0a41-4ef4-a169-04011759c30d}</Project>
       <Name>CmsLite.Data</Name>
@@ -133,10 +141,6 @@
     <ProjectReference Include="..\CmsLite.Utilities\CmsLite.Utilities.csproj">
       <Project>{54f6e8e1-7ebb-40a8-b809-a6a487314b8b}</Project>
       <Name>CmsLite.Utilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CmsLite.Web\CmsLite.Web.csproj">
-      <Project>{FD4299BA-2430-498D-9621-0711CB274E36}</Project>
-      <Name>CmsLite.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

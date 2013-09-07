@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.UI;
 using CmsLite.Domains.Entities;
 using CmsLite.Resources;
 using CmsLite.Utilities.Cms;
@@ -11,6 +10,7 @@ using SharpTestsEx;
 namespace CmsLite.Integration.Services
 {
     [TestFixture]
+    [Category("Integration")]
     public class PageTemplateServiceFixture : ServiceBaseFixture
     {
         private List<int> _createdSectionTemplateIds;

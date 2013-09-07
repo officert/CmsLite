@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using CmsLite.Core.Ioc;
 using CmsLite.Data.Ioc;
 using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
 using CmsLite.Services.Ioc;
-using CmsLite.Web.Ioc;
 using Ninject;
 using Ninject.Modules;
 using NUnit.Framework;
@@ -12,6 +12,7 @@ using NUnit.Framework;
 namespace CmsLite.Integration.Services
 {
     [TestFixture]
+    [Category("Integration")]
     public abstract class ServiceBaseFixture : IDisposable
     {
         protected IKernel Kernel;

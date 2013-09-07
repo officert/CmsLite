@@ -11,6 +11,7 @@ using SharpTestsEx;
 namespace CmsLite.Integration.Services
 {
     [TestFixture]
+    [Category("Integration")]
     public class PageNodeServiceFixture : ServiceBaseFixture
     {
         private List<int> _createdSectionTemplateIds;

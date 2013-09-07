@@ -1,8 +1,8 @@
 ﻿using System.Web.Mvc;
+using CmsLite.Core.Cms;
+using CmsLite.Core.Cms.Attributes;
+using CmsLite.Core.Interfaces;
 using CmsLite.TestApp.Models.Pages;
-using CmsLite.Web.Cms;
-using CmsLite.Web.Cms.Attributes;
-using CmsLite.Web.Interfaces;
 
 namespace CmsLite.TestApp.Controllers
 {
