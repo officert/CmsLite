@@ -27,3 +27,16 @@ public override ActionResult Index()
     return View(model);
 }
 ```
+
+## Property Templates from Model properties
+
+```csharp
+[CmsModelProperty(
+    DisplayName = "Title",
+    PropertyType = CmsPropertyType.TextString,
+    Description = "The title of this page.",
+    TabName = "General",
+    TabOrder = 1
+    )]
+public string Title { get; set; }
+```
