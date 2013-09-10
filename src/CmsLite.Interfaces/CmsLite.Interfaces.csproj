@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Authentication\IAuthentication.cs" />
+    <Compile Include="Authentication\IAuthenticationProvider.cs" />
     <Compile Include="Authentication\ICmsLiteHttpContext.cs" />
     <Compile Include="Content\IFileManager.cs" />
     <Compile Include="Data\IDbContext.cs" />

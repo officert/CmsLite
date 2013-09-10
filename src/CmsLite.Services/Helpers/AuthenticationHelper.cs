@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Security.Cryptography;
-using System.Web.Security;
+using System.Web.Helpers;
+using CmsLite.Domains.Entities;
 
 namespace CmsLite.Services.Helpers
 {
@@ -8,18 +8,21 @@ namespace CmsLite.Services.Helpers
     {
         public static string GenerateSalt()
         {
-            var rng = new RNGCryptoServiceProvider();
-            var buff = new byte[32];
-            rng.GetBytes(buff);
-
-            return Convert.ToBase64String(buff);
+            return Crypto.GenerateSalt();
         }
 
-        public static string CreatePasswordHash(string pwd, string salt)
+        public static string CreatePasswordHash(string password, string salt)
         {
-            var saltAndPwd = String.Concat(pwd, salt);
-            var hashedPwd = FormsAuthentication.HashPasswordForStoringInConfigFile(saltAndPwd, "sha1");
-            return hashedPwd;
+            return Crypto.HashPassword(password + salt);
+        }
+
+        public static bool VerifyHashedPassword(User user, string password)
+        {
+            if (user == null)
+                throw new ArgumentException("User cannot be null");
+
+            var hashedPassword = user.Password;
+            return Crypto.VerifyHashedPassword(hashedPassword, password + user.PasswordSalt);
         }
     }
 }

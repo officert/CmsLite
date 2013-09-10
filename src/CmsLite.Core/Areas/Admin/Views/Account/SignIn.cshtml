@@ -19,8 +19,11 @@
             Remember my login
         </label>
     </div>
-    <button class="btn btn-primary pull-right" type="submit"><i class="icon-signin"></i>Sign In</button>
+    <button class="btn btn-primary pull-right" type="submit"><i class="icon-signin icon-left"></i>Sign In</button>
 }
+<div class="alert alert-info">
+    If you don't already have an account, <a href="@Url.Action("Register", "Account")">create one</a>
+</div>
 @if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger">

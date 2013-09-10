@@ -61,6 +61,24 @@ namespace CmsLite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The email {0} is already in user by another user..
+        /// </summary>
+        public static string EmailAlreadyExists {
+            get {
+                return ResourceManager.GetString("EmailAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email is required..
+        /// </summary>
+        public static string EmailRequired {
+            get {
+                return ResourceManager.GetString("EmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Model type {0} was not found. Cms Models must implement the ICmsModel interface..
         /// </summary>
         public static string ModelTypeNotFound {
@@ -192,6 +210,15 @@ namespace CmsLite.Resources {
         public static string PasswordDoesNotMatch {
             get {
                 return ResourceManager.GetString("PasswordDoesNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password is required..
+        /// </summary>
+        public static string PasswordRequired {
+            get {
+                return ResourceManager.GetString("PasswordRequired", resourceCulture);
             }
         }
         
@@ -336,6 +363,15 @@ namespace CmsLite.Resources {
         public static string UserNameNotFound {
             get {
                 return ResourceManager.GetString("UserNameNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No User with the username {0} exists..
+        /// </summary>
+        public static string UserNotFound {
+            get {
+                return ResourceManager.GetString("UserNotFound", resourceCulture);
             }
         }
     }

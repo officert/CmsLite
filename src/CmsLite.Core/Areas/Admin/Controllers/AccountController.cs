@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Mail;
+using System.Security.Policy;
 using System.Web.Mvc;
 using CmsLite.Core.Areas.Admin.Models;
 using CmsLite.Core.Attributes;
+using CmsLite.Interfaces.Authentication;
 using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
 
@@ -12,10 +14,12 @@ namespace CmsLite.Core.Areas.Admin.Controllers
     public class AccountController : AdminBaseController
     {
         private readonly IUserService _userService;
+        private readonly IAuthenticationProvider _authenticationProvider;
 
-        public AccountController(IUserService userService)
+        public AccountController(IUserService userService, IAuthenticationProvider authenticationProvider)
         {
             _userService = userService;
+            _authenticationProvider = authenticationProvider;
         }
 
         [ImportModelStateFromTempData]
@@ -29,13 +33,14 @@ namespace CmsLite.Core.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = _userService.GetUserByEmail(viewModel.Email);
+                var user = _userService.Find(x => x.Email == viewModel.Email);
                 if (user == null)
                 {
                     ModelState.AddModelError("UserNotFound", Messages.UserNameNotFound);
                     return RedirectToAction("SignIn");
                 }
-                var userStatus = _userService.ValidateUser(user, viewModel.Password);
+
+                var userStatus = _authenticationProvider.VerifyUser(user, viewModel.Password);
 
                 if (userStatus == Domains.Entities.User.UserStatus.PasswordDoesNotMatch)
                 {
@@ -54,7 +59,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
                 {
                     var userDataValues = new List<string>() { user.Email, user.FirstName, user.LastName };
 
-                    _userService.SignIn(user.UserName, viewModel.RememberMe);
+                    _authenticationProvider.SignIn(user.UserName, viewModel.RememberMe);
 
                     if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/") && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                     {
@@ -68,7 +73,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
 
         public ActionResult SignOut()
         {
-            _userService.SignOut();
+            _authenticationProvider.SignOut();
             return RedirectToAction("SignIn");
         }
 
@@ -85,8 +90,10 @@ namespace CmsLite.Core.Areas.Admin.Controllers
             {
                 var emailAddress = new MailAddress(viewModel.Email);
 
-                var user = _userService.CreateUser(viewModel.Email, viewModel.Password);    //throws unhandled data exception, to be caught by 404 handler
-                _userService.SendUserActivationEmail(user);
+                var user = _userService.Create(viewModel.Email, viewModel.Password);    //throws unhandled data exception, to be caught by 404 handler
+                
+                // _userService.SendUserActivationEmail(user);
+                
                 return RedirectToAction("NotActivated", "Account", new { email = user.Email });
             }
             return RedirectToAction("Register");
@@ -135,7 +142,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
 
         public ActionResult Activate(string email, string key = "")
         {
-            var user = _userService.GetUserByEmail(email);
+            var user = _userService.Find(x => x.Email == email);
             if (user == null)
             {
                 //TODO: redirect / add modelState error

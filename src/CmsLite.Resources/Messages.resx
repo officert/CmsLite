@@ -210,4 +210,16 @@
   <data name="SectionTemplateCannotBeNull" xml:space="preserve">
     <value>Section Template cannot be null.</value>
   </data>
+  <data name="EmailAlreadyExists" xml:space="preserve">
+    <value>The email {0} is already in user by another user.</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>No User with the username {0} exists.</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>Email is required.</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>Password is required.</value>
+  </data>
 </root>

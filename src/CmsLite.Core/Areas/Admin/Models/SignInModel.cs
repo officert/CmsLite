@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using CmsLite.Resources;
 
 namespace CmsLite.Core.Areas.Admin.Models
 {
     public class SignInModel : AdminLayoutModel
     {
-        [Required]
-        [Display(Name = "Enter your email address")]
+        [Required(ErrorMessageResourceType = typeof(Messages), ErrorMessageResourceName = "EmailRequired")]
+        [Display(Name = "Enter your email")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Messages), ErrorMessageResourceName = "PasswordRequired")]
         [DataType(DataType.Password)]
         [Display(Name = "Enter your password")]
         public string Password { get; set; }

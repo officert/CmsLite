@@ -16,7 +16,7 @@ namespace CmsLite.Core.Ioc
         public override void Load()
         {
             Bind<ICmsLiteHttpContext>().To<CmsHttpContext>().InRequestScope();
-            Bind<IAuthentication>().To<SimpleAuthenticationProvider>().InSingletonScope();
+            Bind<IAuthenticationProvider>().To<SimpleAuthenticationProvider>().InSingletonScope();
             Bind<IMappingEngine>().ToMethod(ctx => Mapper.Engine);
             Bind<IFileManager>().To<CmsTemplateEngine>();
 

@@ -37,7 +37,7 @@ namespace CmsLite.Domains.Entities
         public string ProfilePicMimeType { get; set; }
 
         [Required]
-        public DateTime? JoinDate { get; set; }
+        public DateTime CreateDate { get; set; }
 
         [Required]
         public DateTime LastModifiedDate { get; set; }
@@ -46,7 +46,7 @@ namespace CmsLite.Domains.Entities
 
         public bool IsActivated { get; set; }
 
-        public bool? IsLockedOut { get; set; }
+        public bool IsLockedOut { get; set; }
 
         public DateTime? LastLockedOutDate { get; set; }
 

@@ -2,7 +2,7 @@
 
 namespace CmsLite.Core.Areas.Admin.Models
 {
-    public class RegisterModel
+    public class RegisterModel : AdminLayoutModel
     {
         [Required]
         [DataType(DataType.EmailAddress)]
