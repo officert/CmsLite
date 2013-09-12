@@ -20,7 +20,9 @@ public class HomeController : CmsController
 ```
 
 ## Page Templates from Actions
-
+Page templates are generated for every method in a controller that has a return type = ActionResult. A page template allows
+you to create Page Nodes within your CMS. A Page Node represents a page in your website. When viewing a Page Node in
+the CMS you will see the various property editors for that page.
 ```csharp
 [CmsPageTemplate(
     Name = "Home Template",
