@@ -61,6 +61,42 @@ namespace CmsLite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The action {0} does not have a CmsPageTemplate attribute..
+        /// </summary>
+        public static string ActionDoesNotHaveCmsPageTemplateAttribute {
+            get {
+                return ResourceManager.GetString("ActionDoesNotHaveCmsPageTemplateAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The action with the name {0} does not exist..
+        /// </summary>
+        public static string ActionNotFound {
+            get {
+                return ResourceManager.GetString("ActionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The controller {0} does not have a CmsSectionTemplate attribute..
+        /// </summary>
+        public static string ControllerDoesNotHaveCmsSectionTempalteAttribute {
+            get {
+                return ResourceManager.GetString("ControllerDoesNotHaveCmsSectionTempalteAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The controller with the name {0} does not exist..
+        /// </summary>
+        public static string ControllerNotFound {
+            get {
+                return ResourceManager.GetString("ControllerNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The email {0} is already in user by another user..
         /// </summary>
         public static string EmailAlreadyExists {

@@ -222,4 +222,16 @@
   <data name="PasswordRequired" xml:space="preserve">
     <value>Password is required.</value>
   </data>
+  <data name="ActionDoesNotHaveCmsPageTemplateAttribute" xml:space="preserve">
+    <value>The action {0} does not have a CmsPageTemplate attribute.</value>
+  </data>
+  <data name="ActionNotFound" xml:space="preserve">
+    <value>The action with the name {0} does not exist.</value>
+  </data>
+  <data name="ControllerDoesNotHaveCmsSectionTempalteAttribute" xml:space="preserve">
+    <value>The controller {0} does not have a CmsSectionTemplate attribute.</value>
+  </data>
+  <data name="ControllerNotFound" xml:space="preserve">
+    <value>The controller with the name {0} does not exist.</value>
+  </data>
 </root>

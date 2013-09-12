@@ -2,3 +2,54 @@
 .content-area {
     padding-left: 20px;
 }
+/* Buttons */
+.btn {
+    border-radius:0;
+    &.pull-right {
+        > i {
+            margin-right: @btn-icon-margin;
+        }
+    }
+
+    &.pull-left {
+        > i {
+            margin-left: @btn-icon-margin;
+        }
+    }
+}
+/* Button Groups */
+.btn-group {
+    > .btn {
+        > i {
+            margin-right: @btn-icon-margin;
+        }
+    }
+}
+/* Alerts */
+.alert {
+    ul {
+        padding-left: 20px;
+    }
+}
+
+/* Space Box */
+.space-box(@background, @border-color) {
+    .border-radius(@border-radius-base);
+    background: @background;
+    padding: 3px;
+
+    > .space-box-content {
+        border: 1px solid @border-color;
+        .border-radius(@border-radius-base);
+        padding: 20px;
+        overflow: hidden;
+    }
+}
+/* Page Header */
+.page-header {
+    > h3 { 
+        > i {
+            margin-right: @btn-icon-margin;
+        }
+    }
+}

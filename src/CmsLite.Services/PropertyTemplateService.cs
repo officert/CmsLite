@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
@@ -11,13 +12,11 @@ namespace CmsLite.Services
 {
     public class PropertyTemplateService : ServiceBase<PropertyTemplate>, IPropertyTemplateService
     {
-        private readonly IPageTemplateService _pageTemplateService;
         private readonly IPropertyService _propertyService;
 
-        public PropertyTemplateService(IUnitOfWork unitOfWork, IPageTemplateService pageTemplateService, IPropertyService propertyService)
+        public PropertyTemplateService(IUnitOfWork unitOfWork, IPropertyService propertyService)
             : base(unitOfWork)
         {
-            _pageTemplateService = pageTemplateService;
             _propertyService = propertyService;
         }
 
@@ -37,8 +36,8 @@ namespace CmsLite.Services
             if (propertyName.IsNullOrEmpty())
                 throw new ArgumentException(Messages.PropertyTemplatePropertyNameCannotBeNull);
 
-            var pageTemplate = _pageTemplateService
-                        .FindIncluding(x => x.PageNodes.Select(y => y.Properties.Select(z => z.PropertyTemplate)))
+            var pageTemplate = UnitOfWork.Context.GetDbSet<PageTemplate>()
+                        .Include(x => x.PageNodes.Select(y => y.Properties.Select(z => z.PropertyTemplate)))
                         .FirstOrDefault(x => x.Id == pageTemplateId);
 
             if (pageTemplate == null)

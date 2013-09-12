@@ -150,33 +150,17 @@ namespace CmsLite.Core.Templating
 
         private void CreateSectionTemplatesForNewControllers(Assembly assembly, IEnumerable<Type> controllers)
         {
-            var sectionTemplateDbSet = _unitOfWork.Context.GetDbSet<SectionTemplate>();
-
             if (controllers != null && controllers.Any())
             {
                 foreach (var controller in controllers)
                 {
                     var attribute = (CmsSectionTemplateAttribute)controller.GetCustomAttributes(typeof(CmsSectionTemplateAttribute), false).FirstOrDefault();
-                    var controllerName = controller.Name;
-                    var displayName = attribute.Name;
 
-                    var sectionTemplate = _sectionTemplateService.Create(controllerName, displayName, commit: false);
-
-                    //var template = sectionTemplateDbSet.Create();
-                    //template.ControllerName = controllerName;
-                    //template.IconImageName = !attribute.IconImageName.IsNullOrEmpty()
-                    //                        ? attribute.IconImageName
-                    //                        : Utilities.Cms.CmsConstants.SectionTemplateDefaultThumbnail;
+                    var sectionTemplate = _sectionTemplateService.Create(controller.Name, attribute.Name, commit: false);
 
                     var controllerActions = GetActionsForController(controller);
 
-                    CreateChildPageTemplatesForAction(sectionTemplate, controllerActions, assembly);
-
-                    //CreatePageTemplatesForNewActions(assembly, controllerActions, template);
-
-                    //template.Name = displayName ?? controllerName;
-
-                    //sectionTemplateDbSet.Add(template);
+                    CreatePageTemplatesForActions(sectionTemplate, controllerActions, assembly);
                 }
             }
         }
@@ -190,7 +174,7 @@ namespace CmsLite.Core.Templating
                     var templateController = controllers.FirstOrDefault(x => x.Name == sectionTemplate.ControllerName);
 
                     if (templateController == null)
-                        throw new ArgumentException(string.Format("The controller with the name {0} does not exist", sectionTemplate.ControllerName));
+                        throw new ArgumentException(string.Format(Messages.ControllerNotFound, sectionTemplate.ControllerName));
 
                     var controllerActions = GetActionsForController(templateController).ToList();
 
@@ -200,22 +184,20 @@ namespace CmsLite.Core.Templating
                     var sectionTemplateAttribute = (CmsSectionTemplateAttribute)templateController.GetCustomAttributes(typeof(CmsSectionTemplateAttribute), false).FirstOrDefault();
 
                     if (sectionTemplateAttribute == null)
-                        throw new ArgumentException(string.Format("The controller {0} does not have a CmsSectionTemplate attribute", templateController.Name));
+                        throw new ArgumentException(string.Format(Messages.ControllerDoesNotHaveCmsSectionTempalteAttribute, templateController.Name));
+
+                    //update properties on the section template
+                    _sectionTemplateService.Update(sectionTemplate, sectionTemplateAttribute.Name, sectionTemplateAttribute.IconImageName, false);
 
                     var pageTemplatesToRemove = sectionTemplate.PageTemplates.Where(x => !controllerActionNames.Contains(x.ActionName)).ToList();
                     var newActionsToAdd = controllerActions.Where(x => !sectionActionNames.Contains(x.Name)).ToList();
                     var pageTemplatesToUpdate = sectionTemplate.PageTemplates.Where(x => controllerActionNames.Contains(x.ActionName)).ToList();
 
-                    sectionTemplate.Name = sectionTemplateAttribute.Name;
-                    sectionTemplate.IconImageName = !sectionTemplateAttribute.IconImageName.IsNullOrEmpty()
-                                                    ? sectionTemplateAttribute.IconImageName
-                                                    : Utilities.Cms.CmsConstants.SectionTemplateDefaultThumbnail;
-
                     //remove any page templates that don't have an action anymore
                     RemovePageTemplatesWithNoExistingAction(pageTemplatesToRemove);
 
                     //create page templates for any actions that don't have a template with that action name
-                    CreatePageTemplatesForNewActions(assembly, newActionsToAdd, sectionTemplate);
+                    CreatePageTemplatesForActions(sectionTemplate, newActionsToAdd, assembly);
 
                     //update any page templates that still have an action
                     UpdatePageTemplates(assembly, pageTemplatesToUpdate, controllerActions);
@@ -238,36 +220,17 @@ namespace CmsLite.Core.Templating
             }
         }
 
-        private void CreatePageTemplatesForNewActions(Assembly assembly, IEnumerable<MethodInfo> actions, SectionTemplate sectionTemplate)
+        private void CreatePageTemplatesForActions(SectionTemplate sectionTemplate, IEnumerable<MethodInfo> controllerActions, Assembly assembly)
         {
-            if (actions != null && actions.Any())
+            foreach (var action in controllerActions)
             {
-                var pageTemplateDbSet = _unitOfWork.Context.GetDbSet<PageTemplate>();
+                var attribute = (CmsPageTemplateAttribute)action.GetCustomAttributes(typeof(CmsPageTemplateAttribute), false).FirstOrDefault();
+                var model = GetModelType(assembly, attribute.ModelType.Name);
 
-                HackToInstantiatePageTemplatesCollection(sectionTemplate);
+                var pageTemplate = _pageTemplateService.CreateForSectionTemplate(sectionTemplate, action.Name, model.Name, attribute.Name, attribute.IconImageName, false);
 
-                foreach (var action in actions)
-                {
-                    var attribute = (CmsPageTemplateAttribute)action.GetCustomAttributes(typeof(CmsPageTemplateAttribute), false).FirstOrDefault();
-                    var actionName = action.Name;
-                    var templateDisplayName = attribute.Name;
-                    var modelName = attribute.ModelType.Name;
-                    var model = GetModelType(assembly, modelName);
-
-                    var template = pageTemplateDbSet.Create();
-
-                    template.Name = string.IsNullOrEmpty(templateDisplayName) ? actionName : templateDisplayName;
-                    template.ActionName = actionName;
-                    template.ModelName = model.Name;
-                    template.IconImageName = !attribute.IconImageName.IsNullOrEmpty()
-                                            ? attribute.IconImageName
-                                            : Utilities.Cms.CmsConstants.PageTemplateDefaultThumbnail;
-
-                    var modelProperties = GetModelProperties(model);
-                    CreateNewPropertyTemplatesForNewProperties(modelProperties, template);
-
-                    sectionTemplate.PageTemplates.Add(template);
-                }
+                var modelProperties = GetModelProperties(model);
+                CreatePropertyTemplatesForProperties(modelProperties, pageTemplate);
             }
         }
 
@@ -280,20 +243,17 @@ namespace CmsLite.Core.Templating
                     var templateAction = actions.FirstOrDefault(x => x.Name == pageTemplate.ActionName);
 
                     if (templateAction == null)
-                        throw new ArgumentException(string.Format("The action with the name {0} does not exist", pageTemplate.ActionName));
+                        throw new ArgumentException(string.Format(Messages.ActionNotFound, pageTemplate.ActionName));
 
                     var pageTemplateAttribute = (CmsPageTemplateAttribute)templateAction.GetCustomAttributes(typeof(CmsPageTemplateAttribute), false).FirstOrDefault();
 
                     if (pageTemplateAttribute == null)
-                        throw new ArgumentException(string.Format("The action {0} does not have a CmsPageTemplate attribute", templateAction.Name));
-
-                    pageTemplate.Name = pageTemplateAttribute.Name;
-                    pageTemplate.IconImageName = !pageTemplateAttribute.IconImageName.IsNullOrEmpty()
-                                                ? pageTemplateAttribute.IconImageName
-                                                : Utilities.Cms.CmsConstants.PageTemplateDefaultThumbnail;
+                        throw new ArgumentException(string.Format(Messages.ActionDoesNotHaveCmsPageTemplateAttribute, templateAction.Name));
 
                     var model = GetModelType(assembly, pageTemplate.ModelName);
                     var modelProperties = GetModelProperties(model).ToList();
+                    
+                    _pageTemplateService.Update(pageTemplate, model.Name, pageTemplateAttribute.Name, pageTemplateAttribute.IconImageName, false);
 
                     var modelPropertyNames = modelProperties.Select(x => x.Name).ToList();
                     var pageTemplatePropertyNames = pageTemplate.PropertyTemplates.Select(x => x.PropertyName).ToList();
@@ -306,7 +266,7 @@ namespace CmsLite.Core.Templating
                     RemovePropertyTemplatesWithNoExistingModelProperties(propertyTemplatesToRemove);
 
                     //create property templates for any properties that don't have a template with that property name
-                    CreateNewPropertyTemplatesForNewProperties(newPropertiesToAdd, pageTemplate);
+                    CreatePropertyTemplatesForProperties(newPropertiesToAdd, pageTemplate);
 
                     //update any property templates that still have a model property
                     UpdatePropertyTemplates(propertyTemplatesToUpdate, modelProperties);
@@ -329,14 +289,10 @@ namespace CmsLite.Core.Templating
             }
         }
 
-        private void CreateNewPropertyTemplatesForNewProperties(IEnumerable<PropertyInfo> properties, PageTemplate pageTemplate)
+        private void CreatePropertyTemplatesForProperties(IEnumerable<PropertyInfo> properties, PageTemplate pageTemplate)
         {
             if (properties != null && properties.Any())
             {
-                //var propertyTemplateDbSet = _unitOfWork.Context.GetDbSet<PropertyTemplate>();
-
-                //HackToInstantiatePropertyTemplatesCollection(pageTemplate);
-
                 foreach (var property in properties)
                 {
                     var attribute = (CmsModelPropertyAttribute)property.GetCustomAttributes(typeof(CmsModelPropertyAttribute), false).FirstOrDefault();
@@ -348,21 +304,8 @@ namespace CmsLite.Core.Templating
                     var tabOrder = attribute.TabOrder;
                     var required = attribute.Required;
 
-                    //var template = propertyTemplateDbSet.Create();
-                    //template.PropertyName = propertyName;
-                    //template.DisplayName = templateDisplayName;
-                    //template.CmsPropertyType = cmsPropertyName.ToString();
-                    //template.Description = description;
-                    //template.TabName = tabName;
-                    //template.TabOrder = tabOrder;
-                    //template.Required = required;
-
-                    //pageTemplate.PropertyTemplates.Add(template);
-
                     _propertyTemplateService.Create(pageTemplate, propertyName, propertyType, tabOrder, tabName, required, description, displayName, false);
                 }
-
-                //AddPropertiesToPageNodeForNewPropertyTemplates(pageTemplate);
             }
         }
 
@@ -429,31 +372,31 @@ namespace CmsLite.Core.Templating
             return model.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(x => x.GetCustomAttributes(typeof(CmsModelPropertyAttribute), false).Length > 0).ToList();
         }
 
-        private void HackToInstantiatePageTemplatesCollection(SectionTemplate sectionTemplate)
-        {
-            //when creating entities EF doesn't instantiate proxy collections, so we need to force it to be instantiated using this hack :(
-            if (sectionTemplate.PageTemplates == null)
-            {
-                var pageTemplateDbSet = _unitOfWork.Context.GetDbSet<PageTemplate>();
-                var newPageTemplate = pageTemplateDbSet.Create();
-                newPageTemplate.ParentSectionTemplate = sectionTemplate;
-                pageTemplateDbSet.Add(newPageTemplate);
-                pageTemplateDbSet.Remove(newPageTemplate);
-            }
-        }
+        //private void HackToInstantiatePageTemplatesCollection(SectionTemplate sectionTemplate)
+        //{
+        //    //when creating entities EF doesn't instantiate proxy collections, so we need to force it to be instantiated using this hack :(
+        //    if (sectionTemplate.PageTemplates == null)
+        //    {
+        //        var pageTemplateDbSet = _unitOfWork.Context.GetDbSet<PageTemplate>();
+        //        var newPageTemplate = pageTemplateDbSet.Create();
+        //        newPageTemplate.ParentSectionTemplate = sectionTemplate;
+        //        pageTemplateDbSet.Add(newPageTemplate);
+        //        pageTemplateDbSet.Remove(newPageTemplate);
+        //    }
+        //}
 
-        private void HackToInstantiatePropertyTemplatesCollection(PageTemplate pageTemplate)
-        {
-            //when creating entities EF doesn't instantiate proxy collections, so we need to force it to be instantiated using this hack :(
-            if (pageTemplate.PropertyTemplates == null)
-            {
-                var propertyTemplateDbSet = _unitOfWork.Context.GetDbSet<PropertyTemplate>();
-                var newPropertyTemplate = propertyTemplateDbSet.Create();
-                newPropertyTemplate.ParentPageTemplate = pageTemplate;
-                propertyTemplateDbSet.Add(newPropertyTemplate);
-                propertyTemplateDbSet.Remove(newPropertyTemplate);
-            }
-        }
+        //private void HackToInstantiatePropertyTemplatesCollection(PageTemplate pageTemplate)
+        //{
+        //    //when creating entities EF doesn't instantiate proxy collections, so we need to force it to be instantiated using this hack :(
+        //    if (pageTemplate.PropertyTemplates == null)
+        //    {
+        //        var propertyTemplateDbSet = _unitOfWork.Context.GetDbSet<PropertyTemplate>();
+        //        var newPropertyTemplate = propertyTemplateDbSet.Create();
+        //        newPropertyTemplate.ParentPageTemplate = pageTemplate;
+        //        propertyTemplateDbSet.Add(newPropertyTemplate);
+        //        propertyTemplateDbSet.Remove(newPropertyTemplate);
+        //    }
+        //}
 
         private void HackToInstantiateAllowedChildPageTemplatesCollection(PageTemplate pageTemplate)
         {
@@ -492,35 +435,5 @@ namespace CmsLite.Core.Templating
         //}
 
         #endregion
-
-        private void CreateChildPageTemplatesForAction(SectionTemplate sectionTemplate, IEnumerable<MethodInfo> controllerActions, Assembly assembly)
-        {
-            foreach (var action in controllerActions)
-            {
-                var attribute = (CmsPageTemplateAttribute)action.GetCustomAttributes(typeof(CmsPageTemplateAttribute), false).FirstOrDefault();
-                var actionName = action.Name;
-                var displayName = attribute.Name;
-                var modelName = attribute.ModelType.Name;
-                var model = GetModelType(assembly, modelName);
-                var iconImageName = attribute.IconImageName;
-
-                var pageTemplate = _pageTemplateService.CreateForSectionTemplate(sectionTemplate, actionName, modelName, displayName, iconImageName, false);
-
-                //var template = pageTemplateDbSet.Create();
-
-                //template.Name = string.IsNullOrEmpty(templateDisplayName) ? actionName : templateDisplayName;
-                //template.ActionName = actionName;
-                //template.ModelName = model.Name;
-                //template.IconImageName = !attribute.IconImageName.IsNullOrEmpty()
-                //                        ? attribute.IconImageName
-                //                        : Utilities.Cms.CmsConstants.PageTemplateDefaultThumbnail;
-
-                var modelProperties = GetModelProperties(model);
-
-                CreateNewPropertyTemplatesForNewProperties(modelProperties, pageTemplate);
-
-                //sectionTemplate.PageTemplates.Add(template);
-            }
-        }
     }
 }

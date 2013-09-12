@@ -8,7 +8,8 @@
 body {
     padding-top: 50px;
     overflow: hidden;
-} 
+}
+
 @media (max-width: @screen-md) {
     body {
         padding-top: 0px;
@@ -25,7 +26,7 @@ a {
 /* Lists */
 ul, ol {
     list-style: none;
-    padding-left:0;
+    padding-left: 0;
 }
 /* Fonts */
 .font-script {
@@ -40,7 +41,6 @@ ul, ol {
 }
 /* ============================== Header ==================================== */
 #header {
-    background: @gray-dark;
     border: 0;
     border-radius: 0;
     border-bottom: 1px solid @gray;
@@ -61,19 +61,22 @@ ul, ol {
     overflow-y: auto;
     padding: 50px 0 0px 0;
 }
-@media (min-width: @screen-md) {        
+
+@media (min-width: @screen-md) {
     //because the sidebar is fixed positioned, need to push the content right
     //but only on a large sized screen - on a medium screen the sidebar sits at
     //the top of the page so #main-wrapper shouldn't float anymore
     #main-wrapper {
-        float:right;
+        float: right;
     }
 }
+
 @media (max-width: @screen-md) {
     #main-wrapper {
         padding-top: 0px;
     }
 }
+
 #main {
     position: relative;
     height: 100%;
@@ -85,25 +88,29 @@ ul, ol {
     height: 100%;
     padding: 50px 0 0px 0;
     position: fixed;
-    background: @gray-dark;
+    background: @navbar-inverse-bg;
 }
-@media (max-width: @screen-md) { 
+
+@media (max-width: @screen-md) {
     //allows the sidebar to be visible on medium width devices
     #sidebar-wrapper {
         position: static;
-        height:auto;
+        height: auto;
         max-height: 300px;
+
         .list-group {
-            margin-bottom:0;
+            margin-bottom: 0;
         }
     }
 }
-@media (max-width: @screen-sm) {    
+
+@media (max-width: @screen-sm) {
     //the header gets a tiny bit taller at this screen size so we need to bump the sidebar down a bit more
     #sidebar-wrapper {
-        padding-top:58px;
+        padding-top: 58px;
     }
 }
+
 #sidebar {
     position: relative;
     height: 100%;
@@ -114,6 +121,7 @@ ul, ol {
         border-left: 0;
         border-right: 0;
         border-top: 0;
+        background: @body-bg;
     }
 }
 /* ============================== Pages ===================================== */
@@ -122,30 +130,23 @@ ul, ol {
 
 #site-sections {
     > .page-content {
-        background: @gray-lighter;
-        padding: 3px;
-        border-radius:3px;
+        .space-box(white, @gray-lighter);
 
         > ul {
-            border: 1px solid @gray-light;
-            background: white;
-            padding: 10px;
-            margin:0;
-            .recursiveListStyle {
+            padding: 0 !important;
+            margin: 0;
 
-                &:hover {
-                    background: @gray-light;
-                }
-
-                > a {
-                    display: block;
-                    padding: 2px;
-
-                    &:hover, &.active {
-                        background: @brand-primary;
-                        color: white;
+            > li.node {
+                a {
+                    .list-group-item;
+                    border-radius: 0 !important;
+                    border-top-width: 0px;
+                    border-right-width:0;
+                    border-color:@gray-lighter;
+                    &:hover {
+                        background:@brand-primary;
+                        color:white;
                     }
-
                     > i {
                         float: left;
                         font-size: 18px;
@@ -156,17 +157,20 @@ ul, ol {
                     }
 
                     > img {
-                        padding-right: 7px;
+                        padding-right: 5px;
+                        position: relative;
+                        top: -2px;
                     }
                 }
-            }
 
-            > li.node {
-                .recursiveListStyle;
+                > a {
+                    border-left-width: 0px;
+                    border-bottom-width: 1px;
+                    margin-bottom:1px;
+                }
 
                 li.node {
-                    .recursiveListStyle;
-                    padding: 0 0 0 35px;
+                    padding: 0 0 0 30px;
                 }
             }
         }
@@ -180,6 +184,7 @@ ul, ol {
         > header {
             position: fixed;
             z-index: 2000;
+
             > #tab-bar {
             }
 
@@ -192,7 +197,7 @@ ul, ol {
                     height: 39px;
                 }
             }
-            
+
             border-bottom: 1px solid @gray-light;
         }
 
@@ -249,17 +254,15 @@ ul, ol {
 /* ============================== Login Page ================================ */
 #account {
     .alert {
-        margin-top:20px;
+        margin-top: 20px;
+
         ul {
-            list-style:disc;
+            list-style: disc;
         }
     }
 }
 
 #signin {
     margin: 50px 0 0 0;
-    border: 1px solid @gray;
-    .border-radius(@border-radius-base);
-    overflow: hidden;
-    padding: 20px;
+    .space-box(white, @gray-lighter);
 }

@@ -7,7 +7,7 @@ namespace CmsLite.TestApp.Models.Pages
     public class EmployeeModel
     {
         [CmsModelProperty(
-            DisplayName = "First Name",
+            DisplayName = "First Name Foobar",
             PropertyType = CmsPropertyType.TextString,
             Description = "The first name of the employee.",
             TabName = "Employee Info",

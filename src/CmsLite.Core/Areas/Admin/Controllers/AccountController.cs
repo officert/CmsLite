@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Mail;
-using System.Security.Policy;
 using System.Web.Mvc;
 using CmsLite.Core.Areas.Admin.Models;
 using CmsLite.Core.Attributes;
@@ -23,13 +22,13 @@ namespace CmsLite.Core.Areas.Admin.Controllers
         }
 
         [ImportModelStateFromTempData]
-        public ActionResult SignIn()
+        public ActionResult Login()
         {
             return View();
         }
 
         [HttpPost, ExportModelStateToTempData]
-        public ActionResult SignIn(SignInModel viewModel, string returnUrl)
+        public ActionResult Login(SignInModel viewModel, string returnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -37,7 +36,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
                 if (user == null)
                 {
                     ModelState.AddModelError("UserNotFound", Messages.UserNameNotFound);
-                    return RedirectToAction("SignIn");
+                    return RedirectToAction("Login");
                 }
 
                 var userStatus = _authenticationProvider.VerifyUser(user, viewModel.Password);
@@ -45,7 +44,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
                 if (userStatus == Domains.Entities.User.UserStatus.PasswordDoesNotMatch)
                 {
                     ModelState.AddModelError("PasswordDoesNotMatch", Messages.PasswordDoesNotMatch);
-                    return RedirectToAction("SignIn");
+                    return RedirectToAction("Login");
                 }
                 if (userStatus == Domains.Entities.User.UserStatus.NotActivated)
                     return View("NotActivated", new NotActivatedModel { Email = viewModel.Email });
@@ -68,13 +67,13 @@ namespace CmsLite.Core.Areas.Admin.Controllers
                     return RedirectToAction("Index", "Admin", new { area = "Admin" });
                 }
             }
-            return RedirectToAction("SignIn");
+            return RedirectToAction("Login");
         }
 
         public ActionResult SignOut()
         {
             _authenticationProvider.SignOut();
-            return RedirectToAction("SignIn");
+            return RedirectToAction("Login");
         }
 
         public ActionResult Register()

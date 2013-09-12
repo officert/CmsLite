@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Linq;
+using System.Web.UI;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
@@ -13,11 +14,13 @@ namespace CmsLite.Services
     public class PageTemplateService : ServiceBase<PageTemplate>, IPageTemplateService
     {
         private readonly IPageNodeService _pageNodeService;
+        private readonly IPropertyTemplateService _propertyTemplateService;
 
-        public PageTemplateService(IUnitOfWork unitOfWork, IPageNodeService pageNodeService)
+        public PageTemplateService(IUnitOfWork unitOfWork, IPageNodeService pageNodeService, IPropertyTemplateService propertyTemplateService)
             : base(unitOfWork)
         {
             _pageNodeService = pageNodeService;
+            _propertyTemplateService = propertyTemplateService;
         }
 
         public PageTemplate Find(int sectionTemplateId, int pageTemplateId)
@@ -26,7 +29,7 @@ namespace CmsLite.Services
                             .Include(x => x.PageTemplates)
                             .FirstOrDefault(x => x.Id == sectionTemplateId);
 
-            if(sectionTemplate == null)
+            if (sectionTemplate == null)
                 throw new ArgumentException(string.Format(Messages.SectionTemplateNotFound, sectionTemplateId));
 
             return sectionTemplate.PageTemplates == null
@@ -34,7 +37,7 @@ namespace CmsLite.Services
                 : sectionTemplate.PageTemplates.FirstOrDefault(x => x.Id == pageTemplateId);
         }
 
-        public PageTemplate CreateForSectionTemplate(SectionTemplate sectionTemplate, string actionName, string modelName, string name = "", string iconImageName = "", bool commit = true)
+        public PageTemplate CreateForSectionTemplate(SectionTemplate sectionTemplate, string actionName, string modelName, string name = null, string iconImageName = null, bool commit = true)
         {
             if (actionName.IsNullOrEmpty())
                 throw new ArgumentException(Messages.PageTemplateActionNameCannotBeNull);
@@ -48,7 +51,7 @@ namespace CmsLite.Services
             return CreatePageTemplateForSectionTemplate(sectionTemplate, actionName, modelName, name, iconImageName, commit);
         }
 
-        public PageTemplate CreateForSectionTemplate(int sectionTemplateId, string actionName, string modelName, string name = "", string iconImageName = "", bool commit = true)
+        public PageTemplate CreateForSectionTemplate(int sectionTemplateId, string actionName, string modelName, string name = null, string iconImageName = null, bool commit = true)
         {
             if (actionName.IsNullOrEmpty())
                 throw new ArgumentException(Messages.PageTemplateActionNameCannotBeNull);
@@ -58,13 +61,13 @@ namespace CmsLite.Services
 
             var sectionTemplate = UnitOfWork.Context.GetDbSet<SectionTemplate>().FirstOrDefault(x => x.Id == sectionTemplateId);
 
-            if(sectionTemplate == null)
+            if (sectionTemplate == null)
                 throw new ArgumentException(string.Format(Messages.SectionTemplateNotFound, sectionTemplateId));
 
             return CreatePageTemplateForSectionTemplate(sectionTemplate, actionName, modelName, name, iconImageName, commit);
         }
 
-        public PageTemplate CreateForPageTemplate(int pageTemplateId, string actionName, string modelName, string name = "", string iconImageName = "", bool commit = true)
+        public PageTemplate CreateForPageTemplate(int pageTemplateId, string actionName, string modelName, string name = null, string iconImageName = null, bool commit = true)
         {
             if (actionName.IsNullOrEmpty())
                 throw new ArgumentException(Messages.PageTemplateActionNameCannotBeNull);
@@ -99,12 +102,43 @@ namespace CmsLite.Services
 
             return pageTemplate;
         }
-        
+
+        public PageTemplate Update(PageTemplate pageTemplate, string modelName, string name = null, string iconImageName = null, bool commit = true)
+        {
+            pageTemplate = UnitOfWork.Context.GetDbSet<PageTemplate>()
+                            .Include(x => x.PropertyTemplates)
+                            .FirstOrDefault(x => x.Id == pageTemplate.Id);
+
+            if (pageTemplate == null)
+                throw new ArgumentException(Messages.PageTemplateCannotBeNull);
+
+            pageTemplate.Name = !name.IsNullOrEmpty()
+                                ? name
+                                : pageTemplate.Name;
+            pageTemplate.IconImageName = !iconImageName.IsNullOrEmpty()
+                                ? iconImageName
+                                : pageTemplate.IconImageName;
+
+            if (pageTemplate.ModelName != modelName)
+            {
+                RemovePropertyTemplateFromPageTemplate(pageTemplate);
+
+                //TODO: need to figure out how to add the new property templates, since the model has changed
+            }
+
+            if (commit)
+            {
+                UnitOfWork.Commit();
+            }
+
+            return pageTemplate;
+        }
+
         public void Delete(PageTemplate pageTemplate, bool commit = true)
         {
             if (pageTemplate == null)
                 throw new ArgumentException(Messages.PageTemplateCannotBeNull);
-            
+
             DeletePageTemplate(pageTemplate, commit);
         }
 
@@ -118,7 +152,7 @@ namespace CmsLite.Services
 
             if (pageTemplate == null)
                 throw new ArgumentException(string.Format(Messages.PageTemplateNotFound, id));
-            
+
             DeletePageTemplate(pageTemplate, commit);
         }
 
@@ -174,6 +208,17 @@ namespace CmsLite.Services
             if (commit)
             {
                 UnitOfWork.Commit();
+            }
+        }
+
+        private void RemovePropertyTemplateFromPageTemplate(PageTemplate pageTemplate)
+        {
+            if (pageTemplate.PropertyTemplates != null && pageTemplate.PropertyTemplates.Any())
+            {
+                foreach (var propertyTemplate in pageTemplate.PropertyTemplates)
+                {
+                    _propertyTemplateService.Delete(propertyTemplate.Id, false);
+                }
             }
         }
 

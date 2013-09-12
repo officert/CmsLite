@@ -68,12 +68,12 @@
         <h3>
             <i class="icon-book"></i>Sections</h3>
         <div class="btn-group">
-            <button class="btn btn-default" type="button" data-bind="click: toggleSectionsOpen, css: { 'active': allAccordionsOpen() }"><i data-bind="    css: !allAccordionsOpen() ? 'icon-expand icon-left' : 'icon-collapse icon-left'"></i><span data-bind="    text: !allAccordionsOpen() ? 'Open All' : 'Close All'"></span></button>
-            <button id="create-section-trigger" class="btn btn-default" type="button" data-bind="click: createSectionForm.show"><i class="icon-expand-alt icon-left"></i><span>Create a new section</span> </button>
+            <button class="btn btn-default" type="button" data-bind="click: toggleSectionsOpen, css: { 'active': allAccordionsOpen() }"><i data-bind="    css: !allAccordionsOpen() ? 'icon-expand' : 'icon-collapse'"></i><span data-bind="    text: !allAccordionsOpen() ? 'Open All' : 'Close All'"></span></button>
+            <button id="create-section-trigger" class="btn btn-default" type="button" data-bind="click: createSectionForm.show"><i class="icon-expand-alt"></i><span>Create a new section</span> </button>
         </div>
     </header>
     <div class="page-content">
-        <ul data-bind="visible: sections().length > 0" oncontextmenu="return false;">
+        <ul data-bind="visible: sections().length > 0" oncontextmenu="return false;" class="list-group space-box-content">
             <!-- ko template: { name: 'section-template', foreach: sections } -->
             <!-- /ko -->
         </ul>

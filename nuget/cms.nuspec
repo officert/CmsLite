@@ -16,8 +16,10 @@
     <language>en-US</language>
     <copyright></copyright>
     <dependencies>
-      <dependency id="dotless" />
-      <dependency id="EntityFramework" />
+      <dependency id="EntityFramework" version="5.0.0" />
+      <dependency id="Ninject" version="3.0.0" />
+      <dependency id="Ninject.Web.Common" version="3.0.0" />
+      <dependency id="AutoMapper" version="2.2.1" />
     </dependencies>
   </metadata>
 </package>

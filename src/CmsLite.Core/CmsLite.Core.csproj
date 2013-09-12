@@ -468,7 +468,7 @@
     <Content Include="Areas\Admin\Scripts\PropertyPlugins\RichTextEditor\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
     <Content Include="Areas\Admin\Scripts\PropertyPlugins\RichTextEditor\ckeditor\skins\moono\readme.md" />
     <Content Include="Areas\Admin\Views\Account\Register.cshtml" />
-    <Content Include="Areas\Admin\Views\Account\SignIn.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\Login.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\Dashboard.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\EditPage.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\Media.cshtml" />

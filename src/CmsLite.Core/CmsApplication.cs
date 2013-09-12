@@ -41,19 +41,19 @@ namespace CmsLite.Core
 
             _mvcFileManager.ProcessMvcFiles(_callingAssembly);
 
-            _projectAdminAreaDir = GetProjectAdminAreaDir();
+            //_projectAdminAreaDir = GetProjectAdminAreaDir();
 
-            _callingProjectAdminAreaDir = GetCallingProjectAdminAreaDir();
+            //_callingProjectAdminAreaDir = GetCallingProjectAdminAreaDir();
 
-            if (_callingProjectAdminAreaDir.Exists)
-            {
-                Directory.Delete(_callingProjectAdminAreaDir.FullName, true);   //recursive delete all file in dir
-                _callingProjectAdminAreaDir.Create();
-            }
+            //if (_callingProjectAdminAreaDir.Exists)
+            //{
+            //    Directory.Delete(_callingProjectAdminAreaDir.FullName, true);   //recursive delete all file in dir
+            //    _callingProjectAdminAreaDir.Create();
+            //}
 
-            CopyViews();
-            CopyScripts();
-            CopyStylesheets();
+            //CopyViews();
+            //CopyScripts();
+            //CopyStylesheets();
         }
 
         private static DirectoryInfo GetProjectAdminAreaDir()

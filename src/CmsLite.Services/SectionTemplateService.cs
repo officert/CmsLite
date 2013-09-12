@@ -20,7 +20,7 @@ namespace CmsLite.Services
             _pageTemplateService = pageTemplateService;
         }
 
-        public SectionTemplate Create(string controllerName, string name = "", string iconImageName = "", bool commit = true)
+        public SectionTemplate Create(string controllerName, string name = null, string iconImageName = null, bool commit = true)
         {
             if (controllerName.IsNullOrEmpty())
                 throw new ArgumentException(Messages.SectionTemplateControllerNameCannotBeNull);
@@ -49,6 +49,19 @@ namespace CmsLite.Services
             return sectionTemplate;
         }
 
+        public SectionTemplate Update(SectionTemplate sectionTemplate, string name, string iconImageName = null, bool commit = true)
+        {
+            return UpdateSectionTemplate(sectionTemplate, name, iconImageName, commit);
+        }
+
+        public SectionTemplate Update(int id, string name, string iconImageName = null,  bool commit = true)
+        {
+            var sectionTemplateDbSet = UnitOfWork.Context.GetDbSet<SectionTemplate>();
+            var sectionTemplate = sectionTemplateDbSet.Include(x => x.PageTemplates).FirstOrDefault(x => x.Id == id);
+
+            return UpdateSectionTemplate(sectionTemplate, name, iconImageName, commit);
+        }
+
         public void Delete(int id, bool commit = true)
         {
             var sectionTemplateDbSet = UnitOfWork.Context.GetDbSet<SectionTemplate>();
@@ -72,5 +85,29 @@ namespace CmsLite.Services
                 UnitOfWork.Commit();
             }
         }
+
+        #region Private Helpers
+
+        private SectionTemplate UpdateSectionTemplate(SectionTemplate sectionTemplate, string name, string iconImageName = null, bool commit = true)
+        {
+            if (sectionTemplate == null)
+                throw new ArgumentException(Messages.SectionTemplateCannotBeNull);
+
+            sectionTemplate.Name = !name.IsNullOrEmpty()
+                                    ? name
+                                    : sectionTemplate.Name;
+            sectionTemplate.IconImageName = !iconImageName.IsNullOrEmpty()
+                                    ? iconImageName
+                                    : sectionTemplate.IconImageName;
+
+            if (commit)
+            {
+                UnitOfWork.Commit();
+            }
+
+            return sectionTemplate;
+        }
+
+        #endregion
     }
 }
