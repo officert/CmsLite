@@ -1,13 +1,13 @@
 CmsLite
 =======================================
-CmsLite is a Content Management System built on .NET MVC4. It allows you to use strongly typed templates using controllers,
+CmsLite is a Content Management System built on .NET MVC4. It allows you to create strongly typed templates using controllers,
 actions, and models.
 Write your templates in Visual Studio and CmsLite will turn them into templates to use in your CMS.
 
 ## Section Templates from Controllers
 A section template allows you to create Section Nodes within your CMS. A Section Node is a folder used to 
 group together Page Nodes for your website. Any MVC ActionResults in your Controller that are marked up with 
-the CmsPageTemplate attribute will generate [Page Templates](.#2---Page Templates from Actions).
+the CmsPageTemplate attribute will generate [Page Templates](#page-templates-from-actions).
 
 ```csharp
 [CmsSectionTemplate(Name = "Home Template")]
@@ -20,7 +20,9 @@ public class HomeController : CmsController
 ```
 
 ## Page Templates from Actions
-
+Page templates are generated for every method in a controller that has a return type = ActionResult. A page template allows
+you to create Page Nodes within your CMS. A Page Node represents a page in your website. When viewing a Page Node in
+the CMS you will see the various property editors for that page.
 ```csharp
 [CmsPageTemplate(
     Name = "Home Template",
