@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="@Url.Content("~/Areas/Admin/Content/cms.min.css")" />
     <link rel="stylesheet" href="@Url.Content("~/Areas/Admin/Content/fontawesome/font-awesome.min.css")" />
     <!-- scripts -->
-    <script src="@Url.Content("~/Areas/Admin/Scripts/libs/modernizr-2.6.2.js")"></script>
 </head>
 <body>
     @Html.Partial("_Header", Model.UserMenu)
@@ -35,26 +34,31 @@
     <div class="modal hide" id="loading">
         <img alt="loading" src="@Url.Content("~/Areas/Admin/Content/images/loading.gif")"/>
     </div>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script>        window.jQuery || document.write('<script src="@Url.Content("~/Areas/Admin/Scripts/libs/jquery-1.9.1.min.js")"><\/script>')</script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
-    <script>        window.jQuery.ui || document.write('<script src="@Url.Content("~/Areas/Admin/Scripts/libs/jquery-ui-1.10.1.min.js")"><\/script>')</script>
-    @*<script src="@Url.Content("~/Areas/Admin/Scripts/knockout-2.2.1.js")"></script>*@
-    <script src="@Url.Content("~/Areas/Admin/Scripts/libs/knockout-2.2.1.debug.js")"></script>
-    <script src="@Url.Content("~/Areas/Admin/Scripts/libs/jquery.validate.min.js")"></script>
-    <script src="@Url.Content("~/Areas/Admin/Scripts/Source/unobtrusiveValidationOverrides.js")"></script>
-    <script src="@Url.Content("~/Areas/Admin/Scripts/libs/jquery.validate.unobtrusive.min.js")"></script>
-    <script src="@Url.Content("~/Areas/Admin/Scripts/libs/bootstrap.min.js")"></script>
-    <script src="@Url.Content("~/Areas/Admin/Scripts/source/knockout.customBindingHandlers.js")"></script>
-    <script src="@Url.Content("~/Areas/Admin/Scripts/source/cms.js")"></script>
-    <script src="@Url.Content("~/Areas/Admin/Scripts/source/plugins/jquery.contextmenu.js")"></script>
-    @RenderSection("Scripts", false)
+    <script src="@Url.Content("~/Areas/Admin/scripts/libs/jquery-1.10.2.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/libs/jquery-ui-1.10.3.custom.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/libs/jquery.validate.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/source/unobtrusiveValidationOverrides.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/libs/jquery.validate.unobtrusive.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/libs/knockout-2.2.1.debug.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/libs/bootstrap.js")"></script>
+    
+    <script src="@Url.Content("~/Areas/Admin/scripts/source/core.cms.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/source/core.utils.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/source/core.mapping.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/source/ko.bindinghandlers/ko.bootstrappopover.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/source/ko.bindinghandlers/ko.bootstrapmodal.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/source/ko.bindinghandlers/ko.slidevisible.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/source/plugins/jquery.accordion.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/source/plugins/jquery.contextmenu.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/scripts/source/plugins/jquery.simpleTabs.js")"></script>
+    @*@Scripts.Render("~/bundles/Libs", "~/bundles/Source")*@
     <script>
-        (function () {
+        (function (cms) {
             cms.utils.mapPath = function (path) {
                 return path.replace('~/', '@Url.Content("~")');
             };
-        })();
+        })(cms);
     </script>
+    @RenderSection("Scripts", false)
 </body>
 </html>

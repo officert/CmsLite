@@ -1,6 +1,4 @@
 ﻿///<reference path="~/Areas/Admin/Scripts/_references.js" />
-///<reference path="~/Areas/Admin/Scripts/Libs/knockout-2.2.1.debug.js" />
-///<reference path="~/Areas/Admin/Scripts/Libs/bootstrap.min.js" />
 var cms = (function ($) { //define our namespace
     //constructors for nodes
 
