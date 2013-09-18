@@ -99,19 +99,19 @@
                 });
                 form.on('hide.bs.modal', function() {
                     triggerButton.removeClass('active');
+                    cms.viewmodel.createSectionForm.hide();
                 });
-
-                //init unobstrusive validation
-                var formElement = form.children('div.modal-dialog').children('form').first();
-                $.validator.unobtrusive.parse(formElement);
             })(),
             show: function (data, event) {
                 var form = $('#create-sections-form');
                 form.modal('show');
             },
-            hide: function (data, event) {
+            hide: function (hideModal) {
                 var form = $('#create-sections-form');
-                form.modal('hide');
+                if (hideModal) {
+                    form.modal('hide');
+                }
+                form.resetValidation();
             },
             create: function () {
                 var form = $('#create-sections-form');
@@ -134,7 +134,7 @@
                             cms.viewmodel.hideLoadingModal();
                         },
                         beforeSend: function () {
-                            cms.viewmodel.createSectionForm.hide();
+                            cms.viewmodel.createSectionForm.hide(true);
                         },
                         success: function (json) {
                             var newSection = cms.utils.mapJsonToSectionViewModel(json);
@@ -152,19 +152,23 @@
                 form.modal({
                     show: false
                 });
+                form.on('hide.bs.modal', function () {
+                    cms.viewmodel.deleteSectionForm.hide();
+                });
             })(),
             show: function (data) {
                 cms.viewmodel.deleteSectionForm.parentNode(data);
                 var form = $('#delete-section-form');
                 form.modal('show');
             },
-            hide: function () {
+            hide: function (hideModal) {
                 var form = $('#delete-section-form');
-                form.modal('hide');
+                if (hideModal) {
+                    form.modal('hide');
+                }
+                form.resetValidation();
             },
             delete: function (data) {
-                cms.viewmodel.deleteSectionForm.hide();
-
                 var formData = {
                     Id: data.parentNode().id
                 };
@@ -178,7 +182,7 @@
                         cms.viewmodel.hideLoadingModal();
                     },
                     beforeSend: function () {
-                        cms.viewmodel.deleteSectionForm.hide();
+                        cms.viewmodel.deleteSectionForm.hide(true);
                     },
                     success: function (json) {
                         var foundSection = ko.utils.arrayFirst(cms.viewmodel.sections(), function (section) {
@@ -203,19 +207,21 @@
                 form.modal({
                     show: false
                 });
-
-                //init unobstrusive validation
-                var formElement = form.children('div.modal-dialog').children('form').first();
-                $.validator.unobtrusive.parse(formElement);
+                form.on('hide.bs.modal', function () {
+                    cms.viewmodel.createPageForm.hide();
+                });
             })(),
             show: function (data) {
                 cms.viewmodel.createPageForm.parentNode(data);
                 var form = $('#create-page-form');
                 form.modal('show');
             },
-            hide: function () {
+            hide: function (hideModal) {
                 var form = $('#create-page-form');
-                form.modal('hide');
+                if (hideModal) {
+                    form.modal('hide');
+                }
+                form.resetValidation();
             },
             create: function (data) {
                 var form = $('#create-page-form');
@@ -245,7 +251,7 @@
                             cms.viewmodel.hideLoadingModal();
                         },
                         beforeSend: function () {
-                            cms.viewmodel.createPageForm.hide();
+                            cms.viewmodel.createPageForm.hide(true);
                         },
                         success: function (json) {
                             var newPage = cms.utils.mapJsonToPageViewModel(json, data);
@@ -263,15 +269,21 @@
                 form.modal({
                     show: false
                 });
+                form.on('hide.bs.modal', function () {
+                    cms.viewmodel.deletePageForm.hide();
+                });
             })(),
             show: function (data) {
                 cms.viewmodel.deletePageForm.parentNode(data);
                 var form = $('#delete-page-form');
                 form.modal('show');
             },
-            hide: function () {
+            hide: function (hideModal) {
                 var form = $('#delete-page-form');
-                form.modal('hide');
+                if (hideModal) {
+                    form.modal('hide');
+                }
+                form.resetValidation();
             },
             delete: function (data) {
                 alert('Not implemented.');

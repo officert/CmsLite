@@ -85,7 +85,7 @@
     <div class="modal-dialog">
         <form class="modal-content" action="@Url.Action("CreateSection")" method="POST">
             <div class="modal-header">
-                <button class="close" type="button" data-bind="click: hide"><i class="icon-remove"></i></button>
+                <button class="close" type="button" data-dismiss="modal"><i class="icon-remove"></i></button>
                 <h4>Add a new section</h4>
             </div>
             <div class="modal-body">
@@ -107,7 +107,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-default" type="button" data-bind="click: hide">Cancel</button>
+                <button class="btn btn-default" type="button" data-dismiss="modal">Cancel</button>
                 <button class="btn btn-primary" type="submit" data-bind="click: create"><i class="icon-plus"></i>Create Section</button>
             </div>
         </form>
@@ -117,7 +117,7 @@
     <div class="modal-dialog">
         <form class="modal-content" action="@Url.Action("CreateSection")">
             <div class="modal-header">
-                <button class="close" type="button" data-bind="click: hide"><i class="icon-remove"></i></button>
+                <button class="close" type="button" data-dismiss="modal"><i class="icon-remove"></i></button>
                 <h4>Add a new page</h4>
             </div>
             <div class="modal-body">
@@ -135,7 +135,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-default" type="button" data-bind="click: hide">Cancel</button>
+                <button class="btn btn-default" type="button" data-dismiss="modal">Cancel</button>
                 <button class="btn btn-primary" type="submit" data-bind="click: create"><i class="icon-plus"></i>Create Page</button>
             </div>
         </form>
@@ -147,7 +147,7 @@
             <div class="modal-body container">
                 <p>Are you sure you would like to delete this section? Deleting this section will delete all the pages that belong to it.</p>
                 <div class="pull-right">
-                    <button type="button" class="btn btn-default" data-bind="click: cms.viewmodel.deleteSectionForm.hide">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-warning" data-bind="click: cms.viewmodel.deleteSectionForm.delete">Delete</button>
                 </div>
             </div>
@@ -160,7 +160,7 @@
             <div class="modal-body container">
                 <p>Are you sure you would like to delete this page? Deleting this section will delete all the pages that belong to it.</p>
                 <div class="pull-right">
-                    <button type="button" class="btn btn-default" data-bind="click: cms.viewmodel.deletePageForm.hide">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-warning" data-bind="click: cms.viewmodel.deletePageForm.delete">Delete</button>
                 </div>
             </div>

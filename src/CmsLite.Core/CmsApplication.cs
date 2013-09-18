@@ -34,7 +34,7 @@ namespace CmsLite.Core
             RazorViewEngineConfig.Configure();
             RouteConfig.RegisterRoutes(RouteTable.Routes);      //TODO: need to think more about what routes to add to a user's MVC project
 
-            ControllerBuilder.Current.SetControllerFactory(new IocControllerFactory(_kernel));                                  //setup ninject as the default MVC controller factory
+            ControllerBuilder.Current.SetControllerFactory(new IocControllerFactory(_kernel));                             //setup ninject as the default MVC controller factory
 
             //process and validate controllers, actions, and models
             _mvcFileManager = _kernel.Get<IFileManager>();

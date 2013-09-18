@@ -9,3 +9,22 @@ $.validator.setDefaults({                               //add Bootstrap's class 
         $(element).closest('.form-group').removeClass('has-error');
     }
 });
+
+$.fn.extend({             //remove Bootstrap class names, and validation errors
+    resetValidation: function () {
+        var form = $(this);
+        var formElement = form.children('div.modal-dialog').children('form').first();
+
+        //formElement.removeData('validate');
+
+        var formElements = formElement.find('*[data-val="true"]');
+        formElements.each(function () {
+            $(this).removeClass('input-validation-error');
+            $(this).val('');
+            $(this).parent().removeClass('has-error');
+            $(this).next('.validation-error-message')
+                .removeClass('field-validation-error')
+                .html('');
+        });
+    }
+})

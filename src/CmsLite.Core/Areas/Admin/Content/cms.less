@@ -116,6 +116,28 @@ ul, ol {
     height: 100%;
     overflow-y: auto;
 
+    > ul {
+        > li {
+            > a {
+                border-right: 3px solid @gray-light;
+
+                > i {
+                    font-size: @font-size-large;
+                }
+            }
+
+            &.active {
+                > a {
+                    border-right: 3px solid @brand-primary;
+
+                    > i {
+                        color: @brand-primary;
+                    }
+                }
+            }
+        }
+    }
+
     .list-group-item {
         border-radius: 0;
         border-left: 0;
@@ -130,23 +152,33 @@ ul, ol {
 
 #site-sections {
     > .page-content {
-        .space-box(white, @gray-lighter);
+        .space-box(@gray-lighter, @gray-light);
 
         > ul {
             padding: 0 !important;
             margin: 0;
+            background: #fff;
 
-            > li.node {
-                a {
+            > li.node { //only the first level
+                border-bottom-width: 1px;
+                border-color: @gray-lighter;
+                border-bottom-style: solid;
+
+                a { //any anchor
                     .list-group-item;
                     border-radius: 0 !important;
                     border-top-width: 0px;
-                    border-right-width:0;
-                    border-color:@gray-lighter;
+                    border-right-width: 0;
+                    border-left-width: 1px;
+                    border-bottom-width: 1px;
+                    border-color: @gray-lighter;
+                    color: @text-color;
+
                     &:hover {
-                        background:@brand-primary;
-                        color:white;
+                        background: @brand-info;
+                        color: white;
                     }
+
                     > i {
                         float: left;
                         font-size: 18px;
@@ -164,12 +196,13 @@ ul, ol {
                 }
 
                 > a {
+                    border-top-width: 0px;
+                    border-right-width: 0;
                     border-left-width: 0px;
                     border-bottom-width: 1px;
-                    margin-bottom:1px;
                 }
 
-                li.node {
+                li.node { //any li under the first one
                     padding: 0 0 0 30px;
                 }
             }

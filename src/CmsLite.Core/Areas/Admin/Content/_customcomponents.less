@@ -4,7 +4,6 @@
 }
 /* Buttons */
 .btn {
-    border-radius:0;
     &.pull-right {
         > i {
             margin-right: @btn-icon-margin;
@@ -16,6 +15,27 @@
             margin-left: @btn-icon-margin;
         }
     }
+}
+.btn-default {
+    .box-shadow-inset-top();
+}
+.btn-primary {
+    .box-shadow-inset-top(lighten(@btn-primary-bg, 35%));
+}
+.btn-C {
+    .box-shadow-inset-top(lighten(@btn-danger-bg, 35%));
+}
+// Danger and error appear as red
+.btn-danger {
+    .box-shadow-inset-top(lighten(@btn-danger-bg, 35%));
+}
+// Success appears as green
+.btn-success {
+    .box-shadow-inset-top(lighten(@btn-success-bg, 35%));
+}
+// Info appears as blue-green
+.btn-info {
+    .box-shadow-inset-top(lighten(@btn-info-bg, 35%));
 }
 /* Button Groups */
 .btn-group {
