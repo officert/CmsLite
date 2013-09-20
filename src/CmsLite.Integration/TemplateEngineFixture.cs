@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.Entity;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using CmsLite.Core.Ioc;
 using CmsLite.Data.Ioc;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
+using CmsLite.Interfaces.Services;
 using CmsLite.Interfaces.Templating;
 using CmsLite.Services.Ioc;
 using NUnit.Framework;
@@ -18,13 +24,16 @@ using SharpTestsEx;
 namespace CmsLite.Integration
 {
     [TestFixture]
-    [Category("Integration")]
+    [NUnit.Framework.Category("Integration")]
     public class TemplateEngineFixture : IDisposable
     {
         private IKernel _kernel;
+        private IUnitOfWork _unitOfWork;
         private IDbContext _dbContext;
-        private ITemplateEngine _fileManager;
+        private ITemplateEngine _templateEngine;
         private Assembly _assembly;
+        private ISectionTemplateService _sectionTemplateService;
+
         private const int NumValidControllersInCurrentProject = 1;      //as new 'valid' controllers are added to this project, you will need to bump up this number
         private const int NumValidActionsOnController = 2;              //as new 'valid' action are added to the TestController1_Valid.cs, you will need to bump up this number
         public const int NumValidModelsInCurrentProject = 1;
@@ -40,9 +49,12 @@ namespace CmsLite.Integration
                                  new DataNinectModule(),
                                  new ServicesNinjectModule()
                              });
+            _unitOfWork = _kernel.Get<IUnitOfWork>();
             _dbContext = _kernel.Get<IDbContext>();
 
-            _fileManager = _kernel.Get<ITemplateEngine>();
+            _sectionTemplateService = _kernel.Get<ISectionTemplateService>();
+
+            _templateEngine = _kernel.Get<ITemplateEngine>();
 
             _assembly = Assembly.GetExecutingAssembly();
 
@@ -52,7 +64,7 @@ namespace CmsLite.Integration
         [TearDown]
         public void TearDown()
         {
-            DeleteAllSectionTemplates();
+            RunGoCommand("deleteintdata");  //deletes all data from integration testing database
         }
 
         [TestFixtureTearDown]
@@ -69,10 +81,10 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _fileManager.ProcessMvcFiles(_assembly);
+            _templateEngine.ProcessMvcFiles(_assembly);
 
             //assert
-            var sectionTemplates = GetSectionTemplates();
+            var sectionTemplates = _sectionTemplateService.GetAll();
             sectionTemplates.Count().Should().Be.EqualTo(NumValidControllersInCurrentProject);
         }
 
@@ -82,10 +94,10 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _fileManager.ProcessMvcFiles(_assembly);
+            _templateEngine.ProcessMvcFiles(_assembly);
 
             //assert
-            var sectionTemplates = GetSectionTemplates();
+            var sectionTemplates = _sectionTemplateService.GetAll();
             sectionTemplates.Count().Should().Be.EqualTo(NumValidControllersInCurrentProject);
         }
 
@@ -95,11 +107,11 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _fileManager.ProcessMvcFiles(_assembly);
+            _templateEngine.ProcessMvcFiles(_assembly);
 
             //assert
-            var validTemplates = GetSectionTemplates();
-            validTemplates.Count().Should().Be.EqualTo(NumValidControllersInCurrentProject);
+            var sectionTemplates = _sectionTemplateService.GetAll();
+            sectionTemplates.Count().Should().Be.EqualTo(NumValidControllersInCurrentProject);
         }
 
         [Test]
@@ -108,11 +120,11 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _fileManager.ProcessMvcFiles(_assembly);
+            _templateEngine.ProcessMvcFiles(_assembly);
 
             //assert
-            var validTemplates = GetSectionTemplates();
-            validTemplates.FirstOrDefault(x => x.ControllerName == "TestController1_Valid").Name.Should().Be.EqualTo("TestController1");
+            var sectionTemplates = _sectionTemplateService.GetAll();
+            sectionTemplates.FirstOrDefault(x => x.ControllerName == "TestController1_Valid").Name.Should().Be.EqualTo("TestController1");
         }
 
         [Test]
@@ -121,11 +133,11 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _fileManager.ProcessMvcFiles(_assembly);
+            _templateEngine.ProcessMvcFiles(_assembly);
 
             //assert
-            var validTemplates = GetSectionTemplates();
-            validTemplates.FirstOrDefault(x => x.ControllerName == "TestController1_Valid").PageTemplates.Count.Should().Be.EqualTo(NumValidActionsOnController);
+            var sectionTemplates = _sectionTemplateService.GetAll();
+            sectionTemplates.FirstOrDefault(x => x.ControllerName == "TestController1_Valid").PageTemplates.Count.Should().Be.EqualTo(NumValidActionsOnController);
         }
 
         #endregion
@@ -145,45 +157,46 @@ namespace CmsLite.Integration
             _dbContext.SaveChanges();
 
             //act
-            _fileManager.ProcessMvcFiles(_assembly);
+            _templateEngine.ProcessMvcFiles(_assembly);
 
             //assert
-            var cleanedUpSectionTemplates = GetSectionTemplates().Where(x => x.ControllerName == controllerName);
+            var sectionTemplates = _sectionTemplateService.GetAll();
+            var cleanedUpSectionTemplates = sectionTemplates.Where(x => x.ControllerName == controllerName);
             cleanedUpSectionTemplates.Count().Should().Be.EqualTo(0);
         }
 
-        //[Test]
-        //public void SynchronizeControllerWithSectionTemplates_DeletingSectionTemplate_RemovesAllPageTemplatesParentedBySectionTemplate()
-        //{
-        //    //arrange
-        //    var sectionTemplateDbSet = _dbContext.GetDbSet<SectionTemplate>();
+        [Test]
+        public void ProcessMvcFiles_DeletingSectionTemplate_RemovesAllPageTemplatesParentedBySectionTemplate()
+        {
+            //arrange
+            var sectionTemplateDbSet = _dbContext.GetDbSet<SectionTemplate>();
 
-        //    const string controllerName = "Foobar";
-        //    var sectionTemplate = sectionTemplateDbSet.CreateForSectionTemplate();
-        //    sectionTemplate.ControllerName = controllerName;
-        //    sectionTemplate.Name = "barfoo";
-        //    sectionTemplate.PageTemplates = new Collection<PageTemplate>
-        //                                        {
-        //                                            new PageTemplate { ActionName = "Blah1", DisplayName = "Blah Blah1", ModelTypeName = "Home" },
-        //                                            new PageTemplate { ActionName = "Blah2", DisplayName = "Blah Blah2", ModelTypeName = "Home" }
-        //                                        };
-        //    sectionTemplateDbSet.Add(sectionTemplate);
-        //    _dbContext.SaveChanges();
+            const string controllerName = "Foobar";
+            var sectionTemplate = sectionTemplateDbSet.Create();
+            sectionTemplate.ControllerName = controllerName;
+            sectionTemplate.Name = "barfoo";
+            sectionTemplate.PageTemplates = new Collection<PageTemplate>
+                                                {
+                                                    new PageTemplate { ActionName = "Blah1", Name = "Blah Blah1", ModelName = "Home" },
+                                                    new PageTemplate { ActionName = "Blah2", Name = "Blah Blah2", ModelName = "Home" }
+                                                };
+            sectionTemplateDbSet.Add(sectionTemplate);
+            _dbContext.SaveChanges();
 
-        //    //act
-        //    var createdSectionTemplate = sectionTemplateDbSet.FirstOrDefault(x => x.ControllerName == controllerName);
-        //    sectionTemplateDbSet.Remove(createdSectionTemplate);
-        //    _dbContext.SaveChanges();
+            //act
+            var createdSectionTemplate = sectionTemplateDbSet.FirstOrDefault(x => x.ControllerName == controllerName);
+            sectionTemplateDbSet.Remove(createdSectionTemplate);
+            _dbContext.SaveChanges();
 
-        //    //assert
-        //    var deletedSectionTemplate = sectionTemplateDbSet.FirstOrDefault(x => x.ControllerName == controllerName);
-        //    deletedSectionTemplate.Should().Be.Null();
-        //    var pageTemplatesForDeletedController = _dbContext.GetDbSet<PageTemplate>().Include(x => x.ParentSectionTemplate).Where(x => x.ParentSectionTemplate.ControllerName == controllerName);
-        //    pageTemplatesForDeletedController.Should().Be.Empty();
-        //}
+            //assert
+            var deletedSectionTemplate = sectionTemplateDbSet.FirstOrDefault(x => x.ControllerName == controllerName);
+            deletedSectionTemplate.Should().Be.Null();
+            var pageTemplatesForDeletedController = _dbContext.GetDbSet<PageTemplate>().Include(x => x.ParentSectionTemplate).Where(x => x.ParentSectionTemplate.ControllerName == controllerName);
+            pageTemplatesForDeletedController.Should().Be.Empty();
+        }
 
         [Test]
-        public void SynchronizeControllerWithSectionTemplates_DeletingSectionTemplate_RemovesAllSectionNodesUsingSectionTemplate()
+        public void ProcessMvcFiles_DeletingSectionTemplate_RemovesAllSectionNodesUsingSectionTemplate()
         {
             //arrange
             var sectionTemplateDbSet = _dbContext.GetDbSet<SectionTemplate>();
@@ -239,85 +252,88 @@ namespace CmsLite.Integration
             _dbContext.SaveChanges();
 
             //act
-            _fileManager.ProcessMvcFiles(_assembly);
+            _templateEngine.ProcessMvcFiles(_assembly);
 
             //assert
-            var validTemplate = GetSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
+            var sectionTemplates = _sectionTemplateService.GetAll();
+            var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
             validTemplate.Name.Should().Be.EqualTo("TestController1");
         }
 
         #region Deleting PageTemplates
 
-        //[Test]
-        //public void SynchronizeControllerWithSectionTemplates_NoActionExistsForPageTemplate_DeletesPageTemplate()
-        //{
-        //    //arrange
-        //    const string controllerName = "TestController1_Valid";
-        //    var sectionTemplateDbSet = _dbContext.GetDbSet<SectionTemplate>();
-        //    var pageTemplateDbSet = _dbContext.GetDbSet<PageTemplate>();
-        //    var sectionTemplate = sectionTemplateDbSet.CreateForSectionTemplate();
-        //    sectionTemplate.ControllerName = controllerName;
-        //    sectionTemplate.Name = "TemplateName";
+        [Test]
+        public void SynchronizeControllerWithSectionTemplates_NoActionExistsForPageTemplate_DeletesPageTemplate()
+        {
+            //arrange
+            const string controllerName = "TestController1_Valid";
+            var sectionTemplateDbSet = _dbContext.GetDbSet<SectionTemplate>();
+            var pageTemplateDbSet = _dbContext.GetDbSet<PageTemplate>();
+            var sectionTemplate = sectionTemplateDbSet.Create();
+            sectionTemplate.ControllerName = controllerName;
+            sectionTemplate.Name = "TemplateName";
 
-        //    var pageTemplate = pageTemplateDbSet.CreateForSectionTemplate();
-        //    pageTemplate.ActionName = "foobar";
-        //    pageTemplate.DisplayName = "foobar";
-        //    pageTemplate.ModelTypeName = "HomeModel";
-        //    pageTemplate.ParentSectionTemplate = sectionTemplate;
+            var pageTemplate = pageTemplateDbSet.Create();
+            pageTemplate.ActionName = "foobar";
+            pageTemplate.Name = "foobar";
+            pageTemplate.ModelName = "HomeModel";
+            pageTemplate.ParentSectionTemplate = sectionTemplate;
 
-        //    sectionTemplateDbSet.Add(sectionTemplate);
-        //    _dbContext.SaveChanges();
+            sectionTemplateDbSet.Add(sectionTemplate);
+            _dbContext.SaveChanges();
 
-        //    //act
-        //    _fileManager.SynchronizeControllerWithSectionTemplates(_assembly);
+            //act
+            _templateEngine.ProcessMvcFiles(_assembly);
 
-        //    //assert
-        //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
-        //    validTemplate.PageTemplates.Count.Should().Be.EqualTo(NumValidActionsOnController);
-        //}
+            //assert
+            var sectionTemplates = _sectionTemplateService.GetAll();
+            var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
+            validTemplate.PageTemplates.Count.Should().Be.EqualTo(NumValidActionsOnController);
+        }
 
-        //[Test]
-        //public void SynchronizeControllerWithSectionTemplates_DeletingPageTemplate_RemovesAllPageNodesUsingPageTemplate()
-        //{
-        //    //arrange
-        //    const string controllerName = "TestController1_Valid";
-        //    var sectionTemplateDbSet = _dbContext.GetDbSet<SectionTemplate>();
-        //    var pageTemplateDbSet = _dbContext.GetDbSet<PageTemplate>();
-        //    var sectionNodeDbSet = _dbContext.GetDbSet<SectionNode>();
-        //    var pageNodeDbSet = _dbContext.GetDbSet<PageNode>();
+        [Test]
+        public void SynchronizeControllerWithSectionTemplates_DeletingPageTemplate_RemovesAllPageNodesUsingPageTemplate()
+        {
+            //arrange
+            const string controllerName = "TestController1_Valid";
+            var sectionTemplateDbSet = _dbContext.GetDbSet<SectionTemplate>();
+            var pageTemplateDbSet = _dbContext.GetDbSet<PageTemplate>();
+            var sectionNodeDbSet = _dbContext.GetDbSet<SectionNode>();
+            var pageNodeDbSet = _dbContext.GetDbSet<PageNode>();
 
-        //    var sectionTemplate = sectionTemplateDbSet.CreateForSectionTemplate();
-        //    sectionTemplate.ControllerName = controllerName;
-        //    sectionTemplate.Name = "TemplateName";
+            var sectionTemplate = sectionTemplateDbSet.Create();
+            sectionTemplate.ControllerName = controllerName;
+            sectionTemplate.Name = "TemplateName";
 
-        //    var sectionNode = sectionNodeDbSet.CreateForSectionTemplate();
-        //    sectionNode.SectionTemplate = sectionTemplate;
-        //    sectionNode.UrlName = "foobar";
+            var sectionNode = sectionNodeDbSet.Create();
+            sectionNode.SectionTemplate = sectionTemplate;
+            sectionNode.UrlName = "foobar";
 
-        //    var pageTemplate = pageTemplateDbSet.CreateForSectionTemplate();
-        //    pageTemplate.ActionName = "foobar";
-        //    pageTemplate.DisplayName = "foobar";
-        //    pageTemplate.ModelTypeName = "HomeModel";
-        //    pageTemplate.ParentSectionTemplate = sectionTemplate;
+            var pageTemplate = pageTemplateDbSet.Create();
+            pageTemplate.ActionName = "foobar";
+            pageTemplate.Name = "foobar";
+            pageTemplate.ModelName = "HomeModel";
+            pageTemplate.ParentSectionTemplate = sectionTemplate;
 
-        //    var pageNode = pageNodeDbSet.CreateForSectionTemplate();
-        //    pageNode.UrlName = "pagenode";
-        //    pageNode.DisplayName = "pagenode";
-        //    pageNode.ParentSectionNode = sectionNode;
-        //    pageNode.PageTemplate = pageTemplate;
+            var pageNode = pageNodeDbSet.Create();
+            pageNode.UrlName = "pagenode";
+            pageNode.DisplayName = "pagenode";
+            pageNode.ParentSectionNode = sectionNode;
+            pageNode.PageTemplate = pageTemplate;
 
-        //    sectionTemplateDbSet.Add(sectionTemplate);
-        //    _dbContext.SaveChanges();
+            sectionTemplateDbSet.Add(sectionTemplate);
+            _dbContext.SaveChanges();
 
-        //    //act
-        //    _fileManager.SynchronizeControllerWithSectionTemplates(_assembly);
+            //act
+            _templateEngine.ProcessMvcFiles(_assembly);
 
-        //    //assert
-        //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
-        //    validTemplate.PageTemplates.Count.Should().Be.EqualTo(NumValidActionsOnController);
+            //assert
+            var sectionTemplates = _sectionTemplateService.GetAll();
+            var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
+            validTemplate.PageTemplates.Count.Should().Be.EqualTo(NumValidActionsOnController);
 
-        //    pageNodeDbSet.Any(x => x.DisplayName == "foobar").Should().Be.False();
-        //}
+            pageNodeDbSet.Any(x => x.DisplayName == "foobar").Should().Be.False();
+        }
 
         #endregion
 
@@ -329,10 +345,11 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _fileManager.ProcessMvcFiles(_assembly);
+            _templateEngine.ProcessMvcFiles(_assembly);
 
             //assert
-            var validTemplates = GetSectionTemplates();
+            var sectionTemplates = _sectionTemplateService.GetAll();
+            var validTemplates = sectionTemplates;
             validTemplates.Count().Should().Be.EqualTo(NumValidControllersInCurrentProject);
         }
 
@@ -342,11 +359,11 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _fileManager.ProcessMvcFiles(_assembly);
+            _templateEngine.ProcessMvcFiles(_assembly);
 
             //assert
-            var validTemplates = GetSectionTemplates();
-            validTemplates.Count().Should().Be.EqualTo(NumValidControllersInCurrentProject);
+            var sectionTemplates = _sectionTemplateService.GetAll();
+            sectionTemplates.Count().Should().Be.EqualTo(NumValidControllersInCurrentProject);
         }
 
         #endregion
@@ -378,7 +395,7 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _fileManager.SynchronizeControllerWithSectionTemplates(_assembly);
+        //    _templateEngine.SynchronizeControllerWithSectionTemplates(_assembly);
 
         //    //assert
         //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
@@ -425,7 +442,7 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _fileManager.SynchronizeControllerWithSectionTemplates(_assembly);
+        //    _templateEngine.SynchronizeControllerWithSectionTemplates(_assembly);
 
         //    //assert
         //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
@@ -467,7 +484,7 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _fileManager.SyncMvcFiles(_assembly);
+        //    _templateEngine.SyncMvcFiles(_assembly);
 
         //    //assert
         //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
@@ -538,7 +555,7 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _fileManager.SyncMvcFiles(_assembly);
+        //    _templateEngine.SyncMvcFiles(_assembly);
 
         //    //assert
         //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
@@ -559,7 +576,7 @@ namespace CmsLite.Integration
         //    const string controllerName = "TestController1_Valid";
 
         //    //act
-        //    _fileManager.SyncMvcFiles(_assembly);
+        //    _templateEngine.SyncMvcFiles(_assembly);
 
         //    //assert
         //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
@@ -575,7 +592,7 @@ namespace CmsLite.Integration
         //    const string controllerName = "TestController1_Valid";
 
         //    //act
-        //    _fileManager.SyncMvcFiles(_assembly);
+        //    _templateEngine.SyncMvcFiles(_assembly);
 
         //    //assert
         //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
@@ -626,7 +643,7 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _fileManager.SyncMvcFiles(_assembly);
+        //    _templateEngine.SyncMvcFiles(_assembly);
 
         //    //assert
         //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
@@ -678,7 +695,7 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _fileManager.SyncMvcFiles(_assembly);
+        //    _templateEngine.SyncMvcFiles(_assembly);
 
         //    //assert
         //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
@@ -753,7 +770,7 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _fileManager.SyncMvcFiles(_assembly);
+        //    _templateEngine.SyncMvcFiles(_assembly);
 
         //    //assert
         //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
@@ -776,20 +793,12 @@ namespace CmsLite.Integration
 
         private void DeleteAllSectionTemplates()
         {
-            var dbContext = _kernel.Get<IDbContext>();
-            var sectionTemplateDbSet = dbContext.GetDbSet<SectionTemplate>();
-            foreach (var sectionTemplate in sectionTemplateDbSet)
+            var sectionTemplates = _sectionTemplateService.GetAll();
+            foreach (var sectionTemplate in sectionTemplates)
             {
-                sectionTemplateDbSet.Remove(sectionTemplate);
+                _sectionTemplateService.Delete(sectionTemplate.Id);
             }
-            dbContext.SaveChanges();
-        }
-
-        private IEnumerable<SectionTemplate> GetSectionTemplates()
-        {
-            var dbContext = _kernel.Get<IDbContext>();
-            return dbContext.GetDbSet<SectionTemplate>()
-                .Include(x => x.PageTemplates);
+            _unitOfWork.Commit();
         }
 
         private void HackToInstantiatePageTemplatesCollection(SectionTemplate sectionTemplate)
@@ -816,6 +825,54 @@ namespace CmsLite.Integration
                 pageNodeDbSet.Add(newPageNode);
                 pageNodeDbSet.Remove(newPageNode);
             }
+        }
+
+        #endregion
+
+        #region Go Psake Helpers
+
+        private static string GetGoLocation()
+        {
+            var fullPath = Assembly.GetAssembly(typeof(TemplateEngineFixture)).CodeBase;
+            var dllDirectory = Uri.UnescapeDataString(new UriBuilder(fullPath).Path);
+            var workingRoot = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(dllDirectory), @"..\..\..\..\")).FullName;
+            return Path.Combine(workingRoot, "go.bat");
+        }
+
+        private void StartProcess(ProcessStartInfo info)
+        {
+            try
+            {
+                var process = Process.Start(info);
+
+                process.WaitForExit();
+            }
+            catch (InvalidOperationException)
+            {
+                Dispose();
+            }
+            catch (Win32Exception)
+            {
+                Dispose();
+            }
+        }
+
+        private void RunGoCommand(string target)
+        {
+            var goLocation = GetGoLocation();
+
+            var info = new ProcessStartInfo(goLocation)
+            {
+                WindowStyle = ProcessWindowStyle.Hidden,
+                ErrorDialog = true,
+                LoadUserProfile = true,
+                CreateNoWindow = false,
+                UseShellExecute = false,
+                WorkingDirectory = Path.GetDirectoryName(goLocation),
+                Arguments = target
+            };
+
+            StartProcess(info);
         }
 
         #endregion

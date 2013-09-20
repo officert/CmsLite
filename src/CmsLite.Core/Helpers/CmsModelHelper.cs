@@ -92,9 +92,9 @@ namespace CmsLite.Core.Helpers
         }
     }
 
-    internal struct CmsRouteData
-    {
-        public string ControllerName { get; set; }
-        public string ActionName { get; set; }
-    }
+    //internal struct CmsRouteData
+    //{
+    //    public string ControllerName { get; set; }
+    //    public string ActionName { get; set; }
+    //}
 }

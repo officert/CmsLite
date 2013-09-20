@@ -1,4 +1,7 @@
-﻿using CmsLite.Domains.Entities;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using CmsLite.Domains.Entities;
 
 namespace CmsLite.Interfaces.Services
 {
@@ -9,7 +12,7 @@ namespace CmsLite.Interfaces.Services
         PageTemplate CreateForSectionTemplate(SectionTemplate sectionTemplate, string actionName, string modelName, string name = null, string iconImageName = null, bool commit = true);
         PageTemplate CreateForSectionTemplate(int sectionTemplateId, string actionName, string modelName, string name = null, string iconImageName = null, bool commit = true);
         PageTemplate CreateForPageTemplate(int pageTemplateId, string actionName, string modelName, string name = null, string iconImageName = null, bool commit = true);
-        
+
         PageTemplate Update(PageTemplate pageTemplate, string modelName, string name, string iconImageName = null, bool commit = true);
         
         void Delete(PageTemplate pageTemplate, bool commit = true);

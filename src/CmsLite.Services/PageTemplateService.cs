@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Reflection;
 using System.Web.UI;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
@@ -122,8 +124,6 @@ namespace CmsLite.Services
             if (pageTemplate.ModelName != modelName)
             {
                 RemovePropertyTemplateFromPageTemplate(pageTemplate);
-
-                //TODO: need to figure out how to add the new property templates, since the model has changed
             }
 
             if (commit)
@@ -215,7 +215,7 @@ namespace CmsLite.Services
         {
             if (pageTemplate.PropertyTemplates != null && pageTemplate.PropertyTemplates.Any())
             {
-                foreach (var propertyTemplate in pageTemplate.PropertyTemplates)
+                foreach (var propertyTemplate in pageTemplate.PropertyTemplates.ToList())
                 {
                     _propertyTemplateService.Delete(propertyTemplate.Id, false);
                 }

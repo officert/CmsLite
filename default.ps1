@@ -54,6 +54,11 @@ task DeleteData {
 	#& $tools_dir\sqlcmd\sqlcmd.exe -E -S $databaseServer -d $databaseName -i $database_dir\scripts\DeleteData.sql
 	& sqlcmd -E -S $databaseServer -d $databaseName -i $database_dir\scripts\DeleteData.sql
 }
+task DeleteIntData {
+	cd $tools_dir\sqlcmd\
+	#& $tools_dir\sqlcmd\sqlcmd.exe -E -S $databaseServer -d $databaseName -i $database_dir\scripts\DeleteData.sql
+	& sqlcmd -E -S $databaseServer -d "cmslite_integration" -i $database_dir\scripts\DeleteData.sql
+}
 
 # ------------------------------------ NuGet Tasks ---------------------------------- 
 

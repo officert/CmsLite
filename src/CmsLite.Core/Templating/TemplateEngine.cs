@@ -252,24 +252,36 @@ namespace CmsLite.Core.Templating
 
                     var model = GetModelType(assembly, pageTemplate.ModelName);
                     var modelProperties = GetModelProperties(model).ToList();
-                    
-                    _pageTemplateService.Update(pageTemplate, model.Name, pageTemplateAttribute.Name, pageTemplateAttribute.IconImageName, false);
 
-                    var modelPropertyNames = modelProperties.Select(x => x.Name).ToList();
-                    var pageTemplatePropertyNames = pageTemplate.PropertyTemplates.Select(x => x.PropertyName).ToList();
+                    _pageTemplateService.Update(pageTemplate, pageTemplateAttribute.ModelType.Name, pageTemplateAttribute.Name, pageTemplateAttribute.IconImageName, false);
 
-                    var propertyTemplatesToRemove = pageTemplate.PropertyTemplates.Where(x => !modelPropertyNames.Contains(x.PropertyName)).ToList();
-                    var newPropertiesToAdd = modelProperties.Where(x => !pageTemplatePropertyNames.Contains(x.Name)).ToList();
-                    var propertyTemplatesToUpdate = pageTemplate.PropertyTemplates.Where(x => modelPropertyNames.Contains(x.PropertyName)).ToList();
+                    //if the modal name changes the pageTemplateService will remove all propertytemplates
+                    //so we need to add any new propertytemplates from the new model
+                    if (pageTemplate.ModelName != pageTemplateAttribute.ModelType.Name)
+                    {
+                        var newModelProperties = GetModelProperties(pageTemplateAttribute.ModelType).ToList();
+                        CreatePropertyTemplatesForProperties(newModelProperties, pageTemplate);
+                    }
+                        //if this happens there is no need to do the rest of this else {} code - this is only necessary when the model is the same but
+                        //some properties in the modal have changes (ie. updated, added, removed)
+                    else
+                    {
+                        var modelPropertyNames = modelProperties.Select(x => x.Name).ToList();
+                        var pageTemplatePropertyNames = pageTemplate.PropertyTemplates.Select(x => x.PropertyName).ToList();
 
-                    //remove any property templates that don't have a property anymore
-                    RemovePropertyTemplatesWithNoExistingModelProperties(propertyTemplatesToRemove);
+                        var propertyTemplatesToRemove = pageTemplate.PropertyTemplates.Where(x => !modelPropertyNames.Contains(x.PropertyName)).ToList();
+                        var newPropertiesToAdd =modelProperties.Where(x => !pageTemplatePropertyNames.Contains(x.Name)).ToList();
+                        var propertyTemplatesToUpdate = pageTemplate.PropertyTemplates.Where(x => modelPropertyNames.Contains(x.PropertyName)).ToList();
 
-                    //create property templates for any properties that don't have a template with that property name
-                    CreatePropertyTemplatesForProperties(newPropertiesToAdd, pageTemplate);
+                        //remove any property templates that don't have a property anymore
+                        RemovePropertyTemplatesWithNoExistingModelProperties(propertyTemplatesToRemove);
 
-                    //update any property templates that still have a model property
-                    UpdatePropertyTemplates(propertyTemplatesToUpdate, modelProperties);
+                        //create property templates for any properties that don't have a template with that property name
+                        CreatePropertyTemplatesForProperties(newPropertiesToAdd, pageTemplate);
+
+                        //update any property templates that still have a model property
+                        UpdatePropertyTemplates(propertyTemplatesToUpdate, modelProperties);
+                    }
                 }
             }
         }
@@ -296,15 +308,16 @@ namespace CmsLite.Core.Templating
                 foreach (var property in properties)
                 {
                     var attribute = (CmsModelPropertyAttribute)property.GetCustomAttributes(typeof(CmsModelPropertyAttribute), false).FirstOrDefault();
-                    var propertyName = property.Name;
-                    var displayName = attribute.DisplayName;
-                    var propertyType = attribute.PropertyType;
-                    var description = attribute.Description;
-                    var tabName = attribute.TabName ?? CmsConstants.DefaultTabName;
-                    var tabOrder = attribute.TabOrder;
-                    var required = attribute.Required;
 
-                    _propertyTemplateService.Create(pageTemplate, propertyName, propertyType, tabOrder, tabName, required, description, displayName, false);
+                    _propertyTemplateService.Create(pageTemplate, 
+                        property.Name, 
+                        attribute.PropertyType,
+                        attribute.TabOrder,
+                        attribute.TabName,
+                        attribute.Required,
+                        attribute.Description, 
+                        attribute.DisplayName, 
+                        false);
                 }
             }
         }
@@ -324,7 +337,7 @@ namespace CmsLite.Core.Templating
 
                     if (propertyTemplateAttribute == null)
                         throw new ArgumentException(string.Format("The property {0} does not have a CmsModelProperty attribute", templateProperty.Name));
-
+                    
                     propertyTemplate.DisplayName = propertyTemplateAttribute.DisplayName;
                     propertyTemplate.TabName = propertyTemplateAttribute.TabName;
                     propertyTemplate.TabOrder = propertyTemplateAttribute.TabOrder;
