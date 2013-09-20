@@ -16,7 +16,7 @@ using CmsLite.Utilities.Extensions;
 
 namespace CmsLite.Core.Templating
 {
-    public class CmsTemplateEngine : IFileManager
+    public class TemplateEngine : IFileManager
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISectionNodeService _sectionNodeService;
@@ -25,7 +25,7 @@ namespace CmsLite.Core.Templating
         private readonly IPageTemplateService _pageTemplateService;
         private readonly IPropertyTemplateService _propertyTemplateService;
 
-        public CmsTemplateEngine(IUnitOfWork unitOfWork,
+        public TemplateEngine(IUnitOfWork unitOfWork,
             ISectionNodeService sectionNodeService,
             ISectionTemplateService sectionTemplateService,
             IPageNodeService pageNodeService,

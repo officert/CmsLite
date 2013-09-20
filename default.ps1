@@ -113,6 +113,24 @@ task CreateAdminZip {
 	ZipFiles $build_dir\build-artifacts\Admin.zip $source_dir\cmslite.core\Areas\Admin
 }
 
+task CompileJs {
+	$outputdir = "$build_dir\javascript"
+
+	$sourcedir = "$source_dir\CmsLite.Core\Areas\Admin\Scripts\source\hello.js"
+
+	New-Item $outputdir -type directory -force
+
+	$java = "$tools_dir\java"
+
+	Write-Host "Output dir = $outputdir" -ForegroundColor Yellow
+	Write-Host "Source dir = $sourcedir" -ForegroundColor Yellow
+	
+	cd C:\Users\tofficer\Code\cmslite\default\src\CmsLite.Core\Areas\Admin\Scripts\Source
+	#& $tools_dir\java\java.exe -jar $tools_dir\googleclosurecompiler\compiler.jar —js hello.js —js_output_file C:\Users\tofficer\Code\cmslite\default\build\javascript\foobar.min.js
+
+	& $tools_dir\java\java.exe -jar $tools_dir\googleclosurecompiler\compiler.jar -help
+}
+
 # ------------------------------------ Functions ------------------------------------ 
 
 function ZipFiles( $zipfilename, $sourcedir )

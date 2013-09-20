@@ -94,7 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MvcFileManagerFixture.cs" />
+    <Compile Include="TemplateEngineFixture.cs" />
     <Compile Include="MvcFiles\Controllers\TestController3_NoCmsSectionTemplateAttr.cs" />
     <Compile Include="MvcFiles\Models\FoobarModel.cs" />
     <Compile Include="MvcFiles\Models\HomeModel.cs" />

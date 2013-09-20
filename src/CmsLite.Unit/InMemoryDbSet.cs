@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 
-namespace CmsLite.Utilities.UnitTesting
+namespace CmsLite.Unit
 {
     public class InMemoryDbSet<T> : IDbSet<T> where T : class, new()
     {
@@ -43,17 +45,18 @@ namespace CmsLite.Utilities.UnitTesting
 
         public T Remove(T entity)
         {
-            throw new NotImplementedException();
+            _collection.Remove(entity);
+            return entity;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _collection.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _collection.GetEnumerator();
         }
 
         public Type ElementType
@@ -61,7 +64,7 @@ namespace CmsLite.Utilities.UnitTesting
             get { throw new NotImplementedException(); }
         }
 
-        public System.Linq.Expressions.Expression Expression
+        public Expression Expression
         {
             get { return this._collection.AsQueryable().Expression; }
         }

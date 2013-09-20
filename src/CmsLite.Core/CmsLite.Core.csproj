@@ -180,7 +180,7 @@
     <Compile Include="Controllers\CmsBaseController.cs" />
     <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="Constants\CmsRoutingConstants.cs" />
-    <Compile Include="Templating\CmsTemplateEngine.cs" />
+    <Compile Include="Templating\TemplateEngine.cs" />
     <Compile Include="Helpers\CmsModelHelper.cs" />
     <Compile Include="Helpers\NodeHelper.cs" />
     <Compile Include="Global.asax.cs">

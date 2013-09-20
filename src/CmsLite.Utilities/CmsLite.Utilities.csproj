@@ -52,7 +52,6 @@
     <Compile Include="Cms\CmsPropertyType.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTesting\InMemoryDbSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

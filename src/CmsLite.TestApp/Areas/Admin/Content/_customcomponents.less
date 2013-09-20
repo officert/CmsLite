@@ -4,24 +4,19 @@
 }
 /* Buttons */
 .btn {
-    &.pull-right {
-        > i {
-            margin-right: @btn-icon-margin;
-        }
-    }
-
-    &.pull-left {
-        > i {
-            margin-left: @btn-icon-margin;
-        }
+    > i {
+        margin-right: @btn-icon-margin;
     }
 }
+
 .btn-default {
     .box-shadow-inset-top();
 }
+
 .btn-primary {
     .box-shadow-inset-top(lighten(@btn-primary-bg, 35%));
 }
+
 .btn-C {
     .box-shadow-inset-top(lighten(@btn-danger-bg, 35%));
 }
@@ -67,7 +62,7 @@
 }
 /* Page Header */
 .page-header {
-    > h3 { 
+    > h3 {
         > i {
             margin-right: @btn-icon-margin;
         }

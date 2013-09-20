@@ -1,7 +1,4 @@
 ﻿///<reference path="~/Areas/Admin/Scripts/_references.js" />
-///<reference path="~/Areas/Admin/Scripts/Libs/knockout-2.2.1.debug.js" />
-///<reference path="~/Areas/Admin/Scripts/source/cms.js" />
-///<reference path="~/Areas/Admin/Scripts/Libs/bootstrap.min.js" />
 (function (window, $) {
     function initContextMenus() {
         var contextMenuOptions = {
@@ -88,30 +85,21 @@
             selectedSectionTemplateId: ko.observable(),
             displayName: ko.observable(),
             urlName: ko.observable(),
-            init: (function () {
-                var form = $('#create-sections-form');
-                form.modal({
-                    show: false
-                });
-                var triggerButton = $('#create-section-trigger');
-                form.on('show.bs.modal', function() {
-                    triggerButton.addClass('active');
-                });
-                form.on('hide.bs.modal', function() {
-                    triggerButton.removeClass('active');
-                    cms.viewmodel.createSectionForm.hide();
-                });
-            })(),
             show: function (data, event) {
                 var form = $('#create-sections-form');
                 form.modal('show');
+                
+                var triggerButton = $('#create-section-trigger');
+                triggerButton.addClass('active');
             },
             hide: function (hideModal) {
                 var form = $('#create-sections-form');
                 if (hideModal) {
                     form.modal('hide');
                 }
-                form.resetValidation();
+                
+                var triggerButton = $('#create-section-trigger');
+                triggerButton.removeClass('active');
             },
             create: function () {
                 var form = $('#create-sections-form');

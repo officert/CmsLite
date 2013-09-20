@@ -19,7 +19,7 @@ namespace CmsLite.Integration
 {
     [TestFixture]
     [Category("Integration")]
-    public class MvcFileManagerFixture : IDisposable
+    public class TemplateEngineFixture : IDisposable
     {
         private IKernel _kernel;
         private IDbContext _dbContext;

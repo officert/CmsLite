@@ -12,7 +12,7 @@ using Ninject;
 
 namespace CmsLite.Core
 {
-    public class CmsApplication : HttpApplication
+    public class CmsHost
     {
         private readonly IKernel _kernel;
         private readonly Assembly _callingAssembly;
@@ -21,13 +21,13 @@ namespace CmsLite.Core
         private DirectoryInfo _projectAdminAreaDir;             //where the static files we need to copy are located
         private DirectoryInfo _callingProjectAdminAreaDir;      //the admin area location of the project using the cms, where we need to copy the file to
 
-        public CmsApplication()
+        public CmsHost()
         {
             _kernel = new StandardKernel();
             _callingAssembly = Assembly.GetCallingAssembly();
         }
 
-        public void CmsInit()
+        public void Init()
         {
             IocConfig.Configure(_kernel);
             AutoMapperConfiguration.Configure();

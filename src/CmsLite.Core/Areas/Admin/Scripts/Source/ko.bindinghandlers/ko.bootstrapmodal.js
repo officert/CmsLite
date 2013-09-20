@@ -3,52 +3,54 @@
     ko.bindingHandlers.bootstrapmodal = {
         init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
 
+            var $element = $(element);
             var value = valueAccessor(), allBindings = allBindingsAccessor();
             var valueUnwrapped = ko.utils.unwrapObservable(value);
 
-            var animation = allBindings.animation || true;
-            var html = allBindings.html || 'right';
-            var placement = allBindings.placement || 'right';
-            var selector = allBindings.selector || false;
-            var trigger = allBindings.trigger || 'click';
-            var title = allBindings.title || '';
-            //var content = allBindings.content || '';
-            var content = $(element).next(allBindings.content).html();
-            var delay = allBindings.delay || 0;
-            var container = allBindings.container || false;
+            //properties - bootstrap's
+            var backdrop = allBindings.backdrop || true;
+            var keyboard = allBindings.keyboard || true;
+            var show = allBindings.show || false;
+            var remote = allBindings.remote || false;
+            //properties - custom
 
-            $(element).popover({
-                animation: animation,
-                html: html,
-                placement: placement,
-                selector: selector,
-                trigger: trigger,
-                title: title,
-                content: content,
-                delay: delay,
-                container: container
+            //event bindings
+            var onshow = allBindings.onshow || null;
+            var onshown = allBindings.onshown || null;
+            var onhide = allBindings.onhide || null;
+            var onhiden = allBindings.onhiden || null;
+
+            $element.modal({
+                backdrop: backdrop,
+                keyboard: keyboard,
+                show: show,
+                remote: remote
             });
 
-            //$(element).mousedown(function (event) {
-            //    event.preventDefault();
-            //    event.stopPropagation();
-
-            //    switch (event.which) {
-            //        case 1:
-            //            //alert('Left mouse button pressed');
-            //            break;
-            //        case 2:
-            //            //alert('Middle mouse button pressed');
-            //            break;
-            //        case 3:
-            //            valueUnwrapped.call(viewModel);
-            //            break;
-            //        default:
-            //            //alert('You have a strange mouse');
-            //    }
-            //});
-        },
-        update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+            //bind events
+            $element.on('show.bs.modal', function () {
+                if (onshow && typeof onshow == 'function') {
+                    onshow.call();
+                }
+            });
+            $element.on('shown.bs.modal', function () {
+                if (onshown && typeof onshown == 'function') {
+                    onshown.call();
+                }
+            });
+            $element.on('hide.bs.modal', function () {
+                if (onhide && typeof onhide == 'function') {
+                    onhide.call();
+                }
+                $element.resetValidation();
+            });
+            $element.on('hidden.bs.modal', function () {
+                if (onhiden && typeof onhiden == 'function') {
+                    onhiden.call();
+                }
+            });
         }
+        //update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+        //}
     };
 })(ko);
