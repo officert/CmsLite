@@ -5,6 +5,7 @@ using SharpTestsEx;
 namespace CmsLite.Unit.Helpers
 {
     [TestFixture]
+    [Category("Unit")]
     public class CmsUrlHelperFixture
     {
         [Test]

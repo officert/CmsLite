@@ -4,11 +4,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Web;
 using CmsLite.Core.Ioc;
 using CmsLite.Data.Ioc;
 using CmsLite.Domains.Entities;
@@ -16,6 +14,7 @@ using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
 using CmsLite.Interfaces.Templating;
 using CmsLite.Services.Ioc;
+using CmsLite.Utilities.Cms;
 using NUnit.Framework;
 using Ninject;
 using Ninject.Modules;
@@ -27,12 +26,13 @@ namespace CmsLite.Integration
     [NUnit.Framework.Category("Integration")]
     public class TemplateEngineFixture : IDisposable
     {
+        private ITemplateEngine _templateEngine;
         private IKernel _kernel;
         private IUnitOfWork _unitOfWork;
         private IDbContext _dbContext;
-        private ITemplateEngine _templateEngine;
         private Assembly _assembly;
         private ISectionTemplateService _sectionTemplateService;
+        private IPageTemplateService _pageTemplateService;
 
         private const int NumValidControllersInCurrentProject = 1;      //as new 'valid' controllers are added to this project, you will need to bump up this number
         private const int NumValidActionsOnController = 2;              //as new 'valid' action are added to the TestController1_Valid.cs, you will need to bump up this number
@@ -53,6 +53,7 @@ namespace CmsLite.Integration
             _dbContext = _kernel.Get<IDbContext>();
 
             _sectionTemplateService = _kernel.Get<ISectionTemplateService>();
+            _pageTemplateService = _kernel.Get<IPageTemplateService>();
 
             _templateEngine = _kernel.Get<ITemplateEngine>();
 
@@ -368,25 +369,25 @@ namespace CmsLite.Integration
 
         #endregion
 
-        #region Updating PageTemplates
+        //#region Updating PageTemplates
 
         //[Test]
-        //public void SynchronizeControllerWithSectionTemplates_PageTemplateAlreadyExists_UpdatesDisplayName()
+        //public void ProcessMvcFiles_PageTemplateAlreadyExists_UpdatesDisplayName()
         //{
         //    //arrange
         //    const string controllerName = "TestController1_Valid";
         //    var sectionTemplateDbSet = _dbContext.GetDbSet<SectionTemplate>();
         //    var pageTemplateDbSet = _dbContext.GetDbSet<PageTemplate>();
-        //    var sectionTemplate = sectionTemplateDbSet.CreateForSectionTemplate();
+        //    var sectionTemplate = sectionTemplateDbSet.Create();
         //    sectionTemplate.ControllerName = controllerName;
         //    sectionTemplate.Name = "TemplateName";
 
         //    HackToInstantiatePageTemplatesCollection(sectionTemplate);
 
-        //    var pageTemplate = pageTemplateDbSet.CreateForSectionTemplate();
+        //    var pageTemplate = pageTemplateDbSet.Create();
         //    pageTemplate.ActionName = "AboutMe";                //create a pagetemplate using an ActionName of a real action, give it a different display name than what is in the PageTemplate attribute
-        //    pageTemplate.DisplayName = "foobar";
-        //    pageTemplate.ModelTypeName = "HomeModel";
+        //    pageTemplate.Name = "foobar";
+        //    pageTemplate.ModelName = "HomeModel";
         //    pageTemplate.ParentSectionTemplate = sectionTemplate;
 
         //    sectionTemplate.PageTemplates.Add(pageTemplate);
@@ -395,30 +396,31 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _templateEngine.SynchronizeControllerWithSectionTemplates(_assembly);
+        //    _templateEngine.ProcessMvcFiles(_assembly);
 
         //    //assert
-        //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
-        //    validTemplate.PageTemplates.FirstOrDefault(x => x.ActionName == "AboutMe").DisplayName.Should().Be.EqualTo("About Me Page");
+        //    var sectionTemplates = _sectionTemplateService.GetAll();
+        //    var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
+        //    validTemplate.PageTemplates.FirstOrDefault(x => x.ActionName == "AboutMe").Name.Should().Be.EqualTo("About Me Page");
         //}
 
         //[Test]
-        //public void SynchronizeControllerWithSectionTemplates_ChangingPageTemplateModelType_UpdatesModelNameOnPageTemplate()
+        //public void ProcessMvcFiles_ChangingPageTemplateModelType_UpdatesModelNameOnPageTemplate()
         //{
         //    //arrange
         //    const string controllerName = "TestController1_Valid";
         //    var sectionTemplateDbSet = _dbContext.GetDbSet<SectionTemplate>();
         //    var pageTemplateDbSet = _dbContext.GetDbSet<PageTemplate>();
-        //    var sectionTemplate = sectionTemplateDbSet.CreateForSectionTemplate();
+        //    var sectionTemplate = sectionTemplateDbSet.Create();
         //    sectionTemplate.ControllerName = controllerName;
         //    sectionTemplate.Name = "TemplateName";
 
         //    HackToInstantiatePageTemplatesCollection(sectionTemplate);
 
-        //    var pageTemplate = pageTemplateDbSet.CreateForSectionTemplate();
+        //    var pageTemplate = pageTemplateDbSet.Create();
         //    pageTemplate.ActionName = "AboutMe";
-        //    pageTemplate.DisplayName = "foobar";
-        //    pageTemplate.ModelTypeName = "FoobarModel";                                     //create a page template with a Model name that is different that the Model name on the actual controller
+        //    pageTemplate.Name = "foobar";
+        //    pageTemplate.ModelName = "FoobarModel";                                     //create a page template with a Model name that is different that the Model name on the actual controller
         //    pageTemplate.ParentSectionTemplate = sectionTemplate;
         //    pageTemplate.PropertyTemplates = new Collection<PropertyTemplate>
         //                                         {
@@ -426,13 +428,13 @@ namespace CmsLite.Integration
         //                                                 {
         //                                                     DisplayName = "foobar property 1",
         //                                                     PropertyName = "foobar1",
-        //                                                     CmsPropertyType = CmsPropertyTypes.RichTextEditor
+        //                                                     CmsPropertyType = CmsPropertyType.RichTextEditor.ToString()
         //                                                 },
         //                                             new PropertyTemplate
         //                                                 {
         //                                                     DisplayName = "foobar property 2",
         //                                                     PropertyName = "foobar2",
-        //                                                     CmsPropertyType = CmsPropertyTypes.RichTextEditor
+        //                                                     CmsPropertyType = CmsPropertyType.RichTextEditor.ToString()
         //                                                 }
         //                                         };
 
@@ -442,31 +444,40 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _templateEngine.SynchronizeControllerWithSectionTemplates(_assembly);
+        //    _templateEngine.ProcessMvcFiles(_assembly);
 
         //    //assert
-        //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
-        //    validTemplate.PageTemplates.FirstOrDefault(x => x.ActionName == "AboutMe").ModelTypeName.Should().Be.EqualTo("HomeModel");
+        //    var sectionTemplates = _sectionTemplateService.GetAll();
+        //    var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
+        //    validTemplate.PageTemplates.FirstOrDefault(x => x.ActionName == "AboutMe").ModelName.Should().Be.EqualTo("HomeModel");
+        //}
+
+        //[Test]
+        //[Ignore]
+        //public void ProcessMvcFiles_ChangingPageTemplateModelType_AddsNewModelPropertyTemplates()
+        //{
+        //    //TODO: fill in this test
+        //    throw new NotImplementedException();
         //}
 
         //#region Deleting PropertyTemplates
 
         //[Test]
-        //public void SyncMvcFiles_NoProperyExistsForPropertyTemplate_DeletesPropertyTemplate()
+        //public void ProcessMvcFiles_NoProperyExistsForPropertyTemplate_DeletesPropertyTemplate()
         //{
         //    //arrange
         //    const string controllerName = "TestController1_Valid";
         //    var sectionTemplateDbSet = _dbContext.GetDbSet<SectionTemplate>();
         //    var pageTemplateDbSet = _dbContext.GetDbSet<PageTemplate>();
-        //    var sectionTemplate = sectionTemplateDbSet.CreateForSectionTemplate();
+        //    var sectionTemplate = sectionTemplateDbSet.Create();
         //    sectionTemplate.ControllerName = controllerName;
         //    sectionTemplate.Name = "TemplateName";
 
         //    HackToInstantiatePageTemplatesCollection(sectionTemplate);
 
-        //    var pageTemplate = pageTemplateDbSet.CreateForSectionTemplate();                      //create a page template that matches the actual Action on our valid Controller
+        //    var pageTemplate = pageTemplateDbSet.Create();                      //create a page template that matches the actual Action on our valid Controller
         //    pageTemplate.ActionName = "AboutMe";
-        //    pageTemplate.ModelTypeName = "HomeModel";
+        //    pageTemplate.ModelName = "HomeModel";
         //    pageTemplate.ParentSectionTemplate = sectionTemplate;
         //    pageTemplate.PropertyTemplates = new Collection<PropertyTemplate>
         //                                         {
@@ -474,7 +485,7 @@ namespace CmsLite.Integration
         //                                                 {
         //                                                     DisplayName = "foobar property 1",
         //                                                     PropertyName = "foobar",
-        //                                                     CmsPropertyType = CmsPropertyTypes.RichTextEditor
+        //                                                     CmsPropertyType = CmsPropertyType.RichTextEditor.ToString()
         //                                                 }
         //                                         };
 
@@ -484,10 +495,11 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _templateEngine.SyncMvcFiles(_assembly);
+        //    _templateEngine.ProcessMvcFiles(_assembly);
 
         //    //assert
-        //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
+        //    var sectionTemplates = _sectionTemplateService.GetAll();
+        //    var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
         //    var pagePropertyTemplates = validTemplate.PageTemplates.FirstOrDefault(x => x.ActionName == "AboutMe").PropertyTemplates;
         //    pagePropertyTemplates.Count.Should().Be.EqualTo(NumValidPropertiesOnModel);
 
@@ -496,7 +508,7 @@ namespace CmsLite.Integration
         //}
 
         //[Test]
-        //public void SyncMvcFiles_DeletingPropertyTemplate_RemovesAllPropertiesUsingPropertyTemplate()
+        //public void ProcessMvcFiles_DeletingPropertyTemplate_RemovesAllPropertiesUsingPropertyTemplate()
         //{
         //    //arrange
         //    const string controllerName = "TestController1_Valid";
@@ -504,22 +516,22 @@ namespace CmsLite.Integration
         //    var pageTemplateDbSet = _dbContext.GetDbSet<PageTemplate>();
         //    var sectionNodeDbSet = _dbContext.GetDbSet<SectionNode>();
 
-        //    var sectionTemplate = sectionTemplateDbSet.CreateForSectionTemplate();
+        //    var sectionTemplate = sectionTemplateDbSet.Create();
         //    sectionTemplate.ControllerName = controllerName;
         //    sectionTemplate.Name = "TemplateName";
 
         //    HackToInstantiatePageTemplatesCollection(sectionTemplate);
 
-        //    var sectionNode = sectionNodeDbSet.CreateForSectionTemplate();
+        //    var sectionNode = sectionNodeDbSet.Create();
         //    sectionNode.SectionTemplate = sectionTemplate;
         //    sectionNode.DisplayName = "foobarsection";
         //    sectionNode.UrlName = "foobarsection";
 
         //    HackToInstantiatePageNodesCollection(sectionNode);
 
-        //    var pageTemplate = pageTemplateDbSet.CreateForSectionTemplate();                      //create a page template that matches the actual Action on our valid Controller
+        //    var pageTemplate = pageTemplateDbSet.Create();                      //create a page template that matches the actual Action on our valid Controller
         //    pageTemplate.ActionName = "AboutMe";
-        //    pageTemplate.ModelTypeName = "HomeModel";
+        //    pageTemplate.ModelName = "HomeModel";
         //    pageTemplate.ParentSectionTemplate = sectionTemplate;
         //    pageTemplate.PropertyTemplates = new Collection<PropertyTemplate>
         //                                         {
@@ -527,7 +539,7 @@ namespace CmsLite.Integration
         //                                                 {
         //                                                     DisplayName = "foobar property 1",
         //                                                     PropertyName = "foobar",
-        //                                                     CmsPropertyType = CmsPropertyTypes.RichTextEditor
+        //                                                     CmsPropertyType = CmsPropertyType.RichTextEditor.ToString()
         //                                                 }
         //                                         };
         //    var newpageNode = new PageNode
@@ -555,10 +567,11 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _templateEngine.SyncMvcFiles(_assembly);
+        //    _templateEngine.ProcessMvcFiles(_assembly);
 
         //    //assert
-        //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
+        //    var sectionTemplates = _sectionTemplateService.GetAll();
+        //    var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
         //    var pagetemplate = validTemplate.PageTemplates.FirstOrDefault(x => x.ActionName == "AboutMe");
 
         //    var pageNode = pagetemplate.PageNodes.First();
@@ -570,39 +583,41 @@ namespace CmsLite.Integration
         //#region Creating PropertyTemplates
 
         //[Test]
-        //public void SyncMvcFiles_PropertyWithoutCmsModelPropertyAttribute_DoesNotCreatePropertyTemplate()
+        //public void ProcessMvcFiles_PropertyWithoutCmsModelPropertyAttribute_DoesNotCreatePropertyTemplate()
         //{
         //    //arrange
         //    const string controllerName = "TestController1_Valid";
 
         //    //act
-        //    _templateEngine.SyncMvcFiles(_assembly);
+        //    _templateEngine.ProcessMvcFiles(_assembly);
 
         //    //assert
-        //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
+        //    var sectionTemplates = _sectionTemplateService.GetAll();
+        //    var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
         //    var pagetemplate = validTemplate.PageTemplates.FirstOrDefault(x => x.ActionName == "AboutMe");
 
         //    pagetemplate.PropertyTemplates.Count.Should().Be.EqualTo(NumValidPropertiesOnModel);   //this isn't zero becuase our model has a valid property template which create a property on the page node
         //}
 
         //[Test]
-        //public void SyncMvcFiles_PrivateProperty_DoesNotCreatePropertyTemplate()
+        //public void ProcessMvcFiles_PrivateProperty_DoesNotCreatePropertyTemplate()
         //{
         //    //arrange
         //    const string controllerName = "TestController1_Valid";
 
         //    //act
-        //    _templateEngine.SyncMvcFiles(_assembly);
+        //    _templateEngine.ProcessMvcFiles(_assembly);
 
         //    //assert
-        //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
+        //    var sectionTemplates = _sectionTemplateService.GetAll();
+        //    var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
         //    var pagetemplate = validTemplate.PageTemplates.FirstOrDefault(x => x.ActionName == "AboutMe");
 
         //    pagetemplate.PropertyTemplates.Count.Should().Be.EqualTo(NumValidPropertiesOnModel);   //this isn't zero becuase our model has a valid property template which create a property on the page node
         //}
 
         //[Test]
-        //public void SyncMvcFiles_ParentPageTemplateHasPageNode_CreatesNewPropertiesOnPageNode()
+        //public void ProcessMvcFiles_ParentPageTemplateHasPageNode_CreatesNewPropertiesOnPageNode()
         //{
         //    //arrange
         //    const string controllerName = "TestController1_Valid";
@@ -610,22 +625,22 @@ namespace CmsLite.Integration
         //    var pageTemplateDbSet = _dbContext.GetDbSet<PageTemplate>();
         //    var sectionNodeDbSet = _dbContext.GetDbSet<SectionNode>();
 
-        //    var sectionTemplate = sectionTemplateDbSet.CreateForSectionTemplate();
+        //    var sectionTemplate = sectionTemplateDbSet.Create();
         //    sectionTemplate.ControllerName = controllerName;
         //    sectionTemplate.Name = "TemplateName";
 
         //    HackToInstantiatePageTemplatesCollection(sectionTemplate);
 
-        //    var sectionNode = sectionNodeDbSet.CreateForSectionTemplate();
+        //    var sectionNode = sectionNodeDbSet.Create();
         //    sectionNode.SectionTemplate = sectionTemplate;
         //    sectionNode.DisplayName = "foobarsection";
         //    sectionNode.UrlName = "foobarsection";
 
         //    HackToInstantiatePageNodesCollection(sectionNode);
 
-        //    var pageTemplate = pageTemplateDbSet.CreateForSectionTemplate();                      //create a page template that matches the actual Action on our valid Controller
+        //    var pageTemplate = pageTemplateDbSet.Create();                      //create a page template that matches the actual Action on our valid Controller
         //    pageTemplate.ActionName = "AboutMe";
-        //    pageTemplate.ModelTypeName = "HomeModel";
+        //    pageTemplate.ModelName = "HomeModel";
         //    pageTemplate.ParentSectionTemplate = sectionTemplate;
 
         //    var newpageNode = new PageNode                                      //create a page node with no properties. because the page template it uses already exists it will get updated
@@ -643,10 +658,11 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _templateEngine.SyncMvcFiles(_assembly);
+        //    _templateEngine.ProcessMvcFiles(_assembly);
 
         //    //assert
-        //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
+        //    var sectionTemplates = _sectionTemplateService.GetAll();
+        //    var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
         //    var pagetemplate = validTemplate.PageTemplates.FirstOrDefault(x => x.ActionName == "AboutMe");
 
         //    var pageNode = pagetemplate.PageNodes.First();
@@ -658,22 +674,22 @@ namespace CmsLite.Integration
         //#region Updating PropertyTemplates
 
         //[Test]
-        //public void SyncMvcFiles_PropertyTemplateAlreadyExists_UpdatesPropertyTemplateProperties()
+        //public void ProcessMvcFiles_PropertyTemplateAlreadyExists_UpdatesPropertyTemplateProperties()
         //{
         //    //arrange
         //    const string controllerName = "TestController1_Valid";
         //    var sectionTemplateDbSet = _dbContext.GetDbSet<SectionTemplate>();
         //    var pageTemplateDbSet = _dbContext.GetDbSet<PageTemplate>();
 
-        //    var sectionTemplate = sectionTemplateDbSet.CreateForSectionTemplate();
+        //    var sectionTemplate = sectionTemplateDbSet.Create();
         //    sectionTemplate.ControllerName = controllerName;
         //    sectionTemplate.Name = "TemplateName";
 
         //    HackToInstantiatePageTemplatesCollection(sectionTemplate);
 
-        //    var pageTemplate = pageTemplateDbSet.CreateForSectionTemplate();                      //create a page template that matches the actual Action on our valid Controller
+        //    var pageTemplate = pageTemplateDbSet.Create();                      //create a page template that matches the actual Action on our valid Controller
         //    pageTemplate.ActionName = "AboutMe";
-        //    pageTemplate.ModelTypeName = "HomeModel";
+        //    pageTemplate.ModelName = "HomeModel";
         //    pageTemplate.ParentSectionTemplate = sectionTemplate;
 
         //    HackToInstantiatePropertyTemplatesCollection(pageTemplate);
@@ -681,7 +697,7 @@ namespace CmsLite.Integration
         //    pageTemplate.PropertyTemplates.Add(new PropertyTemplate
         //                                           {
         //                                               PropertyName = "BannerTextLeft", //this is the name of a valid property on the HomeModel, so it should get updated,
-        //                                               CmsPropertyType = CmsPropertyTypes.RichTextEditor,
+        //                                               CmsPropertyType = CmsPropertyType.RichTextEditor.ToString(),
         //                                               DisplayName = "foobar",
         //                                               TabName = "foobar",
         //                                               TabOrder = 99,
@@ -695,10 +711,11 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _templateEngine.SyncMvcFiles(_assembly);
+        //    _templateEngine.ProcessMvcFiles(_assembly);
 
         //    //assert
-        //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
+        //    var sectionTemplates = _sectionTemplateService.GetAll();
+        //    var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
         //    var pagetemplate = validTemplate.PageTemplates.FirstOrDefault(x => x.ActionName == "AboutMe");
 
         //    var propertyTemplate = pagetemplate.PropertyTemplates.FirstOrDefault(x => x.PropertyName == "BannerTextLeft");
@@ -713,7 +730,7 @@ namespace CmsLite.Integration
         //}
 
         //[Test]
-        //public void SyncMvcFiles_ChangingPropertyTemplatePropertyType_ResetsTextOfAnyPropertiesUsingThatPropertyTemplate()
+        //public void ProcessMvcFiles_ChangingPropertyTemplatePropertyType_ResetsTextOfAnyPropertiesUsingThatPropertyTemplate()
         //{
         //    //arrange
         //    const string controllerName = "TestController1_Valid";
@@ -721,29 +738,29 @@ namespace CmsLite.Integration
         //    var pageTemplateDbSet = _dbContext.GetDbSet<PageTemplate>();
         //    var sectionNodeDbSet = _dbContext.GetDbSet<SectionNode>();
 
-        //    var sectionTemplate = sectionTemplateDbSet.CreateForSectionTemplate();
+        //    var sectionTemplate = sectionTemplateDbSet.Create();
         //    sectionTemplate.ControllerName = controllerName;
         //    sectionTemplate.Name = "TemplateName";
 
         //    HackToInstantiatePageTemplatesCollection(sectionTemplate);
 
-        //    var sectionNode = sectionNodeDbSet.CreateForSectionTemplate();
+        //    var sectionNode = sectionNodeDbSet.Create();
         //    sectionNode.SectionTemplate = sectionTemplate;
         //    sectionNode.DisplayName = "foobarsection";
         //    sectionNode.UrlName = "foobarsection";
 
         //    HackToInstantiatePageNodesCollection(sectionNode);
 
-        //    var pageTemplate = pageTemplateDbSet.CreateForSectionTemplate();                      //create a page template that matches the actual Action on our valid Controller
+        //    var pageTemplate = pageTemplateDbSet.Create();                      //create a page template that matches the actual Action on our valid Controller
         //    pageTemplate.ActionName = "AboutMe";
-        //    pageTemplate.ModelTypeName = "HomeModel";
+        //    pageTemplate.ModelName = "HomeModel";
         //    pageTemplate.ParentSectionTemplate = sectionTemplate;
         //    pageTemplate.PropertyTemplates = new Collection<PropertyTemplate>
         //                                         {
         //                                            new PropertyTemplate        //create a property template that matches the property in the Home Model, that way it will get updated
         //                                            {
         //                                                PropertyName = "BannerTextLeft",
-        //                                                CmsPropertyType = CmsPropertyTypes.ImagePicker  //use a different property type
+        //                                                CmsPropertyType = CmsPropertyType.ImagePicker.ToString()  //use a different property type
         //                                            }
         //                                         };
         //    var newpageNode = new PageNode
@@ -770,13 +787,14 @@ namespace CmsLite.Integration
         //    _dbContext.SaveChanges();
 
         //    //act
-        //    _templateEngine.SyncMvcFiles(_assembly);
+        //    _templateEngine.ProcessMvcFiles(_assembly);
 
         //    //assert
-        //    var validTemplate = GetTestSectionTemplates().FirstOrDefault(x => x.ControllerName == controllerName);
+        //    var sectionTemplates = _sectionTemplateService.GetAll();
+        //    var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
         //    var pagetemplate = validTemplate.PageTemplates.FirstOrDefault(x => x.ActionName == "AboutMe");
 
-        //    pagetemplate.PropertyTemplates.FirstOrDefault(x => x.PropertyName == "BannerTextLeft").CmsPropertyType.Should().Be.EqualTo(CmsPropertyTypes.RichTextEditor);
+        //    pagetemplate.PropertyTemplates.FirstOrDefault(x => x.PropertyName == "BannerTextLeft").CmsPropertyType.Should().Be.EqualTo(CmsPropertyType.RichTextEditor.ToString());
 
         //    var pageNode = pagetemplate.PageNodes.First();
         //    pageNode.Properties.Count.Should().Be.EqualTo(NumValidPropertiesOnModel);   //this isn't zero becuase our model has a valid property template which create a property on the page node
@@ -785,7 +803,7 @@ namespace CmsLite.Integration
 
         //#endregion
 
-        #endregion
+        //#endregion
 
         #endregion
 
@@ -824,6 +842,19 @@ namespace CmsLite.Integration
                 newPageNode.ParentSectionNode = sectionNode;
                 pageNodeDbSet.Add(newPageNode);
                 pageNodeDbSet.Remove(newPageNode);
+            }
+        }
+
+        private void HackToInstantiatePropertyTemplatesCollection(PageTemplate pageTemplate)
+        {
+            //when creating entities EF doesn't instantiate proxy collections, so we need to force it to be instantiated using this hack :(
+            if (pageTemplate.PropertyTemplates == null)
+            {
+                var propertyTemplateDbSet = _dbContext.GetDbSet<PropertyTemplate>();
+                var newPropertyTemplate = propertyTemplateDbSet.Create();
+                newPropertyTemplate.ParentPageTemplate = pageTemplate;
+                propertyTemplateDbSet.Add(newPropertyTemplate);
+                propertyTemplateDbSet.Remove(newPropertyTemplate);
             }
         }
 

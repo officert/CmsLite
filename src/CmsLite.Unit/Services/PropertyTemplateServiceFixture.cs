@@ -10,7 +10,7 @@ using SharpTestsEx;
 namespace CmsLite.Unit.Services
 {
     [TestFixture]
-    [Category("Integration")]
+    [Category("Unit")]
     public class PropertyTemplateServiceFixture : ServiceBaseFixture
     {
         private List<int> _createdSectionTemplateIds;
