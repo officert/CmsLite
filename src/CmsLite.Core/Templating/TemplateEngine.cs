@@ -7,16 +7,16 @@ using System.Web.Mvc;
 using CmsLite.Core.Attributes;
 using CmsLite.Core.Controllers;
 using CmsLite.Domains.Entities;
-using CmsLite.Interfaces.Content;
 using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
+using CmsLite.Interfaces.Templating;
 using CmsLite.Resources;
 using CmsLite.Utilities.Cms;
 using CmsLite.Utilities.Extensions;
 
 namespace CmsLite.Core.Templating
 {
-    public class TemplateEngine : IFileManager
+    public class TemplateEngine : ITemplateEngine
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISectionNodeService _sectionNodeService;

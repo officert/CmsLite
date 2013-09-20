@@ -7,8 +7,8 @@ using System.Reflection;
 using CmsLite.Core.Ioc;
 using CmsLite.Data.Ioc;
 using CmsLite.Domains.Entities;
-using CmsLite.Interfaces.Content;
 using CmsLite.Interfaces.Data;
+using CmsLite.Interfaces.Templating;
 using CmsLite.Services.Ioc;
 using NUnit.Framework;
 using Ninject;
@@ -23,7 +23,7 @@ namespace CmsLite.Integration
     {
         private IKernel _kernel;
         private IDbContext _dbContext;
-        private IFileManager _fileManager;
+        private ITemplateEngine _fileManager;
         private Assembly _assembly;
         private const int NumValidControllersInCurrentProject = 1;      //as new 'valid' controllers are added to this project, you will need to bump up this number
         private const int NumValidActionsOnController = 2;              //as new 'valid' action are added to the TestController1_Valid.cs, you will need to bump up this number
@@ -42,7 +42,7 @@ namespace CmsLite.Integration
                              });
             _dbContext = _kernel.Get<IDbContext>();
 
-            _fileManager = _kernel.Get<IFileManager>();
+            _fileManager = _kernel.Get<ITemplateEngine>();
 
             _assembly = Assembly.GetExecutingAssembly();
 

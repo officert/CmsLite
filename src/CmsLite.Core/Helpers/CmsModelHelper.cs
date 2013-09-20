@@ -8,17 +8,17 @@ using CmsLite.Core.Attributes;
 using CmsLite.Core.Constants;
 using CmsLite.Core.Interfaces;
 using CmsLite.Domains.Entities;
-using CmsLite.Interfaces.Content;
 using CmsLite.Interfaces.Data;
+using CmsLite.Interfaces.Templating;
 
 namespace CmsLite.Core.Helpers
 {
     public class CmsModelHelper : ICmsModelHelper
     {
         private readonly IDbContext _dbContext;
-        private readonly IFileManager _mvcFileManager;
+        private readonly ITemplateEngine _mvcFileManager;
 
-        public CmsModelHelper(IDbContext dbContext, IFileManager mvcFileManager)
+        public CmsModelHelper(IDbContext dbContext, ITemplateEngine mvcFileManager)
         {
             _dbContext = dbContext;
             _mvcFileManager = mvcFileManager;

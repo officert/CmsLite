@@ -5,7 +5,7 @@ using CmsLite.Core.Helpers;
 using CmsLite.Core.Interfaces;
 using CmsLite.Core.Templating;
 using CmsLite.Interfaces.Authentication;
-using CmsLite.Interfaces.Content;
+using CmsLite.Interfaces.Templating;
 using Ninject.Modules;
 using Ninject.Web.Common;
 
@@ -18,7 +18,7 @@ namespace CmsLite.Core.Ioc
             Bind<ICmsLiteHttpContext>().To<CmsHttpContext>().InRequestScope();
             Bind<IAuthenticationProvider>().To<SimpleAuthenticationProvider>().InSingletonScope();
             Bind<IMappingEngine>().ToMethod(ctx => Mapper.Engine);
-            Bind<IFileManager>().To<TemplateEngine>();
+            Bind<ITemplateEngine>().To<TemplateEngine>();
 
             Bind<IActionInvoker>().To<CmsActionInvoker>();
 

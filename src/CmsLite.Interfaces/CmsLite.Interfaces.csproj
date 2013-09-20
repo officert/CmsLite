@@ -52,7 +52,7 @@
   <ItemGroup>
     <Compile Include="Authentication\IAuthenticationProvider.cs" />
     <Compile Include="Authentication\ICmsLiteHttpContext.cs" />
-    <Compile Include="Content\IFileManager.cs" />
+    <Compile Include="Templating\ITemplateEngine.cs" />
     <Compile Include="Data\IDbContext.cs" />
     <Compile Include="Data\IUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

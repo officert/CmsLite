@@ -7,7 +7,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using CmsLite.Core.App_Start;
 using CmsLite.Core.Ioc;
-using CmsLite.Interfaces.Content;
+using CmsLite.Interfaces.Templating;
 using Ninject;
 
 namespace CmsLite.Core
@@ -16,7 +16,7 @@ namespace CmsLite.Core
     {
         private readonly IKernel _kernel;
         private readonly Assembly _callingAssembly;
-        private IFileManager _mvcFileManager;
+        private ITemplateEngine _mvcFileManager;
 
         private DirectoryInfo _projectAdminAreaDir;             //where the static files we need to copy are located
         private DirectoryInfo _callingProjectAdminAreaDir;      //the admin area location of the project using the cms, where we need to copy the file to
@@ -37,7 +37,7 @@ namespace CmsLite.Core
             ControllerBuilder.Current.SetControllerFactory(new IocControllerFactory(_kernel));                             //setup ninject as the default MVC controller factory
 
             //process and validate controllers, actions, and models
-            _mvcFileManager = _kernel.Get<IFileManager>();
+            _mvcFileManager = _kernel.Get<ITemplateEngine>();
 
             _mvcFileManager.ProcessMvcFiles(_callingAssembly);
 
