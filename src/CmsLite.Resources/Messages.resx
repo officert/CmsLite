@@ -234,4 +234,7 @@
   <data name="ControllerNotFound" xml:space="preserve">
     <value>The controller with the name {0} does not exist.</value>
   </data>
+  <data name="SectionNodeInTrashAlready" xml:space="preserve">
+    <value>Section Node with the id {0} is already in the trash.</value>
+  </data>
 </root>

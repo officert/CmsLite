@@ -322,6 +322,15 @@ namespace CmsLite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Section Node with the id {0} is already in the trash..
+        /// </summary>
+        public static string SectionNodeInTrashAlready {
+            get {
+                return ResourceManager.GetString("SectionNodeInTrashAlready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A Section Node with the Id {0} was not found..
         /// </summary>
         public static string SectionNodeNotFound {

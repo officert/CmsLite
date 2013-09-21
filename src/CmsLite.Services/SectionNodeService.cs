@@ -65,6 +65,7 @@ namespace CmsLite.Services
             section.IsPublished = false;
             section.CreatedOn = DateTime.UtcNow;
             section.ModifiedOn = section.CreatedOn;
+            section.InTrash = false;
 
             sectionNodeDbSet.Add(section);
 
@@ -77,6 +78,24 @@ namespace CmsLite.Services
             }
 
             return section;
+        }
+
+        public void Trash(int id, bool commit = false)
+        {
+            var sectionNodeDbSet = UnitOfWork.Context.GetDbSet<SectionNode>();
+
+            var sectionNode = sectionNodeDbSet.FirstOrDefault(x => x.Id == id);
+
+            if (sectionNode == null) throw new ArgumentException(string.Format(Messages.SectionNodeNotFound, id));
+
+            if (sectionNode.InTrash) throw new InvalidOperationException(string.Format(Messages.SectionNodeInTrashAlready, id));
+
+            sectionNode.InTrash = true;
+
+            if (commit)
+            {
+                UnitOfWork.Commit();
+            }
         }
 
         public void Delete(int id, bool commit = true)

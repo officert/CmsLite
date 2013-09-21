@@ -7,6 +7,7 @@ namespace CmsLite.Interfaces.Services
     {
         IEnumerable<SectionNode> GetAllWithDetails();
         SectionNode Create(int sectionTemplateId, string displayName, string urlName, bool commit = true);
+        void Trash(int id, bool commit = false);
         void Delete(int id, bool commit = true);
     }
 }

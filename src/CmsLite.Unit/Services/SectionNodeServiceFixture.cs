@@ -196,6 +196,78 @@ namespace CmsLite.Unit.Services
             sectionNode.ModifiedOn.Should().Not.Be.EqualTo(null);
         }
 
+        [Test]
+        public void Create_SetsInTrashToFalse()
+        {
+            //arrange
+            var sectionTemplate = new SectionTemplate { Id = 1 };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>());
+            _sectionTemplateServiceMock.Setup(x => x.Find(It.IsAny<Expression<Func<SectionTemplate, bool>>>())).Returns(sectionTemplate);
+
+            //act
+            var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar2");
+
+            //assert
+            sectionNode.InTrash.Should().Be.False();
+        }
+
+        #endregion
+
+        #region Trash
+
+        [Test]
+        public void Trash_NoSectionNodeExistsForId_ThrowsException()
+        {
+            //arrange
+            const int sectionNodeId = 999999;
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>());
+
+            //act + assert
+            Assert.That(() => _sectionNodeService.Trash(sectionNodeId),
+                Throws.Exception.TypeOf<ArgumentException>()
+                .With.Message.EqualTo(string.Format(Messages.SectionNodeNotFound, sectionNodeId)));
+        }
+
+        [Test]
+        public void Trash_IsAlreadyInTrash_ThrowsInvalidOperationException()
+        {
+            //arrange
+            var sectionNode = new SectionNode
+            {
+                Id = 1,
+                InTrash = true
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>
+            {
+                sectionNode
+            });
+
+            //act+assert
+            Assert.That(() => _sectionNodeService.Trash(sectionNode.Id),
+                    Throws.Exception.TypeOf<InvalidOperationException>().With.Message.EqualTo(string.Format(Messages.SectionNodeInTrashAlready, sectionNode.Id)));
+        }
+
+        [Test]
+        public void Trash_SetsIsTrashedToTrue()
+        {
+            //arrange
+            var sectionNode = new SectionNode
+            {
+                Id = 1,
+                InTrash = false
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>
+            {
+                sectionNode
+            });
+
+            //act
+            _sectionNodeService.Trash(sectionNode.Id);
+
+            //assert
+            _sectionNodeService.Find(x => x.Id == sectionNode.Id).InTrash.Should().Be.True();
+        }
+
         #endregion
 
         #region Delete

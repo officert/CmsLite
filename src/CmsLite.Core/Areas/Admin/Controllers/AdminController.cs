@@ -187,6 +187,15 @@ namespace CmsLite.Core.Areas.Admin.Controllers
 
         #endregion
 
+        #region Trash
+
+        public ActionResult Trash()
+        {
+            return View();
+        }
+
+        #endregion
+
         #region Images
 
         public void MediaThumbnails(int id)

@@ -27,5 +27,7 @@ namespace CmsLite.Domains.Entities
         public DateTime? CreatedOn { get; set; }
 
         public DateTime? ModifiedOn { get; set; }
+
+        public bool InTrash { get; set; }
     }
 }
