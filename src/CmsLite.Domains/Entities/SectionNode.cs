@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using CmsLite.Domains.Interfaces;
 
 namespace CmsLite.Domains.Entities
 {
     [Table("SectionNodes")]
-    public class SectionNode : Node, IHavePageNodes
+    public class SectionNode : Node, INode
     {
         [ForeignKey("SectionTemplate")]
         public int SectionTemplateId { get; set; }

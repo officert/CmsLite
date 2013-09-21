@@ -10,6 +10,7 @@ using SharpTestsEx;
 namespace CmsLite.Unit.Services
 {
     [TestFixture]
+    [Ignore("Need to convert to Unit Tests")]
     public class PropertyTemplateServiceFixture : ServiceBaseFixture
     {
         private List<int> _createdSectionTemplateIds;

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using CmsLite.Domains.Interfaces;
 
 namespace CmsLite.Domains.Entities
 {
     [Table("PageNodes")]
-    public class PageNode : Node, IHavePageNodes
+    public class PageNode : Node, INode
     {
         [ForeignKey("PageTemplate")]
         public int PageTemplateId { get; set; }

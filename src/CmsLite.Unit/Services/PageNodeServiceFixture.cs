@@ -17,6 +17,7 @@ namespace CmsLite.Unit.Services
 {
     [TestFixture]
     [Category("Unit")]
+    [Ignore("Need to convert to Unit Tests")]
     public class PageNodeServiceFixture : ServiceBaseFixture
     {
         private List<int> _createdSectionTemplateIds;

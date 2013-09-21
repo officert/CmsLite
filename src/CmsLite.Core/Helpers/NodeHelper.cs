@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CmsLite.Domains.Entities;
+using CmsLite.Domains.Interfaces;
 using CmsLite.Utilities.Cms;
 
 namespace CmsLite.Core.Helpers
@@ -18,7 +19,7 @@ namespace CmsLite.Core.Helpers
             return sectionNode;
         }
 
-        public static PageNode GetActionPageNode(IHavePageNodes parentNode, string urlName)
+        public static PageNode GetActionPageNode(INode parentNode, string urlName)
         {
             //if the action name is index use the first page for this section, otherwise find the page by action name
 

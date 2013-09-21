@@ -51,7 +51,6 @@
   <ItemGroup>
     <Compile Include="Constants\DataConstants.cs" />
     <Compile Include="Entities\File.cs" />
-    <Compile Include="Entities\IHavePageNodes.cs" />
     <Compile Include="Entities\PageNode.cs" />
     <Compile Include="Entities\Node.cs" />
     <Compile Include="Entities\PageTemplate.cs" />
@@ -61,6 +60,7 @@
     <Compile Include="Entities\Role.cs" />
     <Compile Include="Entities\SectionTemplate.cs" />
     <Compile Include="Entities\User.cs" />
+    <Compile Include="Interfaces\INode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
