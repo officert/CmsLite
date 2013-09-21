@@ -12,7 +12,6 @@ using NUnit.Framework;
 namespace CmsLite.Unit.Services
 {
     [TestFixture]
-    [Category("Unit")]
     public abstract class ServiceBaseFixture : IDisposable
     {
         protected IKernel Kernel;

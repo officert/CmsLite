@@ -15,16 +15,11 @@ namespace CmsLite.Services
 {
     public class PageNodeService : ServiceBase<PageNode>, IPageNodeService
     {
-        //private readonly ISectionNodeService _sectionNodeService;
-        //private readonly IPageTemplateService _pageTemplateService;
         private readonly IPropertyService _propertyService;
 
-        //public PageNodeService(IUnitOfWork unitOfWork, ISectionNodeService sectionNodeService, IPageTemplateService pageTemplateService)
         public PageNodeService(IUnitOfWork unitOfWork, IPropertyService propertyService)
             : base(unitOfWork)
         {
-            //_sectionNodeService = sectionNodeService;
-            //_pageTemplateService = pageTemplateService;
             _propertyService = propertyService;
         }
 

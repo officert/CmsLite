@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CmsLite.Domains.Entities;
@@ -18,8 +17,6 @@ namespace CmsLite.Unit.Services
     [Category("Unit")]
     public class PageTemplateServiceFixture : ServiceBaseFixture
     {
-        private List<int> _createdSectionTemplateIds;
-
         private IPageTemplateService _pageTemplateService;
         private Mock<IPageNodeService> _pageNodeServiceMock;
         private Mock<IPropertyTemplateService> _propertyTemplateServiceMock;
