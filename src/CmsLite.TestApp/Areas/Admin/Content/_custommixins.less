@@ -53,10 +53,10 @@
 }
 
 .transition(@property, @time : .4s, @effect : ease) {
-    -webkit-transition: @property, @time, @effect; /* Safari 3.2+, Chrome */
-    -moz-transition: @property, @time, @effect; /* Firefox 4-15 */
-    -o-transition: @property, @time, @effect; /* Opera 10.5–12.00 */
-    transition: @property, @time, @effect; /* Firefox 16+, Opera 12.50+ */
+    -webkit-transition: @property @time @effect; /* Safari 3.2+, Chrome */
+    -moz-transition: @property @time @effect; /* Firefox 4-15 */
+    -o-transition: @property @time @effect; /* Opera 10.5–12.00 */
+    transition: @property @time @effect; /* Firefox 16+, Opera 12.50+ */
 }
 
 .transform(@degrees) {

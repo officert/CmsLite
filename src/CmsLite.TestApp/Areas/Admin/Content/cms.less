@@ -44,6 +44,42 @@ ul, ol {
     border: 0;
     border-radius: 0;
     border-bottom: 1px solid @gray;
+
+    .nav {
+        border-left: 1px solid darken(@brand-primary,15%);
+        border-right: 1px solid lighten(@brand-primary,15%);
+
+        > li {
+            > a {
+                border-left: 1px solid lighten(@brand-primary,15%);
+                border-right: 1px solid darken(@brand-primary,15%);
+
+                > i.icon-inbox {
+                    font-size: @font-size-large;
+                }
+
+                &.dropdown-toggle {
+                    > i.icon-user {
+                        margin-right: @btn-icon-margin;
+                    }
+
+                    > i.icon-sort-down {
+                        margin-left: @btn-icon-margin;
+                        padding: 0 7px 2px;
+                        border: 1px solid darken(@brand-primary,15%);
+                        .border-radius(@border-radius-base);
+                        #gradient.vertical(darken(@btn-primary-bg, 1%), darken(@btn-primary-bg, 10%));
+                        display: inline-block;
+                    }
+                }
+            }
+
+            > .dropdown-menu {
+                border: 5px solid @brand-primary;
+                border-radius: @border-radius-base;
+            }
+        }
+    }
 }
 /* ============================== Wrapper =================================== */
 #wrapper {
@@ -59,7 +95,7 @@ ul, ol {
 #main-wrapper {
     height: 100%;
     overflow-y: auto;
-    padding: 50px 0 0px 0;
+    padding: @navbar-height 0 0px 0;
 }
 
 @media (min-width: @screen-md) {
@@ -86,9 +122,9 @@ ul, ol {
 /* ============================== Sidebar =================================== */
 #sidebar-wrapper {
     height: 100%;
-    padding: 50px 0 0px 0;
+    padding: @navbar-height 0 0px 0;
     position: fixed;
-    background: @navbar-inverse-bg;
+    background: @gray-darker;
 }
 
 @media (max-width: @screen-md) {
@@ -100,6 +136,13 @@ ul, ol {
 
         .list-group {
             margin-bottom: 0;
+
+            > li {
+                > a {
+                    border-bottom: 1px solid white;
+                    border-top: 1px solid @gray-dark;
+                }
+            }
         }
     }
 }
@@ -152,12 +195,11 @@ ul, ol {
 
 #site-sections {
     > .page-content {
-        .space-box(@gray-lighter, @gray-light);
+        .space-box-right(@gray-lighter, white, @gray);
 
         > ul {
             padding: 0 !important;
             margin: 0;
-            background: #fff;
 
             > li.node { //only the first level
                 border-bottom-width: 1px;
@@ -173,10 +215,10 @@ ul, ol {
                     border-bottom-width: 1px;
                     border-color: @gray-lighter;
                     color: @text-color;
+                    background: none;
 
                     &:hover {
-                        background: @brand-info;
-                        color: white;
+                        background: @gray;
                     }
 
                     > i {

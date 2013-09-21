@@ -17,9 +17,6 @@
     .box-shadow-inset-top(lighten(@btn-primary-bg, 35%));
 }
 
-.btn-C {
-    .box-shadow-inset-top(lighten(@btn-danger-bg, 35%));
-}
 // Danger and error appear as red
 .btn-danger {
     .box-shadow-inset-top(lighten(@btn-danger-bg, 35%));
@@ -51,14 +48,23 @@
 .space-box(@background, @border-color) {
     .border-radius(@border-radius-base);
     background: @background;
-    padding: 3px;
 
     > .space-box-content {
-        border: 1px solid @border-color;
         .border-radius(@border-radius-base);
+        border: 1px solid @border-color;
         padding: 20px;
         overflow: hidden;
     }
+}
+
+.space-box-left(@background, @border-color, @inner-border-color) {
+    .space-box(@background, @border-color);
+    .box-shadow(-1px 0px 0px 0px @inner-border-color);
+}
+
+.space-box-right(@background, @border-color, @inner-border-color) {
+    .space-box(@background, @border-color);
+    .box-shadow(1px 0px 0px 0px @inner-border-color);
 }
 /* Page Header */
 .page-header {
@@ -68,3 +74,5 @@
         }
     }
 }
+
+/* Icons */
