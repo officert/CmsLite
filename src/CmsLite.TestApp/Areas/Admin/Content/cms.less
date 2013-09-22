@@ -108,7 +108,7 @@ ul, ol {
 #main-wrapper {
     height: 100%;
     overflow-y: auto;
-    padding: @navbar-height 0 0px 0;
+    padding: (@navbar-height + 4) 0 0px 0;
 }
 
 @media (min-width: @screen-md) {
@@ -273,26 +273,22 @@ ul, ol {
             position: fixed;
             z-index: 2000;
             background: @body-bg;
-            margin-top: 0;
-            padding-top: 10px;
 
-            > div {
-                > #tab-bar {
-                    > ul > li.active > a {
-                        #gradient.vertical(@btn-default-bg, darken(@btn-default-bg, 5%));
-                    }
+            > #tab-bar {
+                > ul > li.active > a {
+                    #gradient.vertical(@btn-default-bg, darken(@btn-default-bg, 5%));
                 }
+            }
 
-                > #toolbar {
-                    overflow: hidden;
-                    clear: both;
-                    border: 1px solid @btn-default-border;
-                    margin-top: -1px;
-                    #gradient.vertical(darken(@btn-default-bg, 5.5%), darken(@btn-default-bg, 15%));
+            > #toolbar {
+                overflow: hidden;
+                clear: both;
+                border: 1px solid @btn-default-border;
+                margin-top: -1px;
+                #gradient.vertical(darken(@btn-default-bg, 5.5%), darken(@btn-default-bg, 15%));
 
-                    &.collapsed {
-                        height: 41px;
-                    }
+                &.collapsed {
+                    height: 41px;
                 }
             }
 
@@ -300,7 +296,7 @@ ul, ol {
         }
 
         > .page-content {
-            padding: 240px 0 0 0;
+            padding: 200px 0 0 0;
 
             &.collapsed {
                 padding: 170px 0 0 0;
@@ -308,12 +304,12 @@ ul, ol {
 
             > .tab-pane {
                 > .property {
-                    margin: 0 0 50px 210px;
+                    margin: 0 0 50px 200px;
 
                     > div.property-info {
                         float: left;
                         width: 180px;
-                        border-right: 1px solid @gray-light;
+                        border-right: 1px solid @gray;
                         margin: 0 0 0 -200px;
                         padding: 0 10px 0 0;
 
@@ -322,7 +318,8 @@ ul, ol {
                         }
 
                         > .property-desc {
-                            color: @gray-light;
+                            font-style: italic;
+                            color: lighten(@text-color, 25%);
                         }
                     }
 

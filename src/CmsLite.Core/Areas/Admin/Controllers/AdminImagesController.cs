@@ -28,7 +28,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
         {
             if(id < 1) throw new ArgumentException("Id cannot be 0");
 
-            var file = _mediaService.GetAll().FirstOrDefault(x => x.Id == id);
+            var file = _mediaService.Find(x => x.Id == id);
             if (file != null)
             {
                 GetImage(file.FileData, 120, 120, false, false);

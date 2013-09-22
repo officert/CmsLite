@@ -1,5 +1,23 @@
-﻿@{
-    ViewBag.Title = "Index";
+﻿@model CmsLite.Core.Areas.Admin.Models.TrashModel
+@{
+    ViewBag.Title = "Cms Lite - Trash";
 }
-
-<h2>Index</h2>
+@section Scripts
+{
+}
+<div id="trash">
+    <header class="page-header">
+        <h3>
+            <i class="icon-book"></i>Trash</h3>
+    </header>
+    <div class="page-content">
+        <ul>
+            @foreach (var node in Model.TrashedSections)
+            {
+                <li>
+                    @node.Id, @node.DisplayName
+                </li>
+            }
+        </ul>
+    </div>
+</div>

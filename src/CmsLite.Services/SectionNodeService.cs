@@ -25,7 +25,7 @@ namespace CmsLite.Services
         }
 
         /// <summary>
-        /// Gets all sections nodes in the database with the Page Nodes and their Page Templates
+        /// Gets all sections nodes in the database with the Page Nodes and their Page Templates.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<SectionNode> GetAllWithDetails()
@@ -33,6 +33,23 @@ namespace CmsLite.Services
             return UnitOfWork.Context.GetDbSet<SectionNode>()
                     .Include(x => x.PageNodes)
                     .Include(x => x.SectionTemplate.PageTemplates.Select(y => y.PageTemplates));
+        }
+
+        public IQueryable<SectionNode> GetAll(bool includeTrashed = false)
+        {
+            var sectionNodes = UnitOfWork.Context.GetDbSet<SectionNode>().AsQueryable();
+
+            if (!includeTrashed)
+            {
+                sectionNodes = sectionNodes.Where(x => !x.InTrash);
+            }
+
+            return sectionNodes;
+        }
+
+        public IEnumerable<SectionNode> GetAllTrashed()
+        {
+            return UnitOfWork.Context.GetDbSet<SectionNode>().Where(x => x.InTrash);
         }
 
         public SectionNode Create(int sectionTemplateId, string displayName, string urlName, bool commit = true)

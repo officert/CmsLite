@@ -6463,7 +6463,7 @@ ol {
 #main-wrapper {
   height: 100%;
   overflow-y: auto;
-  padding: 40px 0 0px 0;
+  padding: 44px 0 0px 0;
 }
 @media (min-width: 992px) {
   #main-wrapper {
@@ -6645,11 +6645,9 @@ a#site-sections > .page-content > ul > li.node a:focus {
   position: fixed;
   z-index: 2000;
   background: #f3f3f3;
-  margin-top: 0;
-  padding-top: 10px;
   border-bottom: 1px solid #f3f3f3;
 }
-#edit-page > form > header > div > #tab-bar > ul > li.active > a {
+#edit-page > form > header > #tab-bar > ul > li.active > a {
   background-image: -webkit-gradient(linear, left 0%, left 100%, from(#ffffff), to(#f2f2f2));
   background-image: -webkit-linear-gradient(top, #ffffff, 0%, #f2f2f2, 100%);
   background-image: -moz-linear-gradient(top, #ffffff 0%, #f2f2f2 100%);
@@ -6657,7 +6655,7 @@ a#site-sections > .page-content > ul > li.node a:focus {
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff2f2f2', GradientType=0);
 }
-#edit-page > form > header > div > #toolbar {
+#edit-page > form > header > #toolbar {
   overflow: hidden;
   clear: both;
   border: 1px solid #dbdbdb;
@@ -6669,22 +6667,22 @@ a#site-sections > .page-content > ul > li.node a:focus {
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff1f1f1', endColorstr='#ffd9d9d9', GradientType=0);
 }
-#edit-page > form > header > div > #toolbar.collapsed {
+#edit-page > form > header > #toolbar.collapsed {
   height: 41px;
 }
 #edit-page > form > .page-content {
-  padding: 240px 0 0 0;
+  padding: 200px 0 0 0;
 }
 #edit-page > form > .page-content.collapsed {
   padding: 170px 0 0 0;
 }
 #edit-page > form > .page-content > .tab-pane > .property {
-  margin: 0 0 50px 210px;
+  margin: 0 0 50px 200px;
 }
 #edit-page > form > .page-content > .tab-pane > .property > div.property-info {
   float: left;
   width: 180px;
-  border-right: 1px solid #f3f3f3;
+  border-right: 1px solid #dbdbdb;
   margin: 0 0 0 -200px;
   padding: 0 10px 0 0;
 }
@@ -6692,7 +6690,8 @@ a#site-sections > .page-content > ul > li.node a:focus {
   font-weight: bold;
 }
 #edit-page > form > .page-content > .tab-pane > .property > div.property-info > .property-desc {
-  color: #f3f3f3;
+  font-style: italic;
+  color: #848484;
 }
 #edit-page > form > .page-content > .tab-pane > .property > div.property-control {
   padding: 10px;

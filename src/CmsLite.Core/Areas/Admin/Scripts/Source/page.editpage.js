@@ -6,7 +6,7 @@
                 return container.children('ul').children('li.simple-tab');
             },
             tabSections: function (container) {
-                return container.parent().parent().next('div.page-content').children('div.tab-pane');
+                return container.parent().next('div.page-content').children('div.tab-pane');
             }
         });
     }

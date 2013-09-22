@@ -24,20 +24,18 @@
     {
         @Html.HiddenFor(x => x.Id)
         <header class="page-header">
-            <div class="col-md-12">
-                <h3>
-                    <i class="icon-edit"></i>Edit @Model.DisplayName Page</h3>
-                <div id="tab-bar">
-                    <ul class="nav nav-tabs">
-                        @foreach (var propGroup in propertyGroups)
-                        {
-                            <li class="simple-tab"><a href="#">@propGroup.Key</a> </li>
-                        }
-                        <li><a href="#" data-bind="click: toggleToolbar"><i class="icon-collapse-alt"></i>Collapse Tools</a> </li>
-                    </ul>
-                </div>
-                <div id="toolbar">
-                </div>
+            <h3>
+                <i class="icon-edit"></i>Edit @Model.DisplayName Page</h3>
+            <div id="tab-bar">
+                <ul class="nav nav-tabs">
+                    @foreach (var propGroup in propertyGroups)
+                    {
+                        <li class="simple-tab"><a href="#">@propGroup.Key</a> </li>
+                    }
+                    <li><a href="#" data-bind="click: toggleToolbar"><i class="icon-collapse-alt"></i>Collapse Tools</a> </li>
+                </ul>
+            </div>
+            <div id="toolbar">
             </div>
         </header> 
         <div class="page-content tab-content">

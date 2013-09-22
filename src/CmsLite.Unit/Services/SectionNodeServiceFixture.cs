@@ -48,6 +48,73 @@ namespace CmsLite.Unit.Services
         {
         }
 
+        #region GetAll
+
+        [Test]
+        public void GetAll_DoesNotIncludeTrashedNodes()
+        {
+            //arrange
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>
+            {
+                new SectionNode { Id = 1, InTrash = true },
+                new SectionNode { Id = 2, InTrash = true },
+                new SectionNode { Id = 3, InTrash = false },
+                new SectionNode { Id = 4, InTrash = false }
+            });
+
+            //act
+            var sectionNodes = _sectionNodeService.GetAll();
+
+            //assert
+            sectionNodes.ToList().ForEach(x => x.InTrash.Should().Be.False());
+        }
+
+        [Test]
+        public void GetAll_IncludeTrashed_IncludesTrashedNodes()
+        {
+            //arrange
+            var sectionNodeDbSet = new InMemoryDbSet<SectionNode>
+            {
+                new SectionNode {Id = 1, InTrash = true},
+                new SectionNode {Id = 2, InTrash = true},
+                new SectionNode {Id = 3, InTrash = false},
+                new SectionNode {Id = 4, InTrash = false}
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(sectionNodeDbSet);
+
+            //act
+            var sectionNodes = _sectionNodeService.GetAll(true);
+
+            //assert
+            sectionNodes.Count().Should().Equals(sectionNodeDbSet.Count());
+        }
+
+        #endregion
+
+        #region GetAllTrashed
+
+        [Test]
+        public void GetAllTrashed_ReturnsOnlyTrashedNodes()
+        {
+            //arrange
+            var sectionNodeDbSet = new InMemoryDbSet<SectionNode>
+            {
+                new SectionNode {Id = 1, InTrash = true},
+                new SectionNode {Id = 2, InTrash = true},
+                new SectionNode {Id = 3, InTrash = false},
+                new SectionNode {Id = 4, InTrash = false}
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(sectionNodeDbSet);
+
+            //act
+            var sectionNodes = _sectionNodeService.GetAllTrashed();
+
+            //assert
+            sectionNodes.ToList().ForEach(x => x.InTrash.Should().Be.True());
+        }
+
+        #endregion
+
         #region CreateForSectionTemplate
 
         [Test]

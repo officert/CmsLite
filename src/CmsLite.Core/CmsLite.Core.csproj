@@ -142,6 +142,7 @@
     <Compile Include="Areas\Admin\Controllers\SiteSectionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaController.cs" />
     <Compile Include="Areas\Admin\Controllers\TrashController.cs" />
+    <Compile Include="Areas\Admin\Models\TrashModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\PageNodeLightViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\SectionNodeLightViewModel.cs" />
     <Compile Include="Automapper\AdminProfile.cs" />

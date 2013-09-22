@@ -33,7 +33,7 @@ namespace CmsLite.TestApp.Models.Pages
         [CmsModelProperty(
             DisplayName = "Banner Text Middle",
             PropertyType = CmsPropertyType.RichTextEditor,
-            Description = "Text to go under the banner",
+            Description = "Some shit goes here",
             TabName = "Home",
             TabOrder = 2
             )]
