@@ -1,23 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using CmsLite.Domains.Entities;
+using CmsLite.Interfaces.Data;
+using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
+using CmsLite.Services;
 using CmsLite.Utilities.Cms;
+using Moq;
 using NUnit.Framework;
 using SharpTestsEx;
 
 namespace CmsLite.Unit.Services
 {
     [TestFixture]
-    [Ignore("Need to convert to Unit Tests")]
+    [Category("Unit")]
     public class PropertyTemplateServiceFixture : ServiceBaseFixture
     {
-        private List<int> _createdSectionTemplateIds;
+        private IPropertyTemplateService _propertyTemplateService;
+        private Mock<IPropertyService> _propertyServiceMock;
+        private Mock<IUnitOfWork> _unitOfWorkMock;
+        private Mock<IDbContext> _dbContextMock;
 
         protected override void PostFixtureSetup()
         {
-            _createdSectionTemplateIds = new List<int>();
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _dbContextMock = new Mock<IDbContext>();
+            _unitOfWorkMock.Setup(x => x.Context).Returns(_dbContextMock.Object);
+            _propertyServiceMock = new Mock<IPropertyService>();
+            _propertyTemplateService = new PropertyTemplateService(_unitOfWorkMock.Object, _propertyServiceMock.Object);
         }
 
         [TestFixtureTearDown]
@@ -29,8 +41,6 @@ namespace CmsLite.Unit.Services
         [TearDown]
         public void TearDown()
         {
-            CleanupSectionTemplates(_createdSectionTemplateIds);
-            _createdSectionTemplateIds.Clear();
         }
 
         #region Create
@@ -39,7 +49,7 @@ namespace CmsLite.Unit.Services
         public void Create_NoPropertyName_ThrowsException()
         {
             var propertyName = string.Empty;
-            Assert.That(() => PropertyTemplateService.Create(0, propertyName, CmsPropertyType.RichTextEditor, 0),
+            Assert.That(() => _propertyTemplateService.Create(0, propertyName, CmsPropertyType.RichTextEditor, 0),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(Messages.PropertyTemplatePropertyNameCannotBeNull));
         }
@@ -49,8 +59,9 @@ namespace CmsLite.Unit.Services
         {
             //arrange
             const int pageTemplateId = 99999;
+            _dbContextMock.Setup(x => x.GetDbSet<PageTemplate>()).Returns(new InMemoryDbSet<PageTemplate>());
 
-            Assert.That(() => PropertyTemplateService.Create(pageTemplateId, "Foobar", CmsPropertyType.RichTextEditor, 0),
+            Assert.That(() => _propertyTemplateService.Create(pageTemplateId, "Foobar", CmsPropertyType.RichTextEditor, 0),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(string.Format(Messages.PageTemplateNotFound, pageTemplateId)));
         }
@@ -62,16 +73,19 @@ namespace CmsLite.Unit.Services
             var displayName = string.Empty;
             const string propertyName = "FoobarProperty";
 
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "Foobar");
+            var pageTemplate = new PageTemplate { Id = 1 };
+
+            _dbContextMock.Setup(x => x.GetDbSet<PageTemplate>()).Returns(new InMemoryDbSet<PageTemplate>
+            {
+                pageTemplate
+            });
+            _dbContextMock.Setup(x => x.GetDbSet<PropertyTemplate>()).Returns(new InMemoryDbSet<PropertyTemplate>());
 
             //act
-            var propertyTemplate = PropertyTemplateService.Create(pageTemplate.Id, propertyName, CmsPropertyType.ImagePicker, 0, displayName: displayName);
+            var propertyTemplate = _propertyTemplateService.Create(pageTemplate.Id, propertyName, CmsPropertyType.ImagePicker, 0, displayName: displayName);
 
             //assert
             propertyTemplate.DisplayName.Should().Be.EqualTo(propertyName);
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
@@ -80,16 +94,19 @@ namespace CmsLite.Unit.Services
             //arrange
             int? tabOrder = null;
 
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "Foobar");
+            var pageTemplate = new PageTemplate { Id = 1 };
+
+            _dbContextMock.Setup(x => x.GetDbSet<PageTemplate>()).Returns(new InMemoryDbSet<PageTemplate>
+            {
+                pageTemplate
+            });
+            _dbContextMock.Setup(x => x.GetDbSet<PropertyTemplate>()).Returns(new InMemoryDbSet<PropertyTemplate>());
 
             //act
-            var propertyTemplate = PropertyTemplateService.Create(pageTemplate.Id, "Foobar", CmsPropertyType.ImagePicker, tabOrder);
+            var propertyTemplate = _propertyTemplateService.Create(pageTemplate.Id, "Foobar", CmsPropertyType.ImagePicker, tabOrder);
 
             //assert
             propertyTemplate.TabOrder.Should().Be.EqualTo(1);
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
@@ -98,36 +115,51 @@ namespace CmsLite.Unit.Services
             //arrange
             var tabName = string.Empty;
 
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "Foobar");
+            var pageTemplate = new PageTemplate { Id = 1 };
+
+            _dbContextMock.Setup(x => x.GetDbSet<PageTemplate>()).Returns(new InMemoryDbSet<PageTemplate>
+            {
+                pageTemplate
+            });
+            _dbContextMock.Setup(x => x.GetDbSet<PropertyTemplate>()).Returns(new InMemoryDbSet<PropertyTemplate>());
 
             //act
-            var propertyTemplate = PropertyTemplateService.Create(pageTemplate.Id, "Foobar", CmsPropertyType.ImagePicker, null, tabName);
+            var propertyTemplate = _propertyTemplateService.Create(pageTemplate.Id, "Foobar", CmsPropertyType.ImagePicker, null, tabName);
 
             //assert
             propertyTemplate.TabName.Should().Be.EqualTo(CmsConstants.PropertyTemplateDefaultTabName);
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void Create_ParentPageTemplateHasPageNodes_AddNewPropertyToEachPageNodeUsingPropertyTemplate()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", "foobar");
+            var pageTemplate = new PageTemplate
+            {
+                Id = 1,
+                PageNodes = new Collection<PageNode>
+                {
+                    new PageNode
+                    {
+                        Id = 1, 
+                        Properties = new Collection<Property>()
+                    }
+                }
+            };
+
+            _dbContextMock.Setup(x => x.GetDbSet<PageTemplate>()).Returns(new InMemoryDbSet<PageTemplate>
+            {
+                pageTemplate
+            });
+            _dbContextMock.Setup(x => x.GetDbSet<PropertyTemplate>()).Returns(new InMemoryDbSet<PropertyTemplate>());
 
             //act
-            var propertyTemplate = PropertyTemplateService.Create(pageTemplate.Id, "Foobar", CmsPropertyType.ImagePicker, null);
+            var propertyTemplate = _propertyTemplateService.Create(pageTemplate.Id, "Foobar", CmsPropertyType.ImagePicker, null);
+
+            _propertyServiceMock.Setup(x => x.Create(pageTemplate.PageNodes.First(), propertyTemplate, "", false)).Returns(It.IsAny<Property>);
 
             //assert
-            var updatedPageNode = PageNodeService.FindIncluding(x => x.Properties).FirstOrDefault(x => x.Id == pageNode.Id);
-            updatedPageNode.Properties.Count.Should().Be.EqualTo(1);
-            updatedPageNode.Properties.First().PropertyTemplateId.Should().Be.EqualTo(propertyTemplate.Id);
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
+            _propertyServiceMock.Verify(x => x.Create(pageTemplate.PageNodes.First(), propertyTemplate, "", false));
         }
 
         #endregion
@@ -138,7 +170,7 @@ namespace CmsLite.Unit.Services
         public void Delete_PropertyTemplateNotFound_ThrowsException()
         {
             const int propertyTemplateId = 99999999;
-            Assert.That(() => PropertyTemplateService.Delete(propertyTemplateId),
+            Assert.That(() => _propertyTemplateService.Delete(propertyTemplateId),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(string.Format(Messages.PropertyTemplateNotFound, propertyTemplateId)));
         }
@@ -147,34 +179,44 @@ namespace CmsLite.Unit.Services
         public void Delete_DeletesThePropertyTemplate()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "Foobar");
-            var propertyTemplate = PropertyTemplateService.Create(pageTemplate.Id, "Foobar", CmsPropertyType.Number, null);
+            var propertyTemplate = new PropertyTemplate { Id = 1 };
+            _dbContextMock.Setup(x => x.GetDbSet<PropertyTemplate>()).Returns(new InMemoryDbSet<PropertyTemplate>
+            {
+                propertyTemplate
+            });
+
             //act
-            PropertyTemplateService.Delete(propertyTemplate.Id);
+            _propertyTemplateService.Delete(propertyTemplate.Id);
 
             //assert
-            var deletedPropertyTemplate = UnitOfWork.Context.GetDbSet<PropertyTemplate>().FirstOrDefault(x => x.Id == propertyTemplate.Id);
+            var deletedPropertyTemplate = _dbContextMock.Object.GetDbSet<PropertyTemplate>().FirstOrDefault(x => x.Id == propertyTemplate.Id);
             deletedPropertyTemplate.Should().Be.Null();
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
+        [Ignore("This test tests the SQL cascade, not sure we can unit test this.")]
         public void Delete_DeletesAnyPropertiesThatUseThePropertyTemplate()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "Foobar");
-            var propertyTemplate = PropertyTemplateService.Create(pageTemplate.Id, "Foobar", CmsPropertyType.Number, null);
+            var propertyTemplate = new PropertyTemplate
+            {
+                Id = 1,
+                Properties = new Collection<Property>
+                {
+                    new Property { Id = 44 }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<PropertyTemplate>()).Returns(new InMemoryDbSet<PropertyTemplate>
+            {
+                propertyTemplate
+            });
+
             //act
-            PropertyTemplateService.Delete(propertyTemplate.Id);
+            _propertyTemplateService.Delete(propertyTemplate.Id);
 
             //assert
             var propertiesForDeletedPropertyTemplate = UnitOfWork.Context.GetDbSet<Property>().Where(x => x.PropertyTemplateId == propertyTemplate.Id);
             propertiesForDeletedPropertyTemplate.Should().Be.Empty();
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         #endregion

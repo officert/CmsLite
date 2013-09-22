@@ -208,7 +208,7 @@ namespace CmsLite.Services
                 var propertyTemplates = pageTemplate.PropertyTemplates.ToList();
                 foreach (var propertyTemplate in propertyTemplates)
                 {
-                    _propertyService.Create(pageNode, propertyTemplate, commit: false);
+                    _propertyService.Create(pageNode, propertyTemplate, "", false);
                 }
             }
         }

@@ -17,10 +17,8 @@ namespace CmsLite.Unit.Services
 {
     [TestFixture]
     [Category("Unit")]
-    [Ignore("Need to convert to Unit Tests")]
     public class PageNodeServiceFixture : ServiceBaseFixture
     {
-        private List<int> _createdSectionTemplateIds;
         private IPageNodeService _pageNodeService;
         private Mock<IPropertyService> _propertyServiceMock;
         private Mock<IUnitOfWork> _unitOfWorkMock;
@@ -52,52 +50,56 @@ namespace CmsLite.Unit.Services
         public void CreateForSection_DisplayNameIsNullOrEmpty_ThrowsException()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
+            var pageTemplate = new PageTemplate { Id = 1 };
+            var sectionNode = new SectionNode { Id = 1 };
             var displayName = string.Empty;
 
             //act + assert
-            Assert.That(() => PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, displayName, "foobar"),
+            Assert.That(() => _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, displayName, "foobar"),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(Messages.PageNodeDisplayNameCannotBeNull));
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForSection_UrlNameIsNullOrEmpty_ThrowsException()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
+            var pageTemplate = new PageTemplate { Id = 1 };
+            var sectionNode = new SectionNode { Id = 1 };
             var urlName = string.Empty;
 
             //act + assert
-            Assert.That(() => PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", urlName),
+            Assert.That(() => _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", urlName),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(Messages.PageNodeUrlNameCannotBeNull));
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForSection_UrlNameIsAlreadyUsedByAnotherPageNodeWithSameParentSectionNode_ThrowsException()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
             const string urlName = "Foobar";
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", urlName);
+            var pageTemplate = new PageTemplate { Id = 1 };
+            var sectionNode = new SectionNode
+            {
+                Id = 1,
+                PageNodes = new Collection<PageNode>
+                {
+                    new PageNode
+                    {
+                        UrlName = CmsUrlHelper.FormatUrlName(urlName)
+                    }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>
+            {
+                sectionNode
+            });
 
             //act + assert
-            Assert.That(() => PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", urlName),
+            Assert.That(() => _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", urlName),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(string.Format(Messages.PageNodeUrlNameMustBeUniqueWithinSection, CmsUrlHelper.FormatUrlName(urlName), sectionNode.Id)));
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
@@ -105,133 +107,237 @@ namespace CmsLite.Unit.Services
         {
             //arrange
             const int sectionNodeId = 99999;
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>());
 
             //act + assert
-            Assert.That(() => PageNodeService.CreateForSection(sectionNodeId, 0, "Foobar", "foobar"),
+            Assert.That(() => _pageNodeService.CreateForSection(sectionNodeId, 0, "Foobar", "foobar"),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(string.Format(Messages.SectionNodeNotFound, sectionNodeId)));
         }
 
         [Test]
-        public void CreateForSection_NoPageTemplateExistsInForId_ThrowsException()
+        public void CreateForSection_NoPageTemplateExistsInSectionTemplateForId_ThrowsException()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
+            var sectionTemplate = new SectionTemplate();
+            var sectionNode = new SectionNode
+            {
+                Id = 1,
+                SectionTemplate = new SectionTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>()
+                }
+            };
             const int pageTemplateId = 99999;
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>
+            {
+                sectionNode
+            });
 
             //act + assert
-            Assert.That(() => PageNodeService.CreateForSection(sectionNode.Id, pageTemplateId, "Foobar", "foobar"),
+            Assert.That(() => _pageNodeService.CreateForSection(sectionNode.Id, pageTemplateId, "Foobar", "foobar"),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(string.Format(Messages.PageTemplateNotFoundForSectionTemplate, pageTemplateId, sectionTemplate.Id)));
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForSection_UrlNameGetsFormatted()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
+            var pageTemplate = new PageTemplate { Id = 1 };
+            var sectionNode = new SectionNode
+            {
+                Id = 1,
+                SectionTemplate = new SectionTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>
+                    {
+                        pageTemplate
+                    }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>
+            {
+                sectionNode
+            });
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>());
             const string urlName = "Foo bar";
 
             //act
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", urlName);
+            var pageNode = _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", urlName);
 
             //assert
             pageNode.UrlName.Should().Be.EqualTo(CmsUrlHelper.FormatUrlName(urlName));
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForSection_NoOtherPageNodesExists_OrderIs0()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
+            var pageTemplate = new PageTemplate { Id = 1 };
+            var sectionNode = new SectionNode
+            {
+                Id = 1,
+                SectionTemplate = new SectionTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>
+                    {
+                        pageTemplate
+                    }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>
+            {
+                sectionNode
+            });
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>());
 
             //act
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", "foobar");
+            var pageNode = _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", "foobar");
 
             //assert
             pageNode.Order.Should().Be.EqualTo(CmsConstants.FirstOrderNumber);
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForSection_OtherPageNodesExists_OrderIsLastPageNode()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNode1 = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar1", "foobar1");
+            var pageTemplate = new PageTemplate { Id = 1 };
+            var sectionNode = new SectionNode
+            {
+                Id = 1,
+                SectionTemplate = new SectionTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>
+                    {
+                        pageTemplate
+                    }
+                },
+                PageNodes = new Collection<PageNode>
+                {
+                    new PageNode { Order = 1 }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>
+            {
+                sectionNode
+            });
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>());
 
             //act
-            var pageNode2 = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar2", "foobar2");
+            var pageNode2 = _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar2", "foobar2");
 
             //assert
-            pageNode2.Order.Should().Be.EqualTo(1); //because the parent section has 2 page nodes
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
+            pageNode2.Order.Should().Be.EqualTo(1); //because the parent section now has 2 page nodes
         }
 
         [Test]
         public void CreateForSection_SetsCreatedOnDate()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
+            var pageTemplate = new PageTemplate { Id = 1 };
+            var sectionNode = new SectionNode
+            {
+                Id = 1,
+                SectionTemplate = new SectionTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>
+                    {
+                        pageTemplate
+                    }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>
+            {
+                sectionNode
+            });
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>());
+
 
             //act
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar2", "foobar2");
+            var pageNode = _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar2", "foobar2");
 
             //assert
             pageNode.CreatedOn.Should().Not.Be.EqualTo(null);
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForSection_SetsModifiedOnDate()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
+            var pageTemplate = new PageTemplate { Id = 1 };
+            var sectionNode = new SectionNode
+            {
+                Id = 1,
+                SectionTemplate = new SectionTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>
+                    {
+                        pageTemplate
+                    }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>
+            {
+                sectionNode
+            });
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>());
+
 
             //act
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar2", "foobar2");
+            var pageNode = _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar2", "foobar2");
 
             //assert
             pageNode.ModifiedOn.Should().Not.Be.EqualTo(null);
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForSection_AddsNewPropertyForEachPropertyTemplateInThePageTemplate()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var propertyTemplate1 = PropertyTemplateService.Create(pageTemplate.Id, "Foobar1", CmsPropertyType.RichTextEditor, null);
-            var propertyTemplate2 = PropertyTemplateService.Create(pageTemplate.Id, "Foobar2", CmsPropertyType.ImagePicker, null);
+            var pageTemplate = new PageTemplate
+            {
+                Id = 1,
+                PropertyTemplates = new Collection<PropertyTemplate>
+                {
+                    new PropertyTemplate { Id = 1, CmsPropertyType = CmsPropertyType.RichTextEditor.ToString() },
+                    new PropertyTemplate { Id = 2, CmsPropertyType = CmsPropertyType.ImagePicker.ToString() }
+                }
+            };
+            var sectionNode = new SectionNode
+            {
+                Id = 1,
+                SectionTemplate = new SectionTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>
+                    {
+                        pageTemplate
+                    }
+                },
+                PageNodes = new Collection<PageNode>
+                {
+                    new PageNode { Order = 1 }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>
+            {
+                sectionNode
+            });
+
+            var propertyTemplates = pageTemplate.PropertyTemplates.ToList();
+
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>());
+
+            _propertyServiceMock.Setup(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[0], "", false)).Returns(It.IsAny<Property>);
+            _propertyServiceMock.Setup(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[1], "", false)).Returns(It.IsAny<Property>);
 
             //act
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar2", "foobar2");
+            var pageNode = _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar2", "foobar2");
 
             //assert
-            pageNode.Properties.Count.Should().Be.EqualTo(2);
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
+            _propertyServiceMock.Verify(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[0], "", false));
+            _propertyServiceMock.Verify(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[1], "", false));
         }
 
         #endregion
@@ -297,10 +403,11 @@ namespace CmsLite.Unit.Services
         }
 
         [Test]
-        public void CreateForPage_NoSectionNodeExistsForId_ThrowsException()
+        public void CreateForPage_NoPageNodeExistsForId_ThrowsException()
         {
             //arrange
             const int pageNodeId = 99999;
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>());
 
             //act + assert
             Assert.That(() => _pageNodeService.CreateForPage(pageNodeId, 0, "Foobar", "foobar"),
@@ -312,136 +419,204 @@ namespace CmsLite.Unit.Services
         public void CreateForPage_NoPageTemplateExistsInForId_ThrowsException()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", "foobar");
+            var pageNode = new PageNode
+            {
+                Id = 1,
+                PageTemplate = new PageTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>()
+                }
+            };
             const int pageTemplateId = 9999999;
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>
+            {
+                pageNode
+            });
 
             //act + assert
-            Assert.That(() => PageNodeService.CreateForPage(pageNode.Id, pageTemplateId, "Foobar", "foobar"),
+            Assert.That(() => _pageNodeService.CreateForPage(pageNode.Id, pageTemplateId, "Foobar", "foobar"),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(string.Format(Messages.PageTemplateNotFoundForPageTemplate, pageTemplateId, pageNode.PageTemplate.Id)));
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForPage_UrlNameGetsFormatted()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplateForSection = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNodeForSection = PageNodeService.CreateForSection(sectionNode.Id, pageTemplateForSection.Id, "Foobar", "foobar");
-            var pageTemplateForPage = PageTemplateService.CreateForPageTemplate(pageTemplateForSection.Id, "Foobar", "FoobarModel");
+            var pageNodeForSection = new PageNode
+            {
+                Id = 1,
+                PageTemplate = new PageTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>
+                    {
+                        new PageTemplate { Id = 44 }
+                    }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>
+            {
+                pageNodeForSection
+            });
             const string urlName = "Foo bar";
 
             //act
-            var pageNode = PageNodeService.CreateForPage(pageNodeForSection.Id, pageTemplateForPage.Id, "Foobar", urlName);
+            var pageNode = _pageNodeService.CreateForPage(pageNodeForSection.Id, pageNodeForSection.PageTemplate.PageTemplates.First().Id, "Foobar", urlName);
 
             //assert
             pageNode.UrlName.Should().Be.EqualTo(CmsUrlHelper.FormatUrlName(urlName));
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForPage_NoOtherPageNodesExists_OrderIs0()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplateForSection = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNodeForSection = PageNodeService.CreateForSection(sectionNode.Id, pageTemplateForSection.Id, "Foobar", "foobar");
-            var pageTemplateForPage = PageTemplateService.CreateForPageTemplate(pageTemplateForSection.Id, "Foobar", "FoobarModel");
+            var pageNodeForSection = new PageNode
+            {
+                Id = 1,
+                PageTemplate = new PageTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>
+                    {
+                        new PageTemplate { Id = 44 }
+                    }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>
+            {
+                pageNodeForSection
+            });
 
             //act
-            var pageNode = PageNodeService.CreateForPage(pageNodeForSection.Id, pageTemplateForPage.Id, "Foobar", "foobar");
+            var pageNode = _pageNodeService.CreateForPage(pageNodeForSection.Id, pageNodeForSection.PageTemplate.PageTemplates.First().Id, "Foobar", "foobar");
 
             //assert
             pageNode.Order.Should().Be.EqualTo(CmsConstants.FirstOrderNumber);
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForPage_OtherPageNodesExists_OrderIsLastPageNode()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplateForSection = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNodeForSection = PageNodeService.CreateForSection(sectionNode.Id, pageTemplateForSection.Id, "Foobar", "foobar");
-            var pageTemplateForPage = PageTemplateService.CreateForPageTemplate(pageTemplateForSection.Id, "Foobar", "FoobarModel");
-            var childPageNode1 = PageNodeService.CreateForPage(pageNodeForSection.Id, pageTemplateForPage.Id, "Foobar1", "foobar1");
+            var pageNodeForSection = new PageNode
+            {
+                Id = 1,
+                PageTemplate = new PageTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>
+                    {
+                        new PageTemplate { Id = 44 }
+                    }
+                },
+                PageNodes = new Collection<PageNode>
+                {
+                    new PageNode()
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>
+            {
+                pageNodeForSection
+            });
 
             //act
-            var childPageNode2 = PageNodeService.CreateForPage(pageNodeForSection.Id, pageTemplateForPage.Id, "Foobar2", "foobar2");
+            var childPageNode2 = _pageNodeService.CreateForPage(pageNodeForSection.Id, pageNodeForSection.PageTemplate.PageTemplates.First().Id, "Foobar2", "foobar2");
 
             //assert
             childPageNode2.Order.Should().Be.EqualTo(1); //because the parent section has 2 page nodes
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForPage_SetsCreatedOnDate()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplateForSection = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNodeForSection = PageNodeService.CreateForSection(sectionNode.Id, pageTemplateForSection.Id, "Foobar", "foobar");
-            var pageTemplateForPage = PageTemplateService.CreateForPageTemplate(pageTemplateForSection.Id, "Foobar", "FoobarModel");
+            var pageNodeForSection = new PageNode
+            {
+                Id = 1,
+                PageTemplate = new PageTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>
+                    {
+                        new PageTemplate { Id = 44 }
+                    }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>
+            {
+                pageNodeForSection
+            });
 
             //act
-            var pageNode = PageNodeService.CreateForPage(pageNodeForSection.Id, pageTemplateForPage.Id, "Foobar2", "foobar2");
+            var pageNode = _pageNodeService.CreateForPage(pageNodeForSection.Id, pageNodeForSection.PageTemplate.PageTemplates.First().Id, "Foobar2", "foobar2");
 
             //assert
             pageNode.CreatedOn.Should().Not.Be.EqualTo(null);
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForPage_SetsModifiedOnDate()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplateForSection = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNodeForSection = PageNodeService.CreateForSection(sectionNode.Id, pageTemplateForSection.Id, "Foobar", "foobar");
-            var pageTemplateForPage = PageTemplateService.CreateForPageTemplate(pageTemplateForSection.Id, "Foobar", "FoobarModel");
+            var pageNodeForSection = new PageNode
+            {
+                Id = 1,
+                PageTemplate = new PageTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>
+                    {
+                        new PageTemplate { Id = 44 }
+                    }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>
+            {
+                pageNodeForSection
+            });
 
             //act
-            var pageNode = PageNodeService.CreateForPage(pageNodeForSection.Id, pageTemplateForPage.Id, "Foobar2", "foobar2");
+            var pageNode = _pageNodeService.CreateForPage(pageNodeForSection.Id, pageNodeForSection.PageTemplate.PageTemplates.First().Id, "Foobar2", "foobar2");
 
             //assert
             pageNode.ModifiedOn.Should().Not.Be.EqualTo(null);
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void CreateForPage_AddsNewPropertyForEachPropertyTemplateInThePageTemplate()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplateForSection = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNodeForSection = PageNodeService.CreateForSection(sectionNode.Id, pageTemplateForSection.Id, "Foobar", "foobar");
-            var pageTemplateForPage = PageTemplateService.CreateForPageTemplate(pageTemplateForSection.Id, "Foobar", "FoobarModel");
-            var propertyTemplate1 = PropertyTemplateService.Create(pageTemplateForPage.Id, "Foobar1", CmsPropertyType.RichTextEditor, null);
-            var propertyTemplate2 = PropertyTemplateService.Create(pageTemplateForPage.Id, "Foobar2", CmsPropertyType.ImagePicker, null);
+            var pageNodeForSection = new PageNode
+            {
+                Id = 1,
+                PageTemplate = new PageTemplate
+                {
+                    PageTemplates = new Collection<PageTemplate>
+                    {
+                        new PageTemplate
+                        {
+                            Id = 44,
+                            PropertyTemplates = new Collection<PropertyTemplate>
+                            {
+                                new PropertyTemplate { Id = 1, CmsPropertyType = CmsPropertyType.RichTextEditor.ToString() },
+                                new PropertyTemplate { Id = 2, CmsPropertyType = CmsPropertyType.ImagePicker.ToString() }
+                            }
+                        }
+                    }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>
+            {
+                pageNodeForSection
+            });
+            var propertyTemplates = pageNodeForSection.PageTemplate.PageTemplates.First().PropertyTemplates.ToList();
+
+            _propertyServiceMock.Setup(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[0], "", false)).Returns(It.IsAny<Property>);
+            _propertyServiceMock.Setup(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[1], "", false)).Returns(It.IsAny<Property>);
 
             //act
-            var pageNode = PageNodeService.CreateForPage(pageNodeForSection.Id, pageTemplateForPage.Id, "Foobar2", "foobar2");
+            var pageNode = _pageNodeService.CreateForPage(pageNodeForSection.Id, pageNodeForSection.PageTemplate.PageTemplates.First().Id, "Foobar2", "foobar2");
 
             //assert
-            pageNode.Properties.Count.Should().Be.EqualTo(2);
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
+            _propertyServiceMock.Verify(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[0], "", false));
+            _propertyServiceMock.Verify(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[1], "", false));
         }
 
         #endregion
@@ -455,7 +630,7 @@ namespace CmsLite.Unit.Services
             const int pageNodeId = 999999;
 
             //act+ assert
-            Assert.That(() => PageNodeService.Delete(pageNodeId),
+            Assert.That(() => _pageNodeService.Delete(pageNodeId),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(string.Format(Messages.PageNodeNotFound, pageNodeId)));
         }
@@ -467,7 +642,7 @@ namespace CmsLite.Unit.Services
             PageNode pageNode = null;
 
             //act+ assert
-            Assert.That(() => PageNodeService.Delete(pageNode),
+            Assert.That(() => _pageNodeService.Delete(pageNode),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(Messages.PageNodeCannotBeNull));
         }
@@ -476,22 +651,22 @@ namespace CmsLite.Unit.Services
         public void Delete_DeletesPageNode()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", "foobar");
+            var pageNode = new PageNode { Id = 1 };
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>
+            {
+                pageNode
+            });
 
             //act
-            PageNodeService.Delete(pageNode.Id);
+            _pageNodeService.Delete(pageNode.Id);
 
             //assert
-            var deleltedPageNode = UnitOfWork.Context.GetDbSet<PageNode>().FirstOrDefault(x => x.Id == pageNode.Id);
+            var deleltedPageNode = _dbContextMock.Object.GetDbSet<PageNode>().FirstOrDefault(x => x.Id == pageNode.Id);
             deleltedPageNode.Should().Be.Null();
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
+        [Ignore("This test tests that the SQL cascade delete is working, not sure we can unit test this.")]
         public void Delete_DeletesAnyPropertiesThatBelongToThePageNode()
         {
             //arrange
@@ -510,30 +685,31 @@ namespace CmsLite.Unit.Services
             //assert
             var propertiesForDeletedPageNode = UnitOfWork.Context.GetDbSet<Property>().Where(x => x.ParentPageNodeId == pageNode.Id);
             propertiesForDeletedPageNode.Should().Be.Empty();
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void Delete_DeletesAnyChildPageNodes()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplateForSection = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageTemplateForPage = PageTemplateService.CreateForPageTemplate(pageTemplateForSection.Id, "Foobar", "FoobarModel");
-            var parentPageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplateForSection.Id, "Foobar", "foobar");
-            var childPageNode1 = PageNodeService.CreateForPage(parentPageNode.Id, pageTemplateForPage.Id, "Foobar1", "foobar1");
-            var childPageNode2 = PageNodeService.CreateForPage(parentPageNode.Id, pageTemplateForPage.Id, "Foobar2", "foobar2");
+            var pageNode = new PageNode
+            {
+                Id = 1,
+                PageNodes = new Collection<PageNode>
+                {
+                    new PageNode { Id = 2 }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>
+            {
+                pageNode
+            });
 
             //act
-            PageNodeService.Delete(parentPageNode.Id);
+            _pageNodeService.Delete(pageNode.Id);
 
             //assert
-            var childNodesForDeletedPageNode = UnitOfWork.Context.GetDbSet<PageNode>().Where(x => x.ParentPageNodeId == parentPageNode.Id);
-            childNodesForDeletedPageNode.Should().Be.Empty();
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
+            var deleltedPageNode = _dbContextMock.Object.GetDbSet<PageNode>().FirstOrDefault(x => x.Id == pageNode.PageNodes.First().Id);
+            deleltedPageNode.Should().Be.Null();
         }
 
         #endregion

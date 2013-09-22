@@ -101,7 +101,7 @@ namespace CmsLite.Services
 
             foreach (var pageNode in pageTemplate.PageNodes)
             {
-                _propertyService.Create(pageNode, propertyTemplate, commit: false);
+                _propertyService.Create(pageNode, propertyTemplate, "", commit: false);
             }
         }
 
