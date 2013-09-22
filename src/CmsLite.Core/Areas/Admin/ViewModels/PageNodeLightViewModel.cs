@@ -3,7 +3,7 @@ using CmsLite.Core.Areas.Admin.Models;
 
 namespace CmsLite.Core.Areas.Admin.ViewModels
 {
-    public class PageViewModel : AdminLayoutModel
+    public class PageNodeLightViewModel : AdminLayoutModel
     {
         public int Id { get; set; }
 
@@ -21,11 +21,9 @@ namespace CmsLite.Core.Areas.Admin.ViewModels
 
         public string EditUrl { get; set; }
 
-        public IEnumerable<PropertyViewModel> Properties { get; set; }
-
         public IEnumerable<PageTemplateViewModel> PageTemplates { get; set; }
 
-        public IEnumerable<PageViewModel> PageNodes { get; set; }
+        public IEnumerable<PageNodeViewModel> PageNodes { get; set; }
 
         public string IconImageName { get; set; }
     }

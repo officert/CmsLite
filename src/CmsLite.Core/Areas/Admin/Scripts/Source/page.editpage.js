@@ -1,6 +1,4 @@
-﻿///<reference path="~/Areas/Admin/Scripts/_references.js" />
-///<reference path="~/Areas/Admin/Scripts/Libs/knockout-2.2.1.debug.js" />
-///<reference path="~/Areas/Admin/Scripts/source/cms.js" />
+﻿///<reference path="~/Areas/Admin/Scripts/_references.js" />>
 (function (window, $) {
     function initTabs() {
         $('#tab-bar').simpleTabs({
@@ -8,7 +6,7 @@
                 return container.children('ul').children('li.simple-tab');
             },
             tabSections: function (container) {
-                return container.parent().next('div.page-content').children('div.tab-pane');
+                return container.parent().parent().next('div.page-content').children('div.tab-pane');
             }
         });
     }

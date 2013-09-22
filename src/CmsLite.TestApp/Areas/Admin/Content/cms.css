@@ -3400,7 +3400,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
-  color: #dbdbdb;
+  color: #787878;
   background-color: #f3f3f3;
   border: 1px solid #dddddd;
   border-bottom-color: transparent;
@@ -6364,7 +6364,10 @@ fieldset[disabled] .btn-info.active {
 .page-header > h3 > i {
   margin-right: 12px;
 }
-/* Icons */
+/* Navs */
+.nav.nav-tabs > li > a > i {
+  margin-right: 12px;
+}
 /* ============================== Globals =================================== */
 body {
   padding-top: 50px;
@@ -6421,7 +6424,7 @@ ol {
 }
 #header .nav > li > a.dropdown-toggle > i.icon-sort-down {
   margin-left: 12px;
-  padding: 0 7px 2px;
+  padding: 0px 7px 5px;
   border: 1px solid #0d5e86;
   border-radius: 3px;
   background-image: -webkit-gradient(linear, left 0%, left 100%, from(#148bc7), to(#0f6e9e));
@@ -6433,8 +6436,18 @@ ol {
   display: inline-block;
 }
 #header .nav > li > .dropdown-menu {
-  border: 5px solid #148ecc;
+  border: 4px solid #0f6e9e;
   border-radius: 3px;
+}
+#header .nav > li > .dropdown-menu.pull-right {
+  border-top-right-radius: 0;
+}
+#header .nav > li > .dropdown-menu.pull-left {
+  border-top-left-radius: 0;
+}
+#header .nav > li > .dropdown-menu > li > a > i {
+  margin-right: 12px;
+  color: #444444;
 }
 /* ============================== Wrapper =================================== */
 #wrapper {
@@ -6631,15 +6644,33 @@ a#site-sections > .page-content > ul > li.node a:focus {
 #edit-page > form > header {
   position: fixed;
   z-index: 2000;
+  background: #f3f3f3;
+  margin-top: 0;
+  padding-top: 10px;
   border-bottom: 1px solid #f3f3f3;
 }
-#edit-page > form > header > #toolbar {
+#edit-page > form > header > div > #tab-bar > ul > li.active > a {
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#ffffff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #ffffff, 0%, #f2f2f2, 100%);
+  background-image: -moz-linear-gradient(top, #ffffff 0%, #f2f2f2 100%);
+  background-image: linear-gradient(to bottom, #ffffff 0%, #f2f2f2 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff2f2f2', GradientType=0);
+}
+#edit-page > form > header > div > #toolbar {
   overflow: hidden;
   clear: both;
-  margin-top: 5px;
+  border: 1px solid #dbdbdb;
+  margin-top: -1px;
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#f1f1f1), to(#d9d9d9));
+  background-image: -webkit-linear-gradient(top, #f1f1f1, 0%, #d9d9d9, 100%);
+  background-image: -moz-linear-gradient(top, #f1f1f1 0%, #d9d9d9 100%);
+  background-image: linear-gradient(to bottom, #f1f1f1 0%, #d9d9d9 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff1f1f1', endColorstr='#ffd9d9d9', GradientType=0);
 }
-#edit-page > form > header > #toolbar.collapsed {
-  height: 39px;
+#edit-page > form > header > div > #toolbar.collapsed {
+  height: 41px;
 }
 #edit-page > form > .page-content {
   padding: 240px 0 0 0;

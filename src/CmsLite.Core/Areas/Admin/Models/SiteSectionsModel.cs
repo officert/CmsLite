@@ -5,7 +5,7 @@ namespace CmsLite.Core.Areas.Admin.Models
 {
     public class SiteSectionsModel : AdminLayoutModel
     {
-        public IEnumerable<SectionViewModel> Sections { get; set; }
+        public IEnumerable<SectionNodeLightViewModel> Sections { get; set; }
         public IEnumerable<SectionTemplateViewModel> SectionTemplates { get; set; }
     }
 }

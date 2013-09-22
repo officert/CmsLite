@@ -64,7 +64,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
                     {
                         return Redirect(returnUrl);
                     }
-                    return RedirectToAction("Index", "Admin", new { area = "Admin" });
+                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
                 }
             }
             return RedirectToAction("Login");

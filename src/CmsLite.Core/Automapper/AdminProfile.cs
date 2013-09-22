@@ -8,10 +8,16 @@ namespace CmsLite.Core.Automapper
     {
         protected override void Configure()
         {
-            CreateMap<PageNode, PageViewModel>()
+            CreateMap<PageNode, PageNodeViewModel>()
                 .ForMember(desc => desc.PageTemplates, opts => opts.MapFrom(src => src.PageTemplate.PageTemplates))
                 .ForMember(desc => desc.IconImageName, opts => opts.MapFrom(src => src.PageTemplate.IconImageName));
-            CreateMap<SectionNode, SectionViewModel>()
+            CreateMap<PageNode, PageNodeLightViewModel>()
+                .ForMember(desc => desc.PageTemplates, opts => opts.MapFrom(src => src.PageTemplate.PageTemplates))
+                .ForMember(desc => desc.IconImageName, opts => opts.MapFrom(src => src.PageTemplate.IconImageName));
+            CreateMap<SectionNode, SectionNodeViewModel>()
+                .ForMember(desc => desc.PageTemplates, opts => opts.MapFrom(src => src.SectionTemplate.PageTemplates))
+                .ForMember(desc => desc.IconImageName, opts => opts.MapFrom(src => src.SectionTemplate.IconImageName));
+            CreateMap<SectionNode, SectionNodeLightViewModel>()
                 .ForMember(desc => desc.PageTemplates, opts => opts.MapFrom(src => src.SectionTemplate.PageTemplates))
                 .ForMember(desc => desc.IconImageName, opts => opts.MapFrom(src => src.SectionTemplate.IconImageName));
             CreateMap<Property, PropertyViewModel>()

@@ -3,7 +3,7 @@
     ViewBag.Title = "SignIn";
     Layout = "~/Areas/Admin/Views/Shared/_AccountLayout.cshtml";
 }
-@using (Html.BeginForm("Login", "Account", null, FormMethod.Post, new { @id = "signin" }))
+@using (Html.BeginForm("Login", "Account", new { area = "admin" }, FormMethod.Post, new { @id = "signin" }))
 {
     <div class="space-box-content">
         <div class="form-group">
@@ -24,7 +24,7 @@
     </div>
 }
 <div class="alert alert-info">
-    If you don't already have an account, <a href="@Url.Action("Register", "Account")">create one</a>
+    If you don't already have an account, <a href="@Url.Action("Register", "Account", new { area = "admin" })">create one</a>
 </div>
 @if (!ViewData.ModelState.IsValid)
 {

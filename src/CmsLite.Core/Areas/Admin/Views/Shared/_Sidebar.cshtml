@@ -2,13 +2,13 @@
 @{
     var routeData = Request.RequestContext.RouteData;
     const string activeClass = "active";
-    var currentAction = routeData.GetRequiredString("action");
+    var currentController = routeData.GetRequiredString("controller");
 }
 <ul class="nav list-group">
     @foreach (var link in Model.Links)
     {
         var cssClass = "";
-        if (currentAction.ToLower() == link.Text.Replace(" ", "").ToLower())
+        if (currentController.ToLower() == link.Text.Replace(" ", "").ToLower())
         {
             cssClass = "active";
         }

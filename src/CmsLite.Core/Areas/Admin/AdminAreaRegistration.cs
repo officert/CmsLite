@@ -16,14 +16,14 @@ namespace CmsLite.Core.Areas.Admin
         {
             context.MapRoute(
                 "Account_default",
-                "Account/{action}/{id}",
+                "Account/{controller}/{action}/{id}",
                 new { controller = "Account", action = "Index", id = UrlParameter.Optional }
             );
 
             context.MapRoute(
                 "Admin_default",
-                "Admin/{action}/{id}",
-                new { controller = "Admin", action = "Index", id = UrlParameter.Optional }
+                "Admin/{controller}/{action}/{id}",
+                new { controller = "Dashboard", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

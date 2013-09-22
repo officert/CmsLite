@@ -65,7 +65,7 @@ ul, ol {
 
                     > i.icon-sort-down {
                         margin-left: @btn-icon-margin;
-                        padding: 0 7px 2px;
+                        padding: 0px 7px 5px;
                         border: 1px solid darken(@brand-primary,15%);
                         .border-radius(@border-radius-base);
                         #gradient.vertical(darken(@btn-primary-bg, 1%), darken(@btn-primary-bg, 10%));
@@ -75,8 +75,21 @@ ul, ol {
             }
 
             > .dropdown-menu {
-                border: 5px solid @brand-primary;
+                border: 4px solid darken(@btn-primary-bg, 10%);
                 border-radius: @border-radius-base;
+
+                &.pull-right {
+                    border-top-right-radius: 0;
+                }
+
+                &.pull-left {
+                    border-top-left-radius: 0;
+                }
+
+                > li > a > i {
+                    margin-right: @btn-icon-margin;
+                    color: @text-color;
+                }
             }
         }
     }
@@ -259,17 +272,27 @@ ul, ol {
         > header {
             position: fixed;
             z-index: 2000;
+            background: @body-bg;
+            margin-top: 0;
+            padding-top: 10px;
 
-            > #tab-bar {
-            }
+            > div {
+                > #tab-bar {
+                    > ul > li.active > a {
+                        #gradient.vertical(@btn-default-bg, darken(@btn-default-bg, 5%));
+                    }
+                }
 
-            > #toolbar {
-                overflow: hidden;
-                clear: both;
-                margin-top: 5px;
+                > #toolbar {
+                    overflow: hidden;
+                    clear: both;
+                    border: 1px solid @btn-default-border;
+                    margin-top: -1px;
+                    #gradient.vertical(darken(@btn-default-bg, 5.5%), darken(@btn-default-bg, 15%));
 
-                &.collapsed {
-                    height: 39px;
+                    &.collapsed {
+                        height: 41px;
+                    }
                 }
             }
 

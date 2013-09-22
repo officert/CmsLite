@@ -23,6 +23,7 @@ namespace CmsLite.Core.App_Start
                         "~/scripts/source/core.mapping.js",
                         "~/scripts/source/ko.bindinghandlers/ko.bootstrapmodal.js",
                         "~/scripts/source/ko.bindinghandlers/ko.bootstrappopover.js",
+                        "~/scripts/source/ko.bindinghandlers/ko.tabs.js",
                         "~/scripts/source/ko.bindinghandlers/ko.slidevisible.js",
                         "~/scripts/source/plugins/jquery.accordion.js",
                         "~/scripts/source/plugins/jquery.contextmenu.js"));

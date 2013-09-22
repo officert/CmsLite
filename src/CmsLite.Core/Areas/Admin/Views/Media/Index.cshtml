@@ -20,7 +20,7 @@
             <i class="icon-edit"></i>Media</h3>
 
         <div class="btn-group">
-            <button class="btn btn-default" type="button" data-bind="click: uploadFileForm.show"><i class="icon-upload"></i>Add a new file</button>
+            <button id="add-image-trigger" class="btn btn-default" type="button" data-bind="click: uploadFileForm.show"><i class="icon-upload"></i>Add a new file</button>
         </div>
     </header>
     <div class="page-content">
@@ -55,7 +55,7 @@
                             <input type="checkbox" />
                         </td>
                         <td>
-                            <img src="@Url.Action("MediaThumbnails", "Admin", new { id = file.Id })" alt="@file.Name"/>
+                            <img src="@Url.Action("MediaThumbnails", "AdminImages", new { id = file.Id, area = "admin" })" alt="@file.Name"/>
                         </td>
                         <td>@file.Name
                         </td>
@@ -65,12 +65,13 @@
         </table>
     </div>
 </div>
-<div id="upload-file-form" class="modal fade" tabindex="-1" role="dialog">
+<!---------------------------------- Modals ---------------------------------->
+<div id="upload-file-form" class="modal fade" tabindex="-1" role="dialog" data-bind="bootstrapmodal: {}, onhide: hide">
     <div class="modal-dialog">
-        @using (Html.BeginForm("Media", "Admin", FormMethod.Post, new { @enctype = "multipart/form-data", @class = "modal-content" }))
+        @using (Html.BeginForm("Index", "Media", FormMethod.Post, new { @enctype = "multipart/form-data", @class = "modal-content", area = "admin" }))
         {
             <div class="modal-header">
-                <button class="close" type="button" data-bind="click: hide"><i class="icon-remove"></i></button>
+                <button class="close" type="button" data-dismiss="modal"><i class="icon-remove"></i></button>
                 <h4>Upload a new file</h4>
             </div>
             <div class="modal-body">
@@ -78,7 +79,7 @@
                 <input type="file" name="file" />
             </div>
             <div class="modal-footer">
-                <button class="btn" data-bind="click: hide">Close</button>
+                <button class="btn" data-dismiss="modal">Close</button>
                 <button class="btn btn-primary" type="submit"><i class="icon-upload"></i>Upload File</button>
             </div>
         }

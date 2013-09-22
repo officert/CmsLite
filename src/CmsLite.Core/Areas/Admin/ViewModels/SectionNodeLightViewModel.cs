@@ -2,7 +2,10 @@
 
 namespace CmsLite.Core.Areas.Admin.ViewModels
 {
-    public class SectionViewModel
+    /// <summary>
+    /// SectionNodeLightViewModel is a lighter weight version SectionNodeViewModel
+    /// </summary>
+    public class SectionNodeLightViewModel
     {
         public int Id { get; set; }
 
@@ -12,7 +15,7 @@ namespace CmsLite.Core.Areas.Admin.ViewModels
 
         public string UrlName { get; set; }
 
-        public ICollection<PageViewModel> PageNodes { get; set; }
+        public ICollection<PageNodeViewModel> PageNodes { get; set; }
 
         public IEnumerable<PageTemplateViewModel> PageTemplates { get; set; }
 

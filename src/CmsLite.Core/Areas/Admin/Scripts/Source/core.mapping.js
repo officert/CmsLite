@@ -121,7 +121,7 @@ var cms = (function ($) { //define our namespace
                 page.urlName = json.urlName;
                 page.iconImageName = cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/' + json.IconImageName);
                 page.parentNode = parentNode;
-                page.editUrl = cms.utils.mapPath("~/Admin/EditPage/" + json.Id);
+                page.editUrl = cms.utils.mapPath("~/Admin/SiteSections/EditPage/" + json.Id);
                 page.url = parentNode ? parentNode.url + "/" + json.UrlName : null;
                 ko.utils.arrayForEach(json.PageNodes, function (pageNode) {
                     var newPage = cms.utils.mapJsonToPageViewModel(pageNode, page);

@@ -1,4 +1,4 @@
-﻿@model CmsLite.Core.Areas.Admin.ViewModels.PageViewModel
+﻿@model CmsLite.Core.Areas.Admin.ViewModels.PageNodeViewModel
 @using CmsLite.Core.Helpers
 @{
     ViewBag.Title = "EditPage";
@@ -20,22 +20,24 @@
     @Html.Content().PluginScripts.Render(Html)
 }
 <div id="edit-page">
-    @using (Html.BeginForm("EditPage", "Admin", FormMethod.Post))
+    @using (Html.BeginForm("EditPage", "SiteSections", FormMethod.Post, new { area = "admin" }))
     {
         @Html.HiddenFor(x => x.Id)
         <header class="page-header">
-            <h3>
-                <i class="icon-edit"></i>Edit @Model.DisplayName Page</h3>
-            <div id="tab-bar">
-                <ul class="nav nav-tabs">
-                    @foreach (var propGroup in propertyGroups)
-                    {
-                        <li class="simple-tab"><a href="#">@propGroup.Key</a> </li>
-                    }
-                    <li><a href="#" data-bind="click: toggleToolbar"><i class="icon-collapse-alt"></i>Collapse Tools</a> </li>
-                </ul>
-            </div>
-            <div id="toolbar">
+            <div class="col-md-12">
+                <h3>
+                    <i class="icon-edit"></i>Edit @Model.DisplayName Page</h3>
+                <div id="tab-bar">
+                    <ul class="nav nav-tabs">
+                        @foreach (var propGroup in propertyGroups)
+                        {
+                            <li class="simple-tab"><a href="#">@propGroup.Key</a> </li>
+                        }
+                        <li><a href="#" data-bind="click: toggleToolbar"><i class="icon-collapse-alt"></i>Collapse Tools</a> </li>
+                    </ul>
+                </div>
+                <div id="toolbar">
+                </div>
             </div>
         </header> 
         <div class="page-content tab-content">

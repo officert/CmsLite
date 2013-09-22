@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
+using CmsLite.Core.App_Start;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
 using CmsLite.Resources;
@@ -51,14 +52,28 @@ namespace CmsLite.Core.Ioc
                 controllerType = GetControllerType(requestContext, controllerName);
             }
 
-            return controllerType == null ? null : (IController)_kernel.Get(controllerType);
+            return GetControllerInstance(requestContext, controllerType);
+        }
+
+        protected override IController GetControllerInstance(RequestContext requestContext, Type controllerType)
+        {
+            return controllerType == null
+                       ? null
+                       : (IController)_kernel.Get(controllerType);
         }
 
         #region Private Helpers
 
-        internal static bool IsCmsSection(string name)
+        internal static bool IsCmsSection(string name)  //TODO: need a better way to determine if the incoming request is going to the admin area or not, because this sucks :(
         {
-            if (name.ToLower() == "admin" || name.ToLower() == "account")
+            if (name.ToLower() == "admin" || 
+                name.ToLower() == "account" ||
+                name.ToLower() == "dashboard" ||
+                name.ToLower() == "sitesections" ||
+                name.ToLower() == "trash" ||
+                name.ToLower() == "media" ||
+                name.ToLower() == "adminimages" ||
+                name.ToLower() == "bundles")            //TODO: need some way to register routes that shouldn't go down the CMS routing path
             {
                 return true;
             }

@@ -138,6 +138,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RazorViewEngineConfig.cs" />
+    <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SiteSectionsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MediaController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TrashController.cs" />
+    <Compile Include="Areas\Admin\ViewModels\PageNodeLightViewModel.cs" />
+    <Compile Include="Areas\Admin\ViewModels\SectionNodeLightViewModel.cs" />
     <Compile Include="Automapper\AdminProfile.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\IocConfig.cs" />
@@ -147,7 +153,7 @@
     <Compile Include="Areas\Admin\Attributes\LayoutModelAttribute .cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminBaseController.cs" />
-    <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminImagesController.cs" />
     <Compile Include="Areas\Admin\Models\AdminContextModel.cs" />
     <Compile Include="Areas\Admin\Models\AdminLayoutModel.cs" />
     <Compile Include="Areas\Admin\Models\AdminModelFactory.cs" />
@@ -163,10 +169,10 @@
     <Compile Include="Areas\Admin\ViewModels\CreateSectionViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\DeleteSectionViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\PageTemplateViewModel.cs" />
-    <Compile Include="Areas\Admin\ViewModels\PageViewModel.cs" />
+    <Compile Include="Areas\Admin\ViewModels\PageNodeViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\PropertyViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\SectionTemplateViewModel.cs" />
-    <Compile Include="Areas\Admin\ViewModels\SectionViewModel.cs" />
+    <Compile Include="Areas\Admin\ViewModels\SectionNodeViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\UploadFileViewModel.cs" />
     <Compile Include="Authetication\SimpleAuthenticationProvider.cs" />
     <Compile Include="Authetication\CmsHttpContext.cs" />
@@ -373,6 +379,7 @@
     <Content Include="Areas\Admin\Scripts\Source\core.cms.js" />
     <Content Include="Areas\Admin\Scripts\Source\core.mapping.js" />
     <Content Include="Areas\Admin\Scripts\Source\core.utils.js" />
+    <Content Include="Areas\Admin\Scripts\Source\ko.bindinghandlers\ko.tabs.js" />
     <Content Include="Areas\Admin\Scripts\Source\page.editpage.js" />
     <Content Include="Areas\Admin\Scripts\Source\ko.bindinghandlers\ko.bootstrapmodal.js" />
     <Content Include="Areas\Admin\Scripts\Source\ko.bindinghandlers\ko.slidevisible.js" />
@@ -463,10 +470,6 @@
     <Content Include="Areas\Admin\Scripts\PropertyPlugins\RichTextEditor\ckeditor\skins\moono\readme.md" />
     <Content Include="Areas\Admin\Views\Account\Register.cshtml" />
     <Content Include="Areas\Admin\Views\Account\Login.cshtml" />
-    <Content Include="Areas\Admin\Views\Admin\Dashboard.cshtml" />
-    <Content Include="Areas\Admin\Views\Admin\EditPage.cshtml" />
-    <Content Include="Areas\Admin\Views\Admin\Media.cshtml" />
-    <Content Include="Areas\Admin\Views\Admin\SiteSections.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\EditorTemplates\PropertyViewModel.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\PropertyPluginTemplates\ImagePicker.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\PropertyPluginTemplates\RichTextEditor.cshtml" />
@@ -504,6 +507,24 @@
       <Project>{54f6e8e1-7ebb-40a8-b809-a6a487314b8b}</Project>
       <Name>CmsLite.Utilities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Admin\Trash.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Dashboard\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\SiteSections\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\SiteSections\EditPage.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Media\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Trash\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
