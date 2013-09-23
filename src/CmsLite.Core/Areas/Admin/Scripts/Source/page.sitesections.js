@@ -1,5 +1,5 @@
 ﻿///<reference path="~/Areas/Admin/Scripts/_references.js" />
-(function (window, $) {
+(function (window, $, cms) {
     function initContextMenus() {
         var contextMenuOptions = {
             getContextMenuFromParent: function (parentElement) {
@@ -127,7 +127,7 @@
                             cms.viewmodel.createSectionForm.hide(true);
                         },
                         success: function (json) {
-                            var newSection = cms.utils.mapJsonToSectionViewModel(json);
+                            var newSection = cms.mapping.mapJsonToSectionViewModel(json);
                             cms.viewmodel.sections.push(newSection);
                         }
                     });
@@ -232,7 +232,7 @@
                         formData.parentPageId = data.parentNode().id;
                     }
                     $.ajax({
-                        url: cms.utils.mapPath('~/Admin/SiteSections/CreatePage'),
+                        url: cms.mapping.mapPath('~/Admin/SiteSections/CreatePage'),
                         type: 'POST',
                         data: ko.toJSON(formData),
                         error: function () {
@@ -242,7 +242,7 @@
                             cms.viewmodel.createPageForm.hide(true);
                         },
                         success: function (json) {
-                            var newPage = cms.utils.mapJsonToPageViewModel(json, data);
+                            var newPage = cms.mapping.mapJsonToPageViewModel(json, data);
                             data.parentNode().pageNodes.push(newPage);
                         }
                     });
@@ -289,11 +289,11 @@
     cms.init = function (sectionNodes, sectionTemplates) {
         //setup the page view model
         ko.utils.arrayForEach(sectionNodes, function (sectionNode) {
-            var section = cms.utils.mapJsonToSectionViewModel(sectionNode);
+            var section = cms.mapping.mapJsonToSectionViewModel(sectionNode);
             cms.viewmodel.sections.push(section);
         });
         ko.utils.arrayForEach(sectionTemplates, function (sectionTemplate) {
-            var template = cms.utils.mapJsonToSectionTemplate(sectionTemplate);
+            var template = cms.mapping.mapJsonToSectionTemplate(sectionTemplate);
             cms.viewmodel.createSectionForm.sectionTemplates.push(template);
         });
 
@@ -329,4 +329,4 @@
         var createPageForm = $('#create-page-form');
         ko.applyBindings(cms.viewmodel.createPageForm, createPageForm[0]);
     };
-}(window, jQuery));
+}(window, jQuery, cms));

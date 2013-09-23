@@ -9,6 +9,7 @@ using CmsLite.Interfaces.Services;
 
 namespace CmsLite.Core.Areas.Admin.Controllers
 {
+    [Authorize]
     public class SiteSectionsController : AdminBaseController
     {
         private readonly ISectionNodeService _sectionNodeService;

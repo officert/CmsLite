@@ -1,5 +1,4 @@
-﻿using System;
-using System.Web;
+﻿using System.Web;
 using System.Web.Mvc;
 using CmsLite.Core.Areas.Admin.Models;
 using CmsLite.Core.Areas.Admin.ViewModels;
@@ -8,6 +7,7 @@ using CmsLite.Interfaces.Services;
 
 namespace CmsLite.Core.Areas.Admin.Controllers
 {
+    [Authorize]
     public class MediaController : AdminBaseController
     {
         private readonly IMediaService _mediaService;

@@ -3,8 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web.Security;
 using CmsLite.Core.App_Start;
 using CmsLite.Core.Ioc;
 using CmsLite.Interfaces.Templating;
@@ -12,7 +14,7 @@ using Ninject;
 
 namespace CmsLite.Core
 {
-    public class CmsHost
+    public class CmsModule
     {
         private readonly IKernel _kernel;
         private readonly Assembly _callingAssembly;
@@ -21,7 +23,7 @@ namespace CmsLite.Core
         private DirectoryInfo _projectAdminAreaDir;             //where the static files we need to copy are located
         private DirectoryInfo _callingProjectAdminAreaDir;      //the admin area location of the project using the cms, where we need to copy the file to
 
-        public CmsHost()
+        public CmsModule()
         {
             _kernel = new StandardKernel();
             _callingAssembly = Assembly.GetCallingAssembly();

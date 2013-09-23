@@ -19,7 +19,7 @@ namespace CmsLite.TestApp
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            var cmsHost = new CmsHost();
+            var cmsHost = new CmsModule();
             cmsHost.Init();
         }
     }

@@ -183,7 +183,7 @@
     <Compile Include="Attributes\CmsSectionTemplateAttribute.cs" />
     <Compile Include="Attributes\PostRedirectGetAttributes.cs" />
     <Compile Include="CmsActionInvoker.cs" />
-    <Compile Include="CmsApplication.cs" />
+    <Compile Include="CmsModule.cs" />
     <Compile Include="Controllers\CmsBaseController.cs" />
     <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="Constants\CmsRoutingConstants.cs" />

@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
-using AutoMapper;
-using CmsLite.Core.Areas.Admin.Models;
-using CmsLite.Core.Areas.Admin.ViewModels;
-using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Services;
 
 namespace CmsLite.Core.Areas.Admin.Controllers

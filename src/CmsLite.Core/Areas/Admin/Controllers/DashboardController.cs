@@ -3,6 +3,7 @@ using CmsLite.Core.Areas.Admin.Models;
 
 namespace CmsLite.Core.Areas.Admin.Controllers
 {
+    [Authorize]
     public class DashboardController : AdminBaseController
     {
         public ActionResult Index()

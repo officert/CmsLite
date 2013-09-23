@@ -8,6 +8,7 @@ using CmsLite.Interfaces.Services;
 
 namespace CmsLite.Core.Areas.Admin.Controllers
 {
+    [Authorize]
     public class TrashController : AdminBaseController
     {        
         private readonly ISectionNodeService _sectionNodeService;
