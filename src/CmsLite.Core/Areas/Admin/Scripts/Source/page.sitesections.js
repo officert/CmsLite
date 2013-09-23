@@ -76,6 +76,10 @@
         //create sections
         selectedNode: ko.observable(),
         selectNode: function (data) {
+            ko.utils.arrayForEach(cms.viewmodel.sections(), function(sectionNode) {
+                sectionNode.isSelected(false);
+            });
+            data.isSelected(true);
             cms.viewmodel.selectedNode(data);
         },
         sections: ko.observableArray(),
@@ -272,6 +276,12 @@
             delete: function (data) {
                 alert('Not implemented.');
             }
+        },
+        //utils
+        recurseNodes: function (nodes, delegate) {
+            if (typeof delegate !== 'function') throw new Error("Delegate must be a function.");
+            
+            ko.utils.arrayForEach(nodes, delegate);
         }
     };
 

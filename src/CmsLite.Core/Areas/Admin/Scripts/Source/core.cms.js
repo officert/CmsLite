@@ -94,6 +94,7 @@ var cms = (function ($) { //define our namespace
                 section.displayName = json.DisplayName;
                 section.iconImageName = cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/' + json.IconImageName);
                 section.url = cms.utils.mapPath("~/" + section.urlName);
+                section.isSelected = ko.observable(false);
                 ko.utils.arrayForEach(json.PageNodes, function (pageNode) {
                     var page = cms.utils.mapJsonToPageViewModel(pageNode, section);
                     section.pageNodes.push(page);
@@ -122,6 +123,7 @@ var cms = (function ($) { //define our namespace
                 page.parentNode = parentNode;
                 page.editUrl = cms.utils.mapPath("~/Admin/SiteSections/EditPage/" + json.Id);
                 page.url = parentNode ? parentNode.url + "/" + json.UrlName : null;
+                page.isSelected = ko.observable(false);
                 ko.utils.arrayForEach(json.PageNodes, function (pageNode) {
                     var newPage = cms.utils.mapJsonToPageViewModel(pageNode, page);
                     page.pageNodes.push(newPage);

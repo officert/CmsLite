@@ -208,14 +208,15 @@ ul, ol {
 
 #site-sections {
     > div.col-md-3 {
-        padding-right:0;
+        padding-right: 0;
     }
-    > #node-sidebar {
 
+    > #node-sidebar {
     }
+
     > .page-content {
-        padding-left:0;
-        padding-right:0;
+        padding-left: 0;
+        padding-right: 0;
         .space-box-right(@gray-lighter, white, @gray);
 
         > ul {
@@ -226,6 +227,10 @@ ul, ol {
                 border-bottom-width: 1px;
                 border-color: @gray-lighter;
                 border-bottom-style: solid;
+
+                &.active {
+                    background: @brand-info;
+                }
 
                 a { //any anchor
                     .list-group-item;
@@ -267,6 +272,10 @@ ul, ol {
 
                 li.node { //any li under the first one
                     padding: 0 0 0 30px;
+
+                    &.active {
+                        background: @brand-info;
+                    }
                 }
             }
         }

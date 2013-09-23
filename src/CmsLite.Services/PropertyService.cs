@@ -18,10 +18,10 @@ namespace CmsLite.Services
 
         public Property Create(PageNode pageNode, PropertyTemplate propertyTemplate, string text = null, bool commit = true)
         {
-            if(pageNode == null)
+            if (pageNode == null)
                 throw new ArgumentException(Messages.PageNodeCannotBeNull);
 
-            if(propertyTemplate == null)
+            if (propertyTemplate == null)
                 throw new ArgumentException(Messages.PropertyTemplateCannotBeNull);
 
             return CreateProperty(pageNode, propertyTemplate, text, commit);
@@ -39,13 +39,15 @@ namespace CmsLite.Services
             var propertyTemplate = pageNode.PageTemplate.PropertyTemplates.FirstOrDefault(x => x.Id == propertyTemplateId);
 
             if (propertyTemplate == null)
-                throw new ArgumentException(string.Format(Messages.PropertyTemplateNotFoundForPageTemplate, propertyTemplateId, pageNode.PageTemplateId));
+                throw new ArgumentException(string.Format(Messages.PropertyTemplateNotFoundForPageTemplate, propertyTemplateId, pageNode.PageTemplate.Id));
 
             return CreateProperty(pageNode, propertyTemplate, text, commit);
         }
 
         public void Delete(int id, bool commit = true)
         {
+            if (id < 1) throw new ArgumentException("id");
+
             var propertyDbSet = UnitOfWork.Context.GetDbSet<Property>();
             var property = propertyDbSet.FirstOrDefault(x => x.Id == id);
 

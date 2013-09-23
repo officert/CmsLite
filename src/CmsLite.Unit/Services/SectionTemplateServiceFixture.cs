@@ -102,6 +102,17 @@ namespace CmsLite.Unit.Services
         #region Delete Tests
 
         [Test]
+        public void Delete_IdLessThan1_ThrowsException()
+        {
+            const int sectionTemplateId = 0;
+
+            Assert.That(() => _sectionTemplateService.Delete(sectionTemplateId),
+                Throws.Exception.TypeOf<ArgumentException>()
+                .With.Message.EqualTo("id"));
+        }
+
+
+        [Test]
         public void Delete_SectionTemplateNotFound_ThrowsException()
         {
             const int sectionTemplateId = 99999999;

@@ -6565,6 +6565,9 @@ ol {
   border-color: #fafafa;
   border-bottom-style: solid;
 }
+#site-sections > .page-content > ul > li.node.active {
+  background: #9bcee8;
+}
 #site-sections > .page-content > ul > li.node a {
   position: relative;
   display: block;
@@ -6649,6 +6652,9 @@ a#site-sections > .page-content > ul > li.node a:focus {
 }
 #site-sections > .page-content > ul > li.node li.node {
   padding: 0 0 0 30px;
+}
+#site-sections > .page-content > ul > li.node li.node.active {
+  background: #9bcee8;
 }
 #edit-page > form {
   padding-top: 1px;

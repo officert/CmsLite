@@ -1,23 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using CmsLite.Domains.Entities;
+using CmsLite.Interfaces.Data;
+using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
+using CmsLite.Services;
 using CmsLite.Utilities.Cms;
+using Moq;
 using NUnit.Framework;
 using SharpTestsEx;
 
 namespace CmsLite.Unit.Services
 {
     [TestFixture]
-    [Ignore("Need to convert to Unit Tests")]
+    [Category("Unit")]
     public class PropertyServiceFixture : ServiceBaseFixture
     {
-        private List<int> _createdSectionTemplateIds;
+        private IPropertyService _propertyService;
+        private Mock<IUnitOfWork> _unitOfWorkMock;
+        private Mock<IDbContext> _dbContextMock;
 
         protected override void PostFixtureSetup()
         {
-            _createdSectionTemplateIds = new List<int>();
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _dbContextMock = new Mock<IDbContext>();
+            _unitOfWorkMock.Setup(x => x.Context).Returns(_dbContextMock.Object);
+
+            _propertyService = new PropertyService(_unitOfWorkMock.Object);
         }
 
         [TestFixtureTearDown]
@@ -29,8 +40,6 @@ namespace CmsLite.Unit.Services
         [TearDown]
         public void TearDown()
         {
-            CleanupSectionTemplates(_createdSectionTemplateIds);
-            _createdSectionTemplateIds.Clear();
         }
 
         #region Create
@@ -40,9 +49,10 @@ namespace CmsLite.Unit.Services
         {
             //arrange
             const int pageNodeId = 99999;
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>());
 
             //act + assert
-            Assert.That(() => PropertyService.Create(pageNodeId, 0),
+            Assert.That(() => _propertyService.Create(pageNodeId, 0),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(string.Format(Messages.PageNodeNotFound, pageNodeId)));
         }
@@ -51,18 +61,25 @@ namespace CmsLite.Unit.Services
         public void Create_NoPropertyTemplateExistsOnPageTemplateForId_ThrowsException()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", "foobar");
             const int propertyTemplateId = 99999;
+            var pageNode = new PageNode
+            {
+                Id = 22,
+                PageTemplate = new PageTemplate
+                {
+                    Id = 1,
+                    PropertyTemplates = new Collection<PropertyTemplate>()
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>
+            {
+                pageNode
+            });
 
             //act + assert
-            Assert.That(() => PropertyService.Create(pageNode.Id, propertyTemplateId),
+            Assert.That(() => _propertyService.Create(pageNode.Id, propertyTemplateId),
                 Throws.Exception.TypeOf<ArgumentException>()
-                .With.Message.EqualTo(string.Format(Messages.PropertyTemplateNotFoundForPageTemplate, propertyTemplateId, pageTemplate.Id)));
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
+                .With.Message.EqualTo(string.Format(Messages.PropertyTemplateNotFoundForPageTemplate, propertyTemplateId, pageNode.PageTemplate.Id)));
         }
 
         [Test]
@@ -70,9 +87,10 @@ namespace CmsLite.Unit.Services
         {
             //arrange
             PageNode pageNode = null;
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>());
 
             //act + assert
-            Assert.That(() => PropertyService.Create(pageNode, null),
+            Assert.That(() => _propertyService.Create(pageNode, null),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(Messages.PageNodeCannotBeNull));
         }
@@ -81,43 +99,55 @@ namespace CmsLite.Unit.Services
         public void Create_PropertyTemplateIsNull_ThrowsException()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", "foobar");
+            var pageNode = new PageNode{ Id = 1};
 
             PropertyTemplate propertyTemplate = null;
 
             //act + assert
-            Assert.That(() => PropertyService.Create(pageNode, propertyTemplate),
+            Assert.That(() => _propertyService.Create(pageNode, propertyTemplate),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(Messages.PropertyTemplateCannotBeNull));
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         [Test]
         public void Create_OtherPropertiesExistOnPageNode_OrderIsLastProperty()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", "foobar");
-            var propertyTemplate = PropertyTemplateService.Create(pageTemplate.Id, "Foobar", CmsPropertyType.ImagePicker, null);
-            var property1 = PropertyService.Create(pageNode.Id, propertyTemplate.Id);
+            var pageNode = new PageNode
+            {
+                Id = 1,
+                Properties = new Collection<Property>
+                {
+                    new Property { Id = 1, Order = 1 },
+                    new Property { Id = 2, Order = 2 }
+                },
+                PageTemplate = new PageTemplate
+                {
+                    PropertyTemplates = new Collection<PropertyTemplate>()
+                    {
+                        new PropertyTemplate
+                        {
+                            Id = 1,
+                            CmsPropertyType = CmsPropertyType.RichTextEditor.ToString()
+                        }
+                    }
+                }
+            };
+            _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>
+            {
+                pageNode
+            });
+            _dbContextMock.Setup(x => x.GetDbSet<Property>()).Returns(new InMemoryDbSet<Property>());
 
             //act
-            var property2 = PropertyService.Create(pageNode.Id, propertyTemplate.Id);
+            var property = _propertyService.Create(pageNode.Id, pageNode.PageTemplate.PropertyTemplates.First().Id);
 
             //assert
-            property2.Order.Should().Be.EqualTo(2);     //because creating a new property template automatically adds a property to any
+            property.Order.Should().Be.EqualTo(2);     //because creating a new property template automatically adds a property to any
                                                         //page nodes that use the page template the property template belongs to this is 2
                                                         //1) auto created property
                                                         //2) property 1
                                                         //3) property 2 - the order for this property should be 2
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         #endregion
@@ -125,24 +155,31 @@ namespace CmsLite.Unit.Services
         #region Delete
 
         [Test]
+        public void Delete_IdIsLessThan1_ThrowsException()
+        {
+            //arrange
+            const int propertyId = 0;
+
+            //act + assert
+            Assert.That(() => _propertyService.Delete(propertyId), Throws.ArgumentException.With.Message.EqualTo("id"));
+        }
+
+        [Test]
         public void Delete_DeletesProperty()
         {
             //arrange
-            var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
-            var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
-            var pageNode = PageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", "foobar");
-            var propertyTemplate = PropertyTemplateService.Create(pageTemplate.Id, "Foobar", CmsPropertyType.ImagePicker, null);
-            var property = PropertyService.Create(pageNode.Id, propertyTemplate.Id);
+            var property = new Property { Id = 1 };
+            _dbContextMock.Setup(x => x.GetDbSet<Property>()).Returns(new InMemoryDbSet<Property>
+            {
+                property
+            });
 
             //act
-            PropertyService.Delete(property.Id);
+            _propertyService.Delete(property.Id);
 
             //assert
-            var deletedProperty = UnitOfWork.Context.GetDbSet<Property>().FirstOrDefault(x => x.Id == property.Id);
+            var deletedProperty = _dbContextMock.Object.GetDbSet<Property>().FirstOrDefault(x => x.Id == property.Id);
             deletedProperty.Should().Be.Null();
-
-            _createdSectionTemplateIds.Add(sectionTemplate.Id);
         }
 
         #endregion

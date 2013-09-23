@@ -64,6 +64,8 @@ namespace CmsLite.Services
 
         public void Delete(int id, bool commit = true)
         {
+            if (id < 1) throw new ArgumentException("id");
+
             var sectionTemplateDbSet = UnitOfWork.Context.GetDbSet<SectionTemplate>();
             var sectionTemplate = sectionTemplateDbSet.Include(x => x.PageTemplates).FirstOrDefault(x => x.Id == id);
 

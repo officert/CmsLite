@@ -16,7 +16,7 @@
     </script>
     <script type="text/html" id="section-template">
         <li class="node">
-            <a href="#" data-bind="click: $root.selectNode">
+            <a href="#" data-bind="click: $root.selectNode, css: { active : isSelected }">
                 <img alt="icon" data-bind="attr: { src : iconImageName }" /><span data-bind="    text: displayName"></span>
             </a>
             <ul data-bind="visible: pageNodes">
@@ -27,7 +27,7 @@
     </script>
     <script type="text/html" id="page-template">
         <li class="node">
-            <a href="#" data-bind="click: $root.selectNode">
+            <a href="#" data-bind="click: $root.selectNode, css: { active : isSelected }">
                 <img alt="icon" data-bind="attr: { src : iconImageName }" /><span data-bind="    text: displayName"></span>
             </a>
             <ul data-bind="visible: pageNodes">
