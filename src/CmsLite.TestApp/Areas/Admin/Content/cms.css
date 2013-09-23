@@ -6323,6 +6323,10 @@ fieldset[disabled] .btn-info.active {
   /* Firefox 16+, Opera 12.50+ */
 
 }
+/* Alers */
+.alert > i {
+  margin-right: 12px;
+}
 /* Content Area */
 .content-area {
   padding-left: 20px;
@@ -6354,6 +6358,9 @@ fieldset[disabled] .btn-info.active {
 /* Button Groups */
 .btn-group > .btn > i {
   margin-right: 12px;
+}
+.well .btn-group > .btn > i {
+  margin-right: 0;
 }
 /* Alerts */
 .alert ul {
@@ -6532,7 +6539,12 @@ ol {
   background: #f3f3f3;
 }
 /* ============================== Pages ===================================== */
+#site-sections > div.col-md-3 {
+  padding-right: 0;
+}
 #site-sections > .page-content {
+  padding-left: 0;
+  padding-right: 0;
   border-radius: 3px;
   background: #fafafa;
   -webkit-box-shadow: 1px 0px 0px 0px #dbdbdb;

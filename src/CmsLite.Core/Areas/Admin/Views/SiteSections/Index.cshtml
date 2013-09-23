@@ -16,22 +16,9 @@
     </script>
     <script type="text/html" id="section-template">
         <li class="node">
-            <a href="#">
-                <i class="icon-caret-right"></i>
+            <a href="#" data-bind="click: $root.selectNode">
                 <img alt="icon" data-bind="attr: { src : iconImageName }" /><span data-bind="    text: displayName"></span>
             </a>
-            <div class="context-menu popover bottom" tabindex="5">
-                <div class="arrow"></div>
-                <div class="popover-content">
-                    <div class="popover-content">
-                        <ul>
-                            <li><a href="#" target="_blank" data-bind="attr: { href : url  }"><i class="icon-share-alt"></i>View section</a></li>
-                            <li><a href="#" data-bind="click: $root.deleteSectionForm.show"><i class="icon-remove"></i>Delete section</a></li>
-                            <li><a href="#" data-bind="click: $root.createPageForm.show"><i class="icon-plus"></i>Create new page</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
             <ul data-bind="visible: pageNodes">
                 <!-- ko template: { name: 'page-template', foreach: pageNodes } -->
                 <!-- /ko -->
@@ -40,19 +27,9 @@
     </script>
     <script type="text/html" id="page-template">
         <li class="node">
-            <a href="#"><i class="icon-caret-right"></i>
-                <img alt="icon" data-bind="attr: { src : iconImageName }" /><span data-bind="text: displayName"></span></a>
-            <div class="context-menu popover bottom">
-                <div class="arrow"></div>
-                <div class="popover-content">
-                    <ul>
-                        <li><a href="#" target="_blank" data-bind="attr: { href : url  }"><i class="icon-share-alt"></i>View page</a></li>
-                        <li><a href="#" data-bind="click: $root.deletePageForm.show"><i class="icon-remove"></i>Delete page</a></li>
-                        <li data-bind="visible: pageTemplates().length > 0"><a href="#" data-bind="click: $root.createPageForm.show"><i class="icon-plus"></i>Create new page</a></li>
-                        <li><a href="#" data-bind="attr: { href : editUrl  }"><i class="icon-edit"></i>Edit page</a></li>
-                    </ul>
-                </div>
-            </div>
+            <a href="#" data-bind="click: $root.selectNode">
+                <img alt="icon" data-bind="attr: { src : iconImageName }" /><span data-bind="    text: displayName"></span>
+            </a>
             <ul data-bind="visible: pageNodes">
                 <!-- ko template: { name: 'page-template', foreach: pageNodes } -->
                 <!-- /ko -->
@@ -65,16 +42,49 @@
         <h3>
             <i class="icon-book"></i>Sections</h3>
         <div class="btn-group">
-            <button class="btn btn-default" type="button" data-bind="click: toggleSectionsOpen, css: { 'active': allAccordionsOpen() }"><i data-bind="    css: !allAccordionsOpen() ? 'icon-expand' : 'icon-collapse'"></i><span data-bind="    text: !allAccordionsOpen() ? 'Open All' : 'Close All'"></span></button>
+            @*<button class="btn btn-default" type="button" data-bind="click: toggleSectionsOpen, css: { 'active': allAccordionsOpen() }"><i data-bind="    css: !allAccordionsOpen() ? 'icon-expand' : 'icon-collapse'"></i><span data-bind="    text: !allAccordionsOpen() ? 'Open All' : 'Close All'"></span></button>*@
             <button id="create-section-trigger" class="btn btn-default" type="button" data-bind="click: createSectionForm.show"><i class="icon-expand-alt"></i><span>Create new section</span> </button>
         </div>
     </header>
-    <div class="page-content">
+    <div id="node-sidebar" class="col-md-3 pull-right">
+        <div class="alert alert-info">
+            <i class="icon-info-sign icon-2x"></i>Click on a node in the tree to <strong>select</strong> it, then use these buttons to 
+            <div class="label label-danger">Delete the node</div>
+            ,
+            <div class="label label-info">Edit the node</div>
+            or,
+            <div class="label label-success">Create child nodes</div>
+            .
+        </div>
+        <!-- Sections -->
+        <div class="well" data-bind="visible: selectedNode()">
+            <div class="form-group">
+                <label class="control-label">Display name :</label>
+                <div class="control-text" data-bind="text: selectedNode() && selectedNode().displayName"></div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Url name :</label>
+                <div class="control-text" data-bind="text: selectedNode() && selectedNode().urlName"></div>
+            </div>
+            <div class="btn-group" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'">
+                <a href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url  }"><i class="icon-share-alt"></i></a>
+                <button type="button" class="btn btn-default" data-bind="click: function() { $root.deleteSectionForm.show($root.selectedNode()) }"><i class="icon-remove"></i></button>
+                <button type="button" class="btn btn-default" data-bind="click: function() { $root.createPageForm.show($root.selectedNode()) }"><i class="icon-plus"></i></button>
+            </div>
+            <div class="btn-group" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'">
+                <a href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url  }"><i class="icon-share-alt"></i></a>
+                <button type="button" class="btn btn-default" data-bind="click: function() { $root.deletePageForm.show($root.selectedNode()) }"><i class="icon-remove"></i></button>
+                <button type="button" class="btn btn-default" data-bind="visible: selectedNode() && selectedNode().pageTemplates().length > 0, click: $root.createPageForm.show"><i class="icon-plus"></i></button>
+                <a href="#" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().editUrl  }"><i class="icon-edit"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="page-content col-md-9">
         <ul data-bind="visible: sections().length > 0" oncontextmenu="return false;" class="list-group space-box-content">
             <!-- ko template: { name: 'section-template', foreach: sections } -->
             <!-- /ko -->
         </ul>
-        <div class="alert alert-info" data-bind="visible: sections().length < 1">You don't have any sections created yet. Use the <a href="#" class="label label-info" data-bind="click: cms.viewmodel.createSectionForm.show">Create new section</a> form to create your first site section.</div>
+        <div class="alert alert-info" data-bind="visible: sections().length < 1">You don't have any sections created yet. Use the <a href="#" class="label label-info" data-bind="    click: cms.viewmodel.createSectionForm.show">Create new section</a> form to create your first site section.</div>
     </div>
 </div>
 <!---------------------------------- Modals ---------------------------------->
@@ -141,11 +151,11 @@
 <div id="delete-section-form" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-body container">
+            <div class="modal-body container alert alert-danger">
                 <p>Are you sure you would like to delete this section? Deleting this section will delete all the pages that belong to it.</p>
                 <div class="pull-right">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-warning" data-bind="click: cms.viewmodel.deleteSectionForm.delete">Delete</button>
+                    <button type="submit" class="btn btn-danger" data-bind="click: cms.viewmodel.deleteSectionForm.delete">Delete</button>
                 </div>
             </div>
         </div>
@@ -154,11 +164,11 @@
 <div id="delete-page-form" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-body container">
+            <div class="modal-body container alert alert-danger">
                 <p>Are you sure you would like to delete this page? Deleting this section will delete all the pages that belong to it.</p>
                 <div class="pull-right">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-warning" data-bind="click: cms.viewmodel.deletePageForm.delete">Delete</button>
+                    <button type="submit" class="btn btn-danger" data-bind="click: cms.viewmodel.deletePageForm.delete">Delete</button>
                 </div>
             </div>
         </div>

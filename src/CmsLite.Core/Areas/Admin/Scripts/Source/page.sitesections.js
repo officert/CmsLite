@@ -20,65 +20,64 @@
         };
         $('#site-sections > div.page-content ul li.node a').contextmenu(contextMenuOptions);
     }
-    var accordionOptions = {
-        collapseAll: false,
-        headerElements: function () {
-            return $(this).find('li.node a');
-        },
-        headerToContainer: function () {
-            return $(this).siblings('ul');
-        },
-        onOpen: function () {
-            $(this).children('i').removeClass('icon-caret-right');
-            $(this).children('i').addClass('icon-caret-down');
-            //$(this).children('img').attr('src', cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/folderopen.png'));
+    //var accordionOptions = {
+    //    collapseAll: false,
+    //    headerElements: function () {
+    //        return $(this).find('li.node a');
+    //    },
+    //    headerToContainer: function () {
+    //        return $(this).siblings('ul');
+    //    },
+    //    onOpen: function () {
+    //        $(this).children('i').removeClass('icon-caret-right');
+    //        $(this).children('i').addClass('icon-caret-down');
+    //        //$(this).children('img').attr('src', cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/folderopen.png'));
 
-            cms.viewmodel.allAccordionsOpen(true);
-        },
-        onClose: function () {
-            $(this).children('i').removeClass('icon-caret-down');
-            $(this).children('i').addClass('icon-caret-right');
-            //$(this).children('img').attr('src', cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/folder.png'));
+    //        cms.viewmodel.allAccordionsOpen(true);
+    //    },
+    //    onClose: function () {
+    //        $(this).children('i').removeClass('icon-caret-down');
+    //        $(this).children('i').addClass('icon-caret-right');
+    //        //$(this).children('img').attr('src', cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/folder.png'));
 
-            var accordions = $('#sitesections-content > ul').accordion('accordions');
-            var anyAccordionsOpen = false;
-            $(accordions).each(function () {
-                this.IsOpen() ? anyAccordionsOpen = true : anyAccordionsOpen = false;
-            });
-            if (!anyAccordionsOpen) {
-                cms.viewmodel.allAccordionsOpen(false);
-            }
-        },
-        IsOpen: function () {
-            return this.Content.is(':visible');
-        }
-    };
-    function initAccordions(options) {
-        $('#site-sections > div.page-content > ul').accordion(options);
-    }
+    //        var accordions = $('#sitesections-content > ul').accordion('accordions');
+    //        var anyAccordionsOpen = false;
+    //        $(accordions).each(function () {
+    //            this.IsOpen() ? anyAccordionsOpen = true : anyAccordionsOpen = false;
+    //        });
+    //        if (!anyAccordionsOpen) {
+    //            cms.viewmodel.allAccordionsOpen(false);
+    //        }
+    //    },
+    //    IsOpen: function () {
+    //        return this.Content.is(':visible');
+    //    }
+    //};
+    //function initAccordions(options) {
+    //    $('#site-sections > div.page-content > ul').accordion(options);
+    //}
 
     cms.viewmodel = {
         //Properties
-        allAccordionsOpen: ko.observable(false),
-        toggleSectionsOpen: function () {
-            var toggleSectionOpen;
-            if (cms.viewmodel.allAccordionsOpen()) {
-                $('#site-sections > div.page-content > ul').accordion('closeAll');
-                toggleSectionOpen = false;
-            } else {
-                $('#site-sections > div.page-content > ul').accordion('openAll');
-                toggleSectionOpen = true;
-            }
-            cms.viewmodel.allAccordionsOpen(toggleSectionOpen);
-        },
-        //modal windows
-        hideLoadingModal: function () {
-            $('#loading').modal('hide');
-        },
-        showLoadingModel: function () {
-            $('#loading').modal('show');
-        },
+        //allAccordionsOpen: ko.observable(false),
+        //toggleSectionsOpen: function () {
+        //    var toggleSectionOpen;
+        //    if (cms.viewmodel.allAccordionsOpen()) {
+        //        $('#site-sections > div.page-content > ul').accordion('closeAll');
+        //        toggleSectionOpen = false;
+        //    } else {
+        //        $('#site-sections > div.page-content > ul').accordion('openAll');
+        //        toggleSectionOpen = true;
+        //    }
+        //    cms.viewmodel.allAccordionsOpen(toggleSectionOpen);
+        //},
+        //modal windowsopenall
+
         //create sections
+        selectedNode: ko.observable(),
+        selectNode: function (data) {
+            cms.viewmodel.selectedNode(data);
+        },
         sections: ko.observableArray(),
         createSectionForm: {
             sectionTemplates: ko.observableArray(),
@@ -88,7 +87,7 @@
             show: function (data, event) {
                 var form = $('#create-sections-form');
                 form.modal('show');
-                
+
                 var triggerButton = $('#create-section-trigger');
                 triggerButton.addClass('active');
             },
@@ -97,7 +96,7 @@
                 if (hideModal) {
                     form.modal('hide');
                 }
-                
+
                 var triggerButton = $('#create-section-trigger');
                 triggerButton.removeClass('active');
             },
@@ -119,7 +118,6 @@
                         data: ko.toJSON(formData),
                         error: function () {
                             alert('error');
-                            cms.viewmodel.hideLoadingModal();
                         },
                         beforeSend: function () {
                             cms.viewmodel.createSectionForm.hide(true);
@@ -167,7 +165,6 @@
                     data: ko.toJSON(formData),
                     error: function () {
                         alert('error');
-                        cms.viewmodel.hideLoadingModal();
                     },
                     beforeSend: function () {
                         cms.viewmodel.deleteSectionForm.hide(true);
@@ -236,7 +233,6 @@
                         data: ko.toJSON(formData),
                         error: function () {
                             alert('error');
-                            cms.viewmodel.hideLoadingModal();
                         },
                         beforeSend: function () {
                             cms.viewmodel.createPageForm.hide(true);
@@ -295,20 +291,15 @@
 
         //init plugins
         initContextMenus();
-        initAccordions(accordionOptions);
-        $('#site-sections > div.page-content > ul').accordion('openAll');       //start with accordions open
+        //initAccordions(accordionOptions);
+        //$('#site-sections > div.page-content > ul').accordion('openAll');       //start with accordions open
 
         //jquery ajax setup
         $.ajaxSetup({
             contentType: 'application/json',
             beforeSend: function () {
-                cms.viewmodel.showLoadingModel();
             },
             complete: function () {
-                cms.viewmodel.hideLoadingModal();
-
-                initContextMenus();
-                initAccordions(accordionOptions);
             }
         });
 

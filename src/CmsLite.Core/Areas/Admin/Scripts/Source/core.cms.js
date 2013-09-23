@@ -102,7 +102,6 @@ var cms = (function ($) { //define our namespace
                     var pageTemp = cms.utils.mapJsonToPageTemplateViewModel(pageTemplate);
                     section.pageTemplates.push(pageTemp);
                 });
-
                 return section;
             },
             mapJsonToSectionTemplate: function (json) {
@@ -118,10 +117,10 @@ var cms = (function ($) { //define our namespace
                 page.id = json.Id;
                 page.order = json.Order;
                 page.displayName = json.DisplayName;
-                page.urlName = json.urlName;
+                page.urlName = json.UrlName;
                 page.iconImageName = cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/' + json.IconImageName);
                 page.parentNode = parentNode;
-                page.editUrl = cms.utils.mapPath("~/Admin/EditPage/" + json.Id);
+                page.editUrl = cms.utils.mapPath("~/Admin/SiteSections/EditPage/" + json.Id);
                 page.url = parentNode ? parentNode.url + "/" + json.UrlName : null;
                 ko.utils.arrayForEach(json.PageNodes, function (pageNode) {
                     var newPage = cms.utils.mapJsonToPageViewModel(pageNode, page);
@@ -131,7 +130,6 @@ var cms = (function ($) { //define our namespace
                     var pageTemp = cms.utils.mapJsonToPageTemplateViewModel(pageTemplate);
                     page.pageTemplates.push(pageTemp);
                 });
-
                 return page;
             },
             mapJsonToPageTemplateViewModel: function (json) {

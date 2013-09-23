@@ -26,33 +26,53 @@
         .transition(background-image);
     }
 }
+
 .btn-default {
-  .button-variant(@btn-default-color; @btn-default-bg; @btn-default-border);
-  #gradient.vertical(@btn-default-bg, darken(@btn-default-bg, 5%));
+    .button-variant(@btn-default-color;
+    @btn-default-bg;
+    @btn-default-border
+    );
+    #gradient.vertical(@btn-default-bg, darken(@btn-default-bg, 5%));
 }
+
 .btn-primary {
-  .button-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-border);
-  #gradient.vertical(@btn-primary-bg, darken(@btn-primary-bg, 5%));
+    .button-variant(@btn-primary-color;
+    @btn-primary-bg;
+    @btn-primary-border
+    );
+    #gradient.vertical(@btn-primary-bg, darken(@btn-primary-bg, 5%));
 }
 // Warning appears as orange
 .btn-warning {
-  .button-variant(@btn-warning-color; @btn-warning-bg; @btn-warning-border);
-  #gradient.vertical(@btn-warning-bg, darken(@btn-warning-bg, 5%));
+    .button-variant(@btn-warning-color;
+    @btn-warning-bg;
+    @btn-warning-border
+    );
+    #gradient.vertical(@btn-warning-bg, darken(@btn-warning-bg, 5%));
 }
 // Danger and error appear as red
 .btn-danger {
-  .button-variant(@btn-danger-color; @btn-danger-bg; @btn-danger-border);
-  #gradient.vertical(@btn-danger-bg, darken(@btn-danger-bg, 5%));
+    .button-variant(@btn-danger-color;
+    @btn-danger-bg;
+    @btn-danger-border
+    );
+    #gradient.vertical(@btn-danger-bg, darken(@btn-danger-bg, 5%));
 }
 // Success appears as green
 .btn-success {
-  .button-variant(@btn-success-color; @btn-success-bg; @btn-success-border);
-  #gradient.vertical(@btn-success-bg, darken(@btn-success-bg, 5%));
+    .button-variant(@btn-success-color;
+    @btn-success-bg;
+    @btn-success-border
+    );
+    #gradient.vertical(@btn-success-bg, darken(@btn-success-bg, 5%));
 }
 // Info appears as blue-green
 .btn-info {
-  .button-variant(@btn-info-color; @btn-info-bg; @btn-info-border);
-  #gradient.vertical(@btn-info-bg, darken(@btn-info-bg, 5%));
+    .button-variant(@btn-info-color;
+    @btn-info-bg;
+    @btn-info-border
+    );
+    #gradient.vertical(@btn-info-bg, darken(@btn-info-bg, 5%));
 }
 
 
@@ -66,5 +86,12 @@
 .dropdown {
     > .dropdown-toggle {
         .transition(background-color);
+    }
+}
+
+/* Alers */
+.alert {
+    > i {
+        margin-right: @btn-icon-margin;
     }
 }
