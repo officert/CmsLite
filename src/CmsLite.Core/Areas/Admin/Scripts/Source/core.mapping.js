@@ -9,33 +9,27 @@
         this.urlName = undefined;
         this.iconImageName = undefined;
         this.nodeType = undefined;
-    }
-
-    function sectionViewModel() {
-        var self = this;
-        nodeViewModel.call(self);
-
         this.pageNodes = ko.observableArray();
         this.pageTemplates = ko.observableArray();
         this.url = undefined;
     }
 
-    sectionViewModel.prototype = new nodeViewModel();
-    sectionViewModel.constructor = nodeViewModel.constructor;
+    function sectionNodeViewModel() {
+        var self = this;
+        nodeViewModel.call(self);
+    }
+    sectionNodeViewModel.prototype = new nodeViewModel();
+    sectionNodeViewModel.constructor = nodeViewModel.constructor;
 
-    function pageViewModel() {
+    function pageNodeViewModel() {
         var self = this;
         nodeViewModel.call(self);
 
-        this.pageNodes = ko.observableArray();
-        this.pageTemplates = ko.observableArray();
         this.editUrl = undefined;
-        this.url = undefined;
         this.parentNode = undefined;
     }
-
-    pageViewModel.prototype = new nodeViewModel();
-    pageViewModel.constructor = nodeViewModel.constructor;
+    pageNodeViewModel.prototype = new nodeViewModel();
+    pageNodeViewModel.constructor = nodeViewModel.constructor;
 
     function sectionTemplateViewModel() {
         var self = this;
@@ -53,18 +47,18 @@
     
 
     cms.mapping = {
-        mapJsonToSectionViewModel: function (json) {
-            var section = new sectionViewModel();
-            section.nodeType = section instanceof sectionViewModel ? "section" : undefined;
+        mapJsonToSectionNodeViewModel: function (json) {
+            var section = new sectionNodeViewModel();
+            section.nodeType = section instanceof sectionNodeViewModel ? "section" : undefined;
             section.id = json.Id;
             section.order = json.Order;
             section.urlName = json.UrlName;
+            section.url = cms.utils.mapPath("~/" + section.urlName);
             section.displayName = json.DisplayName;
             section.iconImageName = cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/' + json.IconImageName);
-            section.url = cms.utils.mapPath("~/" + section.urlName);
             section.isSelected = ko.observable(false);
             ko.utils.arrayForEach(json.PageNodes, function (pageNode) {
-                var page = cms.mapping.mapJsonToPageViewModel(pageNode, section);
+                var page = cms.mapping.mapJsonToPageNodeViewModel(pageNode, section);
                 section.pageNodes.push(page);
             });
             ko.utils.arrayForEach(json.PageTemplates, function (pageTemplate) {
@@ -80,20 +74,20 @@
             sectionTemplate.name = json.Name;
             return sectionTemplate;
         },
-        mapJsonToPageViewModel: function (json, parentNode) {
-            var page = new pageViewModel();
-            page.nodeType = page instanceof pageViewModel ? "page" : undefined;
+        mapJsonToPageNodeViewModel: function (json, parentNode) {
+            var page = new pageNodeViewModel();
+            page.nodeType = page instanceof pageNodeViewModel ? "page" : undefined;
             page.id = json.Id;
             page.order = json.Order;
             page.displayName = json.DisplayName;
-            page.urlName = json.UrlName;
+            page.urlName = parentNode ? parentNode.url + "/" + json.UrlName : null;
+            page.url = parentNode ? parentNode.url + "/" + json.UrlName : null;
             page.iconImageName = cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/' + json.IconImageName);
             page.parentNode = parentNode;
             page.editUrl = cms.utils.mapPath("~/Admin/SiteSections/EditPage/" + json.Id);
-            page.url = parentNode ? parentNode.url + "/" + json.UrlName : null;
             page.isSelected = ko.observable(false);
             ko.utils.arrayForEach(json.PageNodes, function (pageNode) {
-                var newPage = cms.mapping.mapJsonToPageViewModel(pageNode, page);
+                var newPage = cms.mapping.mapJsonToPageNodeViewModel(pageNode, page);
                 page.pageNodes.push(newPage);
             });
             ko.utils.arrayForEach(json.PageTemplates, function (pageTemplate) {

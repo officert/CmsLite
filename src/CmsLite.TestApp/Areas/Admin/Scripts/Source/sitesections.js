@@ -81,8 +81,8 @@
         showLoadingModel: function () {
             $('#loading').modal('show');
         },
-        //create sections
-        sections: ko.observableArray(),
+        //create sectionNodes
+        sectionNodes: ko.observableArray(),
         createSectionForm: {
             sectionTemplates: ko.observableArray(),
             selectedSectionTemplateId: ko.observable(),
@@ -137,14 +137,14 @@
                             cms.viewmodel.createSectionForm.hide(true);
                         },
                         success: function (json) {
-                            var newSection = cms.utils.mapJsonToSectionViewModel(json);
-                            cms.viewmodel.sections.push(newSection);
+                            var newSection = cms.utils.mapJsonToSectionNodeViewModel(json);
+                            cms.viewmodel.sectionNodes.push(newSection);
                         }
                     });
                 }
             }
         },
-        //delete sections
+        //delete sectionNodes
         deleteSectionForm: {
             parentNode: ko.observable(),
             init: (function () {
@@ -185,11 +185,11 @@
                         cms.viewmodel.deleteSectionForm.hide(true);
                     },
                     success: function (json) {
-                        var foundSection = ko.utils.arrayFirst(cms.viewmodel.sections(), function (section) {
+                        var foundSection = ko.utils.arrayFirst(cms.viewmodel.sectionNodes(), function (section) {
                             return section.id === data.parentNode().id;
                         });
                         if (foundSection) {
-                            cms.viewmodel.sections.remove(foundSection);
+                            cms.viewmodel.sectionNodes.remove(foundSection);
                         }
                     }
                 });
@@ -254,7 +254,7 @@
                             cms.viewmodel.createPageForm.hide(true);
                         },
                         success: function (json) {
-                            var newPage = cms.utils.mapJsonToPageViewModel(json, data);
+                            var newPage = cms.utils.mapJsonToPageNodeViewModel(json, data);
                             data.parentNode().pageNodes.push(newPage);
                         }
                     });
@@ -295,8 +295,8 @@
     cms.init = function (sectionNodes, sectionTemplates) {
         //setup the page view model
         ko.utils.arrayForEach(sectionNodes, function (sectionNode) {
-            var section = cms.utils.mapJsonToSectionViewModel(sectionNode);
-            cms.viewmodel.sections.push(section);
+            var section = cms.utils.mapJsonToSectionNodeViewModel(sectionNode);
+            cms.viewmodel.sectionNodes.push(section);
         });
         ko.utils.arrayForEach(sectionTemplates, function (sectionTemplate) {
             var template = cms.utils.mapJsonToSectionTemplate(sectionTemplate);

@@ -128,15 +128,17 @@ namespace CmsLite.Unit.Services
         {
             //arrange
             const string controllerName = "SectionTemplateServiceFixtureController";
-            _dbContextMock.Setup(x => x.GetDbSet<SectionTemplate>()).Returns(new InMemoryDbSet<SectionTemplate>());
-
-            var sectionTemplate = _sectionTemplateService.Create(controllerName, "");
+            var sectionTemplate = new SectionTemplate { Id = 1 };
+            _dbContextMock.Setup(x => x.GetDbSet<SectionTemplate>()).Returns(new InMemoryDbSet<SectionTemplate>
+            {
+                sectionTemplate
+            });
 
             //act
             _sectionTemplateService.Delete(sectionTemplate.Id);
 
             //assert
-            var deletedSectionTemplate = _sectionTemplateService.Find(x => x.Id == sectionTemplate.Id);
+            var deletedSectionTemplate = _dbContextMock.Object.GetDbSet<SectionTemplate>().FirstOrDefault(x => x.Id == sectionTemplate.Id);
             deletedSectionTemplate.Should().Be.Null();
         }
 
@@ -155,7 +157,7 @@ namespace CmsLite.Unit.Services
                     }
                 }
             };
-            var sectionTemplateDbSet = new InMemoryDbSet<SectionTemplate> {sectionTemplate};
+            var sectionTemplateDbSet = new InMemoryDbSet<SectionTemplate> { sectionTemplate };
             var pageTemplateDbSet = new InMemoryDbSet<PageTemplate> { sectionTemplate.PageTemplates.First() };
             _dbContextMock.Setup(x => x.GetDbSet<SectionTemplate>()).Returns(sectionTemplateDbSet);
             _dbContextMock.Setup(x => x.GetDbSet<PageTemplate>()).Returns(pageTemplateDbSet);

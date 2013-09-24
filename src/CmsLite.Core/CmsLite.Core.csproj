@@ -148,7 +148,9 @@
     <Compile Include="Automapper\AdminProfile.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\IocConfig.cs" />
-    <Compile Include="Helpers\HtmlHelpers.cs" />
+    <Compile Include="Helpers\ContentHelpers.cs" />
+    <Compile Include="Extensions\HtmlHelperExtensions.cs" />
+    <Compile Include="Interfaces\IContainer.cs" />
     <Compile Include="Ioc\NinjectWebCommon.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Attributes\LayoutModelAttribute .cs" />

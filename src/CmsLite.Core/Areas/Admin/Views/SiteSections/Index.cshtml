@@ -56,15 +56,17 @@
             <div class="label label-success">Create child nodes</div>
             .
         </div>
-        <!-- Sections -->
+        <!-- Selected Node -->
         <div class="well" data-bind="visible: selectedNode()">
+            <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span> Section Info</h4>
+            <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span> Page Info</h4>
             <div class="form-group">
                 <label class="control-label">Display name :</label>
-                <div class="control-text" data-bind="text: selectedNode() && selectedNode().displayName"></div>
+                <span data-bind="text: selectedNode() && selectedNode().displayName"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Url name :</label>
-                <div class="control-text" data-bind="text: selectedNode() && selectedNode().urlName"></div>
+                <span data-bind="text: selectedNode() && selectedNode().urlName"></span>
             </div>
             <div class="btn-group" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'">
                 <a href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url  }"><i class="icon-share-alt"></i></a>
@@ -74,17 +76,17 @@
             <div class="btn-group" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'">
                 <a href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url  }"><i class="icon-share-alt"></i></a>
                 <button type="button" class="btn btn-default" data-bind="click: function() { $root.deletePageForm.show($root.selectedNode()) }"><i class="icon-remove"></i></button>
-                <button type="button" class="btn btn-default" data-bind="visible: selectedNode() && selectedNode().pageTemplates().length > 0, click: $root.createPageForm.show"><i class="icon-plus"></i></button>
+                <button type="button" class="btn btn-default" data-bind="visible: selectedNode() && selectedNode().pageTemplates().length > 0, click: function() { $root.createPageForm.show($root.selectedNode()) }"><i class="icon-plus"></i></button>
                 <a href="#" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().editUrl  }"><i class="icon-edit"></i></a>
             </div>
         </div>
     </div>
     <div class="page-content col-md-9">
-        <ul data-bind="visible: sections().length > 0" oncontextmenu="return false;" class="list-group space-box-content">
-            <!-- ko template: { name: 'section-template', foreach: sections } -->
+        <ul data-bind="visible: sectionNodes().length > 0" oncontextmenu="return false;" class="list-group space-box-content">
+            <!-- ko template: { name: 'section-template', foreach: sectionNodes } -->
             <!-- /ko -->
         </ul>
-        <div class="alert alert-info" data-bind="visible: sections().length < 1">You don't have any sections created yet. Use the <a href="#" class="label label-info" data-bind="    click: cms.viewmodel.createSectionForm.show">Create new section</a> form to create your first site section.</div>
+        <div class="alert alert-info" data-bind="visible: sectionNodes().length < 1">You don't have any sections created yet. Use the <a href="#" class="label label-info" data-bind="    click: cms.viewmodel.createSectionForm.show">Create new section</a> form to create your first site section.</div>
     </div>
 </div>
 <!---------------------------------- Modals ---------------------------------->
@@ -96,10 +98,6 @@
                 <h4>Add a new section</h4>
             </div>
             <div class="modal-body">
-                <div class="alert alert-info">
-                    <i class="icon-info-sign"></i>
-                    <p>When you create a new section, a landing page for the section will automatically be created.</p>
-                </div>
                 <div class="form-group">
                     <label class="control-label">Select a section template :</label>
                     <select class="form-control" data-val="true" data-val-required="Select a Section Template" data-bind="options: sectionTemplates, optionsCaption : '--- Select ---', optionsText: 'name', optionsValue  : 'id', value : selectedSectionTemplateId"></select>
@@ -120,7 +118,7 @@
         </form>
     </div>
 </div>
-<div id="create-page-form" class="modal fade" tabindex="-1" role="dialog">
+<div id="create-page-form" class="modal fade" tabindex="-1" role="dialog" data-bind="bootstrapmodal : {}, onhide: hide">
     <div class="modal-dialog">
         <form class="modal-content" action="@Url.Action("CreateSection")">
             <div class="modal-header">
@@ -151,8 +149,10 @@
 <div id="delete-section-form" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-body container alert alert-danger">
-                <p>Are you sure you would like to delete this section? Deleting this section will delete all the pages that belong to it.</p>
+            <div class="modal-body container">
+                <div class="alert alert-danger">
+                    <p>Are you sure you would like to delete this section? Deleting this section will delete all the pages that belong to it.</p>
+                </div>
                 <div class="pull-right">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-danger" data-bind="click: cms.viewmodel.deleteSectionForm.delete">Delete</button>
@@ -164,8 +164,10 @@
 <div id="delete-page-form" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-body container alert alert-danger">
-                <p>Are you sure you would like to delete this page? Deleting this section will delete all the pages that belong to it.</p>
+            <div class="modal-body container">
+                <div class="alert alert-danger">
+                    <p>Are you sure you would like to delete this page? Deleting this section will delete all the pages that belong to it.</p>
+                </div>
                 <div class="pull-right">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-danger" data-bind="click: cms.viewmodel.deletePageForm.delete">Delete</button>

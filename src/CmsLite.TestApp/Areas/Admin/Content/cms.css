@@ -6562,8 +6562,11 @@ ol {
 }
 #site-sections > .page-content > ul > li.node {
   border-bottom-width: 1px;
-  border-color: #fafafa;
+  border-color: #dbdbdb;
   border-bottom-style: solid;
+}
+#site-sections > .page-content > ul > li.node:last-child {
+  border-bottom: 0;
 }
 #site-sections > .page-content > ul > li.node.active {
   background: #9bcee8;
@@ -6580,7 +6583,7 @@ ol {
   border-right-width: 0;
   border-left-width: 1px;
   border-bottom-width: 1px;
-  border-color: #fafafa;
+  border-color: #dbdbdb;
   color: #444444;
   background: none;
 }
@@ -6630,14 +6633,6 @@ a#site-sections > .page-content > ul > li.node a:focus {
 }
 #site-sections > .page-content > ul > li.node a:hover {
   background: #dbdbdb;
-}
-#site-sections > .page-content > ul > li.node a > i {
-  float: left;
-  font-size: 18px;
-  display: block;
-  margin: 0 5px 0 0;
-  padding: 0 2px;
-  width: 10px;
 }
 #site-sections > .page-content > ul > li.node a > img {
   padding-right: 5px;

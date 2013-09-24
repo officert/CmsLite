@@ -73,16 +73,16 @@
         //},
         //modal windowsopenall
 
-        //create sections
+        //create sectionNodes
         selectedNode: ko.observable(),
         selectNode: function (data) {
-            ko.utils.arrayForEach(cms.viewmodel.sections(), function(sectionNode) {
-                sectionNode.isSelected(false);
+            cms.viewmodel.recurseNodes(cms.viewmodel.sectionNodes(), function(node) {
+                node.isSelected(false);
             });
             data.isSelected(true);
             cms.viewmodel.selectedNode(data);
         },
-        sections: ko.observableArray(),
+        sectionNodes: ko.observableArray(),
         createSectionForm: {
             sectionTemplates: ko.observableArray(),
             selectedSectionTemplateId: ko.observable(),
@@ -127,14 +127,14 @@
                             cms.viewmodel.createSectionForm.hide(true);
                         },
                         success: function (json) {
-                            var newSection = cms.mapping.mapJsonToSectionViewModel(json);
-                            cms.viewmodel.sections.push(newSection);
+                            var newSection = cms.mapping.mapJsonToSectionNodeViewModel(json);
+                            cms.viewmodel.sectionNodes.push(newSection);
                         }
                     });
                 }
             }
         },
-        //delete sections
+        //delete sectionNodes
         deleteSectionForm: {
             parentNode: ko.observable(),
             init: (function () {
@@ -174,11 +174,11 @@
                         cms.viewmodel.deleteSectionForm.hide(true);
                     },
                     success: function (json) {
-                        var foundSection = ko.utils.arrayFirst(cms.viewmodel.sections(), function (section) {
+                        var foundSection = ko.utils.arrayFirst(cms.viewmodel.sectionNodes(), function (section) {
                             return section.id === data.parentNode().id;
                         });
                         if (foundSection) {
-                            cms.viewmodel.sections.remove(foundSection);
+                            cms.viewmodel.sectionNodes.remove(foundSection);
                         }
                     }
                 });
@@ -191,15 +191,6 @@
             displayName: ko.observable(),
             urlName: ko.observable(),
             actionName: ko.observable(),
-            init: (function () {
-                var form = $('#create-page-form');
-                form.modal({
-                    show: false
-                });
-                form.on('hide.bs.modal', function () {
-                    cms.viewmodel.createPageForm.hide();
-                });
-            })(),
             show: function (data) {
                 cms.viewmodel.createPageForm.parentNode(data);
                 var form = $('#create-page-form');
@@ -232,7 +223,7 @@
                         formData.parentPageId = data.parentNode().id;
                     }
                     $.ajax({
-                        url: cms.mapping.mapPath('~/Admin/SiteSections/CreatePage'),
+                        url: cms.utils.mapPath('~/Admin/SiteSections/CreatePage'),
                         type: 'POST',
                         data: ko.toJSON(formData),
                         error: function () {
@@ -242,7 +233,7 @@
                             cms.viewmodel.createPageForm.hide(true);
                         },
                         success: function (json) {
-                            var newPage = cms.mapping.mapJsonToPageViewModel(json, data);
+                            var newPage = cms.mapping.mapJsonToPageNodeViewModel(json, data);
                             data.parentNode().pageNodes.push(newPage);
                         }
                     });
@@ -278,10 +269,15 @@
             }
         },
         //utils
-        recurseNodes: function (nodes, delegate) {
+        recurseNodes: function (nodes, delegate) {  //takes a collection of nodes and a delegate function to apply to all nodes and child nodes
             if (typeof delegate !== 'function') throw new Error("Delegate must be a function.");
             
-            ko.utils.arrayForEach(nodes, delegate);
+            ko.utils.arrayForEach(nodes, function(node) {
+                if (node.pageNodes() && node.pageNodes().length > 0) {
+                    cms.viewmodel.recurseNodes(node.pageNodes(), delegate);
+                }
+                delegate.call(this, node);
+            });
         }
     };
 
@@ -289,8 +285,8 @@
     cms.init = function (sectionNodes, sectionTemplates) {
         //setup the page view model
         ko.utils.arrayForEach(sectionNodes, function (sectionNode) {
-            var section = cms.mapping.mapJsonToSectionViewModel(sectionNode);
-            cms.viewmodel.sections.push(section);
+            var section = cms.mapping.mapJsonToSectionNodeViewModel(sectionNode);
+            cms.viewmodel.sectionNodes.push(section);
         });
         ko.utils.arrayForEach(sectionTemplates, function (sectionTemplate) {
             var template = cms.mapping.mapJsonToSectionTemplate(sectionTemplate);

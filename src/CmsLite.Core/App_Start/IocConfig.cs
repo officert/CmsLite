@@ -2,16 +2,15 @@
 using CmsLite.Core.Ioc;
 using CmsLite.Data.Ioc;
 using CmsLite.Services.Ioc;
-using Ninject;
 using Ninject.Modules;
 
 namespace CmsLite.Core.App_Start
 {
     public static class IocConfig
     {
-        public static void Configure(IKernel kernel)
+        public static void Configure(Interfaces.Container container)
         {
-            kernel.Load(new List<INinjectModule>
+            container.Load(new List<INinjectModule>
                              {
                                  new CmsIocModule(),
                                  new ServicesNinjectModule(),

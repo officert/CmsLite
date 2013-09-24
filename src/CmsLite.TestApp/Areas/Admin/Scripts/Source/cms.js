@@ -87,7 +87,7 @@ var cms = (function ($) { //define our namespace
         },
         utils: {
             mapPath: undefined,
-            mapJsonToSectionViewModel: function (json) {
+            mapJsonToSectionNodeViewModel: function (json) {
                 var section = new sectionViewModel();
                 section.nodeType = section instanceof sectionViewModel ? "section" : undefined;
                 section.id = json.Id;
@@ -97,7 +97,7 @@ var cms = (function ($) { //define our namespace
                 section.iconImageName = cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/' + json.IconImageName);
                 section.url = cms.utils.mapPath("~/" + section.urlName);
                 ko.utils.arrayForEach(json.PageNodes, function (pageNode) {
-                    var page = cms.utils.mapJsonToPageViewModel(pageNode, section);
+                    var page = cms.utils.mapJsonToPageNodeViewModel(pageNode, section);
                     section.pageNodes.push(page);
                 });
                 ko.utils.arrayForEach(json.PageTemplates, function (pageTemplate) {
@@ -114,7 +114,7 @@ var cms = (function ($) { //define our namespace
                 sectionTemplate.name = json.Name;
                 return sectionTemplate;
             },
-            mapJsonToPageViewModel: function (json, parentNode) {
+            mapJsonToPageNodeViewModel: function (json, parentNode) {
                 var page = new pageViewModel();
                 page.nodeType = page instanceof pageViewModel ? "page" : undefined;
                 page.id = json.Id;
@@ -126,7 +126,7 @@ var cms = (function ($) { //define our namespace
                 page.editUrl = cms.utils.mapPath("~/Admin/EditPage/" + json.Id);
                 page.url = parentNode ? parentNode.url + "/" + json.UrlName : null;
                 ko.utils.arrayForEach(json.PageNodes, function (pageNode) {
-                    var newPage = cms.utils.mapJsonToPageViewModel(pageNode, page);
+                    var newPage = cms.utils.mapJsonToPageNodeViewModel(pageNode, page);
                     page.pageNodes.push(newPage);
                 });
                 ko.utils.arrayForEach(json.PageTemplates, function (pageTemplate) {

@@ -31,7 +31,7 @@
         }
     };
     cms.init = function (pagNode, parentNode) {
-        cms.viewmodel.pageNode = cms.utils.mapJsonToPageViewModel(pagNode, null);
+        cms.viewmodel.pageNode = cms.utils.mapJsonToPageNodeViewModel(pagNode, null);
         ko.applyBindings(cms.viewmodel, $('#edit-page')[0]);
 
         //init plugins
