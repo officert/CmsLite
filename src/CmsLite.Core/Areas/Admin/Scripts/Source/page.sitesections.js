@@ -122,7 +122,7 @@
                     };
 
                     $.ajax({
-                        url: cms.utils.mapPath('~/Admin/SiteSections/CreateSection'),
+                        url: cms.utils.mapPath('~/Admin/Sections/CreateSection'),
                         type: 'POST',
                         data: ko.toJSON(formData),
                         error: function () {
@@ -169,7 +169,7 @@
                 };
 
                 $.ajax({
-                    url: cms.utils.mapPath('~/Admin/SiteSections/DeleteSection'),
+                    url: cms.utils.mapPath('~/Admin/Sections/DeleteSection'),
                     type: 'POST',
                     data: ko.toJSON(formData),
                     error: function () {
@@ -227,7 +227,7 @@
                         formData.parentPageId = data.parentNode().id;
                     }
                     $.ajax({
-                        url: cms.utils.mapPath('~/Admin/SiteSections/CreatePage'),
+                        url: cms.utils.mapPath('~/Admin/Pages/CreatePage'),
                         type: 'POST',
                         data: ko.toJSON(formData),
                         error: function () {

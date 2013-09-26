@@ -6,7 +6,7 @@ namespace CmsLite.Domains.Entities
     public class User
     {
         [Key]
-        public int UserId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string UserName { get; set; }
