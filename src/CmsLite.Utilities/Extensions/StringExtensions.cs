@@ -8,5 +8,10 @@ namespace CmsLite.Utilities.Extensions
         {
             return String.IsNullOrEmpty(s);
         }
+
+        public static string Format(this string s, params object[] args)
+        {
+            return string.Format(s, args);
+        }
     }
 }

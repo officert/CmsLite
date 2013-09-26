@@ -18,7 +18,7 @@
                 };
             }
         };
-        $('#site-sections > div.page-content ul li.node a').contextmenu(contextMenuOptions);
+        $('#sections > div.page-content ul li.node a').contextmenu(contextMenuOptions);
     }
     //var accordionOptions = {
     //    collapseAll: false,
@@ -54,19 +54,24 @@
     //    }
     //};
     //function initAccordions(options) {
-    //    $('#site-sections > div.page-content > ul').accordion(options);
+    //    $('#sections > div.page-content > ul').accordion(options);
     //}
+    
+    function initTooltips() {
+        $('a.btn').tooltip();
+    }
 
-    cms.viewmodel = {
+    cms.viewmodel = (function () {
+        var self = this;
         //Properties
         //allAccordionsOpen: ko.observable(false),
         //toggleSectionsOpen: function () {
         //    var toggleSectionOpen;
         //    if (cms.viewmodel.allAccordionsOpen()) {
-        //        $('#site-sections > div.page-content > ul').accordion('closeAll');
+        //        $('#sections > div.page-content > ul').accordion('closeAll');
         //        toggleSectionOpen = false;
         //    } else {
-        //        $('#site-sections > div.page-content > ul').accordion('openAll');
+        //        $('#sections > div.page-content > ul').accordion('openAll');
         //        toggleSectionOpen = true;
         //    }
         //    cms.viewmodel.allAccordionsOpen(toggleSectionOpen);
@@ -74,16 +79,16 @@
         //modal windowsopenall
 
         //create sectionNodes
-        selectedNode: ko.observable(),
-        selectNode: function (data) {
-            cms.viewmodel.recurseNodes(cms.viewmodel.sectionNodes(), function(node) {
+        self.selectedNode = ko.observable();
+        self.selectNode = function (data) {
+            cms.viewmodel.recurseNodes(self.sectionNodes(), function (node) {
                 node.isSelected(false);
             });
             data.isSelected(true);
-            cms.viewmodel.selectedNode(data);
-        },
-        sectionNodes: ko.observableArray(),
-        createSectionForm: {
+            self.selectedNode(data);
+        };
+        self.sectionNodes = ko.observableArray();
+        self.createSectionForm = {
             sectionTemplates: ko.observableArray(),
             selectedSectionTemplateId: ko.observable(),
             displayName: ko.observable(),
@@ -111,9 +116,9 @@
 
                 if (isValid) {
                     var formData = {
-                        sectionTemplateId: cms.viewmodel.createSectionForm.selectedSectionTemplateId(),
-                        displayName: cms.viewmodel.createSectionForm.displayName(),
-                        urlName: cms.viewmodel.createSectionForm.urlName()
+                        sectionTemplateId: self.createSectionForm.selectedSectionTemplateId(),
+                        displayName: self.createSectionForm.displayName(),
+                        urlName: self.createSectionForm.urlName()
                     };
 
                     $.ajax({
@@ -128,14 +133,14 @@
                         },
                         success: function (json) {
                             var newSection = cms.mapping.mapJsonToSectionNodeViewModel(json);
-                            cms.viewmodel.sectionNodes.push(newSection);
+                            self.sectionNodes.push(newSection);
                         }
                     });
                 }
             }
-        },
+        };
         //delete sectionNodes
-        deleteSectionForm: {
+        self.deleteSectionForm = {
             parentNode: ko.observable(),
             init: (function () {
                 var form = $('#delete-section-form');
@@ -143,11 +148,11 @@
                     show: false
                 });
                 form.on('hide.bs.modal', function () {
-                    cms.viewmodel.deleteSectionForm.hide();
+                    self.deleteSectionForm.hide();
                 });
             })(),
             show: function (data) {
-                cms.viewmodel.deleteSectionForm.parentNode(data);
+                self.deleteSectionForm.parentNode(data);
                 var form = $('#delete-section-form');
                 form.modal('show');
             },
@@ -171,28 +176,28 @@
                         alert('error');
                     },
                     beforeSend: function () {
-                        cms.viewmodel.deleteSectionForm.hide(true);
+                        self.deleteSectionForm.hide(true);
                     },
                     success: function (json) {
-                        var foundSection = ko.utils.arrayFirst(cms.viewmodel.sectionNodes(), function (section) {
+                        var foundSection = ko.utils.arrayFirst(self.sectionNodes(), function (section) {
                             return section.id === data.parentNode().id;
                         });
                         if (foundSection) {
-                            cms.viewmodel.sectionNodes.remove(foundSection);
+                            self.sectionNodes.remove(foundSection);
                         }
                     }
                 });
             }
-        },
+        };
         //create pages
-        createPageForm: {
+        self.createPageForm = {
             parentNode: ko.observable(),
             selectedPageTemplateId: ko.observable(),
             displayName: ko.observable(),
             urlName: ko.observable(),
             actionName: ko.observable(),
             show: function (data) {
-                cms.viewmodel.createPageForm.parentNode(data);
+                self.createPageForm.parentNode(data);
                 var form = $('#create-page-form');
                 form.modal('show');
             },
@@ -218,8 +223,7 @@
                     };
                     if (data.parentNode().nodeType === "section") {
                         formData.parentSectionId = data.parentNode().id;
-                    }
-                    else if (data.parentNode().nodeType === "page") {
+                    } else if (data.parentNode().nodeType === "page") {
                         formData.parentPageId = data.parentNode().id;
                     }
                     $.ajax({
@@ -230,7 +234,7 @@
                             alert('error');
                         },
                         beforeSend: function () {
-                            cms.viewmodel.createPageForm.hide(true);
+                            self.createPageForm.hide(true);
                         },
                         success: function (json) {
                             var newPage = cms.mapping.mapJsonToPageNodeViewModel(json, data);
@@ -239,9 +243,9 @@
                     });
                 }
             }
-        },
+        };
         //delete pages
-        deletePageForm: {
+        self.deletePageForm = {
             parentNode: ko.observable(),
             init: (function () {
                 var form = $('#delete-page-form');
@@ -249,11 +253,11 @@
                     show: false
                 });
                 form.on('hide.bs.modal', function () {
-                    cms.viewmodel.deletePageForm.hide();
+                    self.deletePageForm.hide();
                 });
             })(),
             show: function (data) {
-                cms.viewmodel.deletePageForm.parentNode(data);
+                self.deletePageForm.parentNode(data);
                 var form = $('#delete-page-form');
                 form.modal('show');
             },
@@ -267,19 +271,26 @@
             delete: function (data) {
                 alert('Not implemented.');
             }
-        },
+        };
         //utils
-        recurseNodes: function (nodes, delegate) {  //takes a collection of nodes and a delegate function to apply to all nodes and child nodes
+        self.recurseNodes = function (nodes, delegate) {  //takes a collection of nodes and a delegate function to apply to all nodes and child nodes
             if (typeof delegate !== 'function') throw new Error("Delegate must be a function.");
-            
-            ko.utils.arrayForEach(nodes, function(node) {
+
+            ko.utils.arrayForEach(nodes, function (node) {
                 if (node.pageNodes() && node.pageNodes().length > 0) {
-                    cms.viewmodel.recurseNodes(node.pageNodes(), delegate);
+                    self.recurseNodes(node.pageNodes(), delegate);
                 }
                 delegate.call(this, node);
             });
-        }
-    };
+        };
+        self.getPageListClass = ko.computed(function() {
+            return self.selectedNode() ? 'page-content col-md-9' : 'page-content col-md-12';
+        });
+        self.hideNodeInfo = function() {
+            self.selectedNode(null);
+        };
+        return self;
+    })();
 
     //init
     cms.init = function (sectionNodes, sectionTemplates) {
@@ -293,12 +304,13 @@
             cms.viewmodel.createSectionForm.sectionTemplates.push(template);
         });
 
-        ko.applyBindings(cms.viewmodel, $('#site-sections')[0]);
+        ko.applyBindings(cms.viewmodel, $('#sections')[0]);
 
         //init plugins
         initContextMenus();
         //initAccordions(accordionOptions);
-        //$('#site-sections > div.page-content > ul').accordion('openAll');       //start with accordions open
+        //$('#sections > div.page-content > ul').accordion('openAll');       //start with accordions open
+        initTooltips();
 
         //jquery ajax setup
         $.ajaxSetup({

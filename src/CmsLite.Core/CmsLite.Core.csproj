@@ -139,15 +139,18 @@
   <ItemGroup>
     <Compile Include="App_Start\RazorViewEngineConfig.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
-    <Compile Include="Areas\Admin\Controllers\SiteSectionsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PagesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SectionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaController.cs" />
     <Compile Include="Areas\Admin\Controllers\TrashController.cs" />
     <Compile Include="Areas\Admin\Models\TrashModel.cs" />
+    <Compile Include="Areas\Admin\ViewModels\EditPageNodeViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\PageNodeLightViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\SectionNodeLightViewModel.cs" />
     <Compile Include="Automapper\AdminProfile.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\IocConfig.cs" />
+    <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Helpers\ContentHelpers.cs" />
     <Compile Include="Extensions\HtmlHelperExtensions.cs" />
     <Compile Include="Interfaces\IContainer.cs" />
@@ -518,10 +521,10 @@
     <Content Include="Areas\Admin\Views\Dashboard\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\SiteSections\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Sections\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\SiteSections\EditPage.cshtml" />
+    <Content Include="Areas\Admin\Views\Pages\EditPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Media\Index.cshtml" />

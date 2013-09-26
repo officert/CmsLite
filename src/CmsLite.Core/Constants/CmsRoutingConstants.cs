@@ -6,6 +6,6 @@
         public const string RouteDataPrefix = "{0}-{1}";
 
         public const string RouteDataNameForSection = "cmssection";
-        public const string RouteDataNameForAction = "cmsaction-";
+        public const string RouteDataNameForAction = "cmsaction";
     }
 }

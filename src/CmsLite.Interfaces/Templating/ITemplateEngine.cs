@@ -1,12 +1,9 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace CmsLite.Interfaces.Templating
 {
     public interface ITemplateEngine
     {
-        void ProcessMvcFiles(Assembly assembly);
-
-        Type GetModelType(Assembly assembly, string modelTypeName);
+        void GenerateTemplates(Assembly assembly);
     }
 }

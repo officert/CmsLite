@@ -17,7 +17,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
                 Links = new List<AdminNavLink>
                                                   {
                                                       new AdminNavLink { Url  =  Url.Action("Index", "Dashboard"), Text = "Dashboard", IconClass = "icon-home" },
-                                                      new AdminNavLink { Url  =  Url.Action("Index", "SiteSections"), Text = "Site Sections", IconClass = "icon-book" },
+                                                      new AdminNavLink { Url  =  Url.Action("Index", "Sections"), Text = "Site Sections", IconClass = "icon-book" },
                                                       new AdminNavLink { Url = Url.Action("Index", "Media"), Text = "Media", IconClass = "icon-hdd"},
                                                       new AdminNavLink { Url = Url.Action("Index", "Trash"), Text = "Trash", IconClass = "icon-trash"}
                                                   }

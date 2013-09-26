@@ -1,36 +1,45 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.UI;
 using CmsLite.Core.Constants;
 using CmsLite.Core.Helpers;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
+using CmsLite.Interfaces.Services;
+using CmsLite.Resources;
 
 namespace CmsLite.Core
 {
-    public class CmsActionInvoker : ControllerActionInvoker, IActionInvoker
+    public class CmsActionInvoker : ControllerActionInvoker
     {
-        private readonly IDbContext _dbContext;
+        private readonly ISectionNodeService _sectionNodeService;
+        private readonly IPageNodeService _pageNodeService;
 
-        public CmsActionInvoker(IDbContext dbContext)
+        public CmsActionInvoker(ISectionNodeService sectionNodeService, IPageNodeService pageNodeService)
         {
-            _dbContext = dbContext;
+            _sectionNodeService = sectionNodeService;
+            _pageNodeService = pageNodeService;
         }
 
-        public bool InvokeAction(ControllerContext controllerContext, string actionName)
+        public override bool InvokeAction(ControllerContext controllerContext, string actionName)
         {
+            if (controllerContext == null) return false;
+
             var currentRouteData = controllerContext.RouteData;
-            if (currentRouteData == null)
-                throw new ArgumentException("The RouteData Collection cannot be null.");
+
+            if (currentRouteData == null) return false;
 
             var routeDataValues = currentRouteData.Values.ToList();
 
-            var sectionNodeDbSet = _dbContext.GetDbSet<SectionNode>()
-                                .Include(x => x.SectionTemplate)
-                                .Include(x => x.PageNodes.Select(y => y.PageTemplate));
+            var controllerName = currentRouteData.GetRequiredString("controller");
 
-            var sectionNode = NodeHelper.GetControllerSectionNode(sectionNodeDbSet, routeDataValues[0].Value.ToString());
+            var sectionNode = _sectionNodeService.Find(x => x.UrlName.ToLower() == controllerName);
+
+            if (sectionNode == null) throw new ArgumentException(string.Format(Messages.SectionNodeNotFoundForUrlName, controllerName));
+
             PageNode pageNode = null;
 
             currentRouteData.Values[CmsRoutingConstants.RouteDataNameForSection] = sectionNode.UrlName;
@@ -43,7 +52,7 @@ namespace CmsLite.Core
                             ? NodeHelper.GetActionPageNode(sectionNode, routeDataValues[i].Value.ToString())
                             : NodeHelper.GetActionPageNode(pageNode, routeDataValues[i].Value.ToString());
 
-                currentRouteData.Values[string.Format(CmsRoutingConstants.RouteDataNameForAction + "{0}", i)] = pageNode.UrlName;
+                currentRouteData.Values[string.Format(CmsRoutingConstants.RouteDataNameForAction + "-{0}", i)] = pageNode.UrlName;
             }
 
             //set the original controller and action values back to normal so MVC can find the appropriate view
@@ -55,17 +64,5 @@ namespace CmsLite.Core
 
             return base.InvokeAction(controllerContext, pageNode.PageTemplate.ActionName);
         }
-
-        //private static void PopulateRouteDataWithCmsValues(RouteData routeData, SectionNode sectionNode, PageNode pageNode)
-        //{
-        //    var routeDataValues = routeData.Values.ToList();
-
-        //    for (var i = 0; i < routeDataValues.Count; i++)
-        //    {
-        //        var routeValue = routeDataValues[i].Value.ToString();
-
-        //        routeData.Values[CmsConstants.RouteDataKey] = string.Format(CmsConstants.RouteDataPrefix, i, sectionNode.UrlName);
-        //    }
-        //}
     }
 }

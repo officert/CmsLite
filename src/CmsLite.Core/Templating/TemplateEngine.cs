@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Web.Mvc;
 using CmsLite.Core.Attributes;
 using CmsLite.Core.Controllers;
+using CmsLite.Core.Extensions;
+using CmsLite.Data;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
@@ -19,91 +21,74 @@ namespace CmsLite.Core.Templating
     public class TemplateEngine : ITemplateEngine
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ISectionNodeService _sectionNodeService;
         private readonly ISectionTemplateService _sectionTemplateService;
-        private readonly IPageNodeService _pageNodeService;
         private readonly IPageTemplateService _pageTemplateService;
         private readonly IPropertyTemplateService _propertyTemplateService;
 
+        private IEnumerable<Type> _controllers;
+        private Assembly _assembly;
+
         public TemplateEngine(IUnitOfWork unitOfWork,
-            ISectionNodeService sectionNodeService,
             ISectionTemplateService sectionTemplateService,
-            IPageNodeService pageNodeService,
             IPageTemplateService pageTemplateService,
             IPropertyTemplateService propertyTemplateService)
         {
             _unitOfWork = unitOfWork;
-            _sectionNodeService = sectionNodeService;
             _sectionTemplateService = sectionTemplateService;
-            _pageNodeService = pageNodeService;
             _pageTemplateService = pageTemplateService;
             _propertyTemplateService = propertyTemplateService;
         }
 
-        #region Implementation of IMvcFileManager
+        public void GenerateTemplates(Assembly assembly)
+        { 
+            _assembly = assembly;
+            _controllers = assembly.GetControllers();
 
-        public void ProcessMvcFiles(Assembly assembly)
-        {
-            var sectionTemplates = _unitOfWork.Context.GetDbSet<SectionTemplate>()
-                                                .Include(x => x.PageTemplates)
-                                                .Include(x => x.SectionNodes.Select(sn => sn.PageNodes.Select(pn => pn.Properties)));
-
-            ProcessControllers(assembly, sectionTemplates);
+            ProcessControllers();
 
             _unitOfWork.Commit();
 
-            PostProcessActions(assembly, sectionTemplates);
+            PostProcessActions();
 
             _unitOfWork.Commit();
         }
 
-        public Type GetModelType(Assembly assembly, string modelTypeName)
+        private void ProcessControllers()
         {
-            var modelInstance = GetModels(assembly).FirstOrDefault(x => x.Name == modelTypeName);
+            _controllers = _controllers.ToList();
+            var sectionTemplateDbSet = _sectionTemplateService.GetAll().ToList();
 
-            if (modelInstance == null)
-                throw new ArgumentException(string.Format(Messages.ModelTypeNotFound, modelTypeName));
+            var controllerNames = _controllers.Select(y => y.Name).ToList();
+            var sectionTemplateControllerNames = sectionTemplateDbSet.Select(x => x.ControllerName).ToList();
 
-            return modelInstance;
-        }
-
-        #endregion
-
-        private void ProcessControllers(Assembly assembly, IQueryable<SectionTemplate> sectionTemplates)
-        {
-            //find all the Cms controllers
-            var controllerTypes = GetControllers(assembly).ToList();
-
-            var controllerNames = controllerTypes.Select(y => y.Name).ToList();
-            var sectionTemplateControllerNames = sectionTemplates.Select(x => x.ControllerName).ToList();
-
-            var sectionTemplatesToRemove = sectionTemplates.Where(x => !controllerNames.Contains(x.ControllerName)).ToList();
-            var newControllerTypes = controllerTypes.Where(x => !sectionTemplateControllerNames.Contains(x.Name)).ToList();
-            var sectionTemplatesToUpdate = sectionTemplates.Where(x => controllerNames.Contains(x.ControllerName)).ToList();
+            var sectionTemplatesToRemove = sectionTemplateDbSet.Where(x => !controllerNames.Contains(x.ControllerName)).ToList();
+            var newControllerTypes = _controllers.Where(x => !sectionTemplateControllerNames.Contains(x.Name)).ToList();
+            var sectionTemplatesToUpdate = sectionTemplateDbSet.Where(x => controllerNames.Contains(x.ControllerName)).ToList();
 
             //remove any templates that don't have a controller anymore
             RemoveSectionTemplatesWithNoExistingController(sectionTemplatesToRemove);
 
             //create templates for any controllers that don't have a template with that controller name
-            CreateSectionTemplatesForNewControllers(assembly, newControllerTypes);
+            CreateSectionTemplatesForNewControllers(newControllerTypes);
 
             //update any templates that still have a controller
-            UpdateSectionTemplates(assembly, sectionTemplatesToUpdate, controllerTypes);
+            UpdateSectionTemplates(sectionTemplatesToUpdate, _controllers);
         }
 
-        private void PostProcessActions(Assembly assembly, IQueryable<SectionTemplate> sectionTemplates)
+        private void PostProcessActions()
         {
+            var sectionTemplates = _unitOfWork.Context.GetDbSet<SectionTemplate>();
+
             if (sectionTemplates != null && sectionTemplates.Any())
             {
                 var pageTemplateGroupings = sectionTemplates.SelectMany(x => x.PageTemplates).GroupBy(x => x.ParentSectionTemplate.ControllerName).ToList();
-                var controllers = GetControllers(assembly).ToList();
 
                 if (pageTemplateGroupings.Any())
                 {
                     foreach (var pageTemplateGroup in pageTemplateGroupings)
                     {
                         var count = pageTemplateGroupings.Count;
-                        var controller = controllers.FirstOrDefault(x => x.Name == pageTemplateGroup.First().ParentSectionTemplate.ControllerName);
+                        var controller = _controllers.FirstOrDefault(x => x.Name == pageTemplateGroup.First().ParentSectionTemplate.ControllerName);
                         var actions = GetActionsForController(controller);
 
                         var grouping = pageTemplateGroup;
@@ -148,7 +133,7 @@ namespace CmsLite.Core.Templating
             }
         }
 
-        private void CreateSectionTemplatesForNewControllers(Assembly assembly, IEnumerable<Type> controllers)
+        private void CreateSectionTemplatesForNewControllers(IEnumerable<Type> controllers)
         {
             if (controllers != null && controllers.Any())
             {
@@ -160,12 +145,12 @@ namespace CmsLite.Core.Templating
 
                     var controllerActions = GetActionsForController(controller);
 
-                    CreatePageTemplatesForActions(sectionTemplate, controllerActions, assembly);
+                    CreatePageTemplatesForActions(sectionTemplate, controllerActions);
                 }
             }
         }
 
-        private void UpdateSectionTemplates(Assembly assembly, IEnumerable<SectionTemplate> sectionTemplates, IEnumerable<Type> controllers)
+        private void UpdateSectionTemplates(IEnumerable<SectionTemplate> sectionTemplates, IEnumerable<Type> controllers)
         {
             if (sectionTemplates != null && sectionTemplates.Any())
             {
@@ -197,10 +182,10 @@ namespace CmsLite.Core.Templating
                     RemovePageTemplatesWithNoExistingAction(pageTemplatesToRemove);
 
                     //create page templates for any actions that don't have a template with that action name
-                    CreatePageTemplatesForActions(sectionTemplate, newActionsToAdd, assembly);
+                    CreatePageTemplatesForActions(sectionTemplate, newActionsToAdd);
 
                     //update any page templates that still have an action
-                    UpdatePageTemplates(assembly, pageTemplatesToUpdate, controllerActions);
+                    UpdatePageTemplates(pageTemplatesToUpdate, controllerActions);
                 }
             }
         }
@@ -220,12 +205,12 @@ namespace CmsLite.Core.Templating
             }
         }
 
-        private void CreatePageTemplatesForActions(SectionTemplate sectionTemplate, IEnumerable<MethodInfo> controllerActions, Assembly assembly)
+        private void CreatePageTemplatesForActions(SectionTemplate sectionTemplate, IEnumerable<MethodInfo> controllerActions)
         {
             foreach (var action in controllerActions)
             {
                 var attribute = (CmsPageTemplateAttribute)action.GetCustomAttributes(typeof(CmsPageTemplateAttribute), false).FirstOrDefault();
-                var model = GetModelType(assembly, attribute.ModelType.Name);
+                var model = _assembly.GetModels().FirstOrDefault(x => x.Name == attribute.ModelType.Name);
 
                 var pageTemplate = _pageTemplateService.CreateForSectionTemplate(sectionTemplate, action.Name, model.Name, attribute.Name, attribute.IconImageName, false);
 
@@ -234,7 +219,7 @@ namespace CmsLite.Core.Templating
             }
         }
 
-        private void UpdatePageTemplates(Assembly assembly, IEnumerable<PageTemplate> pageTemplates, IEnumerable<MethodInfo> actions)
+        private void UpdatePageTemplates(IEnumerable<PageTemplate> pageTemplates, IEnumerable<MethodInfo> actions)
         {
             if (pageTemplates != null && pageTemplates.Any())
             {
@@ -250,7 +235,7 @@ namespace CmsLite.Core.Templating
                     if (pageTemplateAttribute == null)
                         throw new ArgumentException(string.Format(Messages.ActionDoesNotHaveCmsPageTemplateAttribute, templateAction.Name));
 
-                    var model = GetModelType(assembly, pageTemplate.ModelName);
+                    var model = _assembly.GetModels().FirstOrDefault(x => x.Name == pageTemplate.ModelName);
                     var modelProperties = GetModelProperties(model).ToList();
 
                     _pageTemplateService.Update(pageTemplate, pageTemplateAttribute.ModelType.Name, pageTemplateAttribute.Name, pageTemplateAttribute.IconImageName, false);
@@ -262,15 +247,15 @@ namespace CmsLite.Core.Templating
                         var newModelProperties = GetModelProperties(pageTemplateAttribute.ModelType).ToList();
                         CreatePropertyTemplatesForProperties(newModelProperties, pageTemplate);
                     }
-                        //if this happens there is no need to do the rest of this else {} code - this is only necessary when the model is the same but
-                        //some properties in the modal have changes (ie. updated, added, removed)
+                    //if this happens there is no need to do the rest of this else {} code - this is only necessary when the model is the same but
+                    //some properties in the modal have changes (ie. updated, added, removed)
                     else
                     {
                         var modelPropertyNames = modelProperties.Select(x => x.Name).ToList();
                         var pageTemplatePropertyNames = pageTemplate.PropertyTemplates.Select(x => x.PropertyName).ToList();
 
                         var propertyTemplatesToRemove = pageTemplate.PropertyTemplates.Where(x => !modelPropertyNames.Contains(x.PropertyName)).ToList();
-                        var newPropertiesToAdd =modelProperties.Where(x => !pageTemplatePropertyNames.Contains(x.Name)).ToList();
+                        var newPropertiesToAdd = modelProperties.Where(x => !pageTemplatePropertyNames.Contains(x.Name)).ToList();
                         var propertyTemplatesToUpdate = pageTemplate.PropertyTemplates.Where(x => modelPropertyNames.Contains(x.PropertyName)).ToList();
 
                         //remove any property templates that don't have a property anymore
@@ -309,14 +294,14 @@ namespace CmsLite.Core.Templating
                 {
                     var attribute = (CmsModelPropertyAttribute)property.GetCustomAttributes(typeof(CmsModelPropertyAttribute), false).FirstOrDefault();
 
-                    _propertyTemplateService.Create(pageTemplate, 
-                        property.Name, 
+                    _propertyTemplateService.Create(pageTemplate,
+                        property.Name,
                         attribute.PropertyType,
                         attribute.TabOrder,
                         attribute.TabName,
                         attribute.Required,
-                        attribute.Description, 
-                        attribute.DisplayName, 
+                        attribute.Description,
+                        attribute.DisplayName,
                         false);
                 }
             }
@@ -337,7 +322,7 @@ namespace CmsLite.Core.Templating
 
                     if (propertyTemplateAttribute == null)
                         throw new ArgumentException(string.Format("The property {0} does not have a CmsModelProperty attribute", templateProperty.Name));
-                    
+
                     propertyTemplate.DisplayName = propertyTemplateAttribute.DisplayName;
                     propertyTemplate.TabName = propertyTemplateAttribute.TabName;
                     propertyTemplate.TabOrder = propertyTemplateAttribute.TabOrder;
@@ -362,22 +347,12 @@ namespace CmsLite.Core.Templating
 
         #region Private Helpers
 
-        private static IEnumerable<Type> GetControllers(Assembly assembly)
-        {
-            return assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(CmsBaseController)) && t.GetCustomAttributes(typeof(CmsSectionTemplateAttribute), false).Length > 0).ToList();
-        }
-
         private static IEnumerable<MethodInfo> GetActionsForController(Type controller)
         {
             return controller == null
                         ? null
                         : controller.GetMethods(BindingFlags.Public | BindingFlags.Instance)
                             .Where(action => action.ReturnType == typeof(ActionResult) && action.GetCustomAttributes(typeof(CmsPageTemplateAttribute), false).Length > 0);
-        }
-
-        private static IEnumerable<Type> GetModels(Assembly assembly)
-        {
-            return assembly.GetTypes().Where(t => t.GetCustomAttributes(typeof(CmsModelTemplateAttribute), false).Length > 0).ToList();
         }
 
         private static IEnumerable<PropertyInfo> GetModelProperties(Type model)

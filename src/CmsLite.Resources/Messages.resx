@@ -237,4 +237,13 @@
   <data name="SectionNodeInTrashAlready" xml:space="preserve">
     <value>Section Node with the id {0} is already in the trash.</value>
   </data>
+  <data name="SectionNodeNotFoundForUrlName" xml:space="preserve">
+    <value>Section Node with the url name {0} was not found.</value>
+  </data>
+  <data name="PropertiesCannotBeNull" xml:space="preserve">
+    <value>Properties cannot be null.</value>
+  </data>
+  <data name="PropertiesMustHaveIds" xml:space="preserve">
+    <value>All properties must have ids.</value>
+  </data>
 </root>

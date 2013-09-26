@@ -94,6 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CmsActionInvokerFixture.cs" />
     <Compile Include="Helpers\CmsUrlHelperFixture.cs" />
     <Compile Include="InMemoryDbSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

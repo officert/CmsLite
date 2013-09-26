@@ -12,7 +12,7 @@ CKEDITOR.editorConfig = function (config) {
     config.height = '400px';
     config.fontSize_sizes = '8/8px;10/10px;12/12px;14/14px;16/16px;24/24px;32/32px';
     config.toolbar = [
-        { name: 'document', items: ['Save', 'DocProps', 'cms-custompreview', '-', 'Source', '-', 'Templates'] },
+        { name: 'document', items: ['Save', 'DocProps', 'Preview', '-', 'Source', '-', 'Templates'] },
         { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
         { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'SpellChecker', 'Scayt'] },
     //{ name: 'forms', items: ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'] },

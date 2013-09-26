@@ -37,7 +37,7 @@
         </li>
     </script>
 }
-<div id="site-sections">
+<div id="sections">
     <header class="page-header">
         <h3>
             <i class="icon-book"></i>Sections</h3>
@@ -46,8 +46,15 @@
             <button id="create-section-trigger" class="btn btn-default" type="button" data-bind="click: createSectionForm.show"><i class="icon-expand-alt"></i><span>Create new section</span> </button>
         </div>
     </header>
-    <div id="node-sidebar" class="col-md-3 pull-right">
-        <div class="alert alert-info">
+    <div class="" data-bind="css: getPageListClass">
+        <ul data-bind="visible: sectionNodes().length > 0" oncontextmenu="return false;" class="list-group space-box-content">
+            <!-- ko template: { name: 'section-template', foreach: sectionNodes } -->
+            <!-- /ko -->
+        </ul>
+        <div class="alert alert-info" data-bind="visible: sectionNodes().length < 1">You don't have any sections created yet. Use the <a href="#" class="label label-info" data-bind="    click: cms.viewmodel.createSectionForm.show">Create new section</a> form to create your first site section.</div>
+    </div>
+    <div id="node-sidebar" class="col-md-3" data-bind="visible: selectedNode()">
+@*        <div class="alert alert-info">
             <i class="icon-info-sign icon-2x"></i>Click on a node in the tree to <strong>select</strong> it, then use these buttons to 
             <div class="label label-danger">Delete the node</div>
             ,
@@ -55,38 +62,41 @@
             or,
             <div class="label label-success">Create child nodes</div>
             .
-        </div>
+        </div>*@
         <!-- Selected Node -->
-        <div class="well" data-bind="visible: selectedNode()">
-            <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span> Section Info</h4>
-            <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span> Page Info</h4>
-            <div class="form-group">
-                <label class="control-label">Display name :</label>
-                <span data-bind="text: selectedNode() && selectedNode().displayName"></span>
+        <div class="panel panel-default" data-bind="visible: selectedNode()">
+            <div class="panel-heading">
+                <i class="icon-info-sign"></i>
+                <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span> Section Info</h4>
+                <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span> Page Info</h4>
+                <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-default" data-bind="click: self.hideNodeInfo">
+                        <i class="icon-remove"></i>
+                    </button>
+                </div>
             </div>
-            <div class="form-group">
-                <label class="control-label">Url name :</label>
-                <span data-bind="text: selectedNode() && selectedNode().urlName"></span>
-            </div>
-            <div class="btn-group" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'">
-                <a href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url  }"><i class="icon-share-alt"></i></a>
-                <button type="button" class="btn btn-default" data-bind="click: function() { $root.deleteSectionForm.show($root.selectedNode()) }"><i class="icon-remove"></i></button>
-                <button type="button" class="btn btn-default" data-bind="click: function() { $root.createPageForm.show($root.selectedNode()) }"><i class="icon-plus"></i></button>
-            </div>
-            <div class="btn-group" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'">
-                <a href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url  }"><i class="icon-share-alt"></i></a>
-                <button type="button" class="btn btn-default" data-bind="click: function() { $root.deletePageForm.show($root.selectedNode()) }"><i class="icon-remove"></i></button>
-                <button type="button" class="btn btn-default" data-bind="visible: selectedNode() && selectedNode().pageTemplates().length > 0, click: function() { $root.createPageForm.show($root.selectedNode()) }"><i class="icon-plus"></i></button>
-                <a href="#" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().editUrl  }"><i class="icon-edit"></i></a>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="control-label">Display name :</label>
+                    <span data-bind="text: selectedNode() && selectedNode().displayName"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Url name :</label>
+                    <span data-bind="text: selectedNode() && selectedNode().urlName"></span>
+                </div>
+                <div class="btn-group" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'">
+                    <a title="View Section" href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url  }"><i class="icon-share-alt"></i></a>
+                    <button title="Trash Section" type="button" class="btn btn-default" data-bind="click: function() { $root.deleteSectionForm.show($root.selectedNode()) }"><i class="icon-trash"></i></button>
+                    <button title="Create Child Page"  type="button" class="btn btn-default" data-bind="click: function() { $root.createPageForm.show($root.selectedNode()) }"><i class="icon-plus"></i></button>
+                </div>
+                <div class="btn-group" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'">
+                    <a title="View Page"  href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url  }"><i class="icon-share-alt"></i></a>
+                    <button title="Trash Page" type="button" class="btn btn-default" data-bind="click: function() { $root.deletePageForm.show($root.selectedNode()) }"><i class="icon-trash"></i></button>
+                    <button title="Create Child Page" type="button" class="btn btn-default" data-bind="visible: selectedNode() && selectedNode().pageTemplates().length > 0, click: function() { $root.createPageForm.show($root.selectedNode()) }"><i class="icon-plus"></i></button>
+                    <a title="Edit Page" href="#" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().editUrl  }"><i class="icon-edit"></i></a>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="page-content col-md-9">
-        <ul data-bind="visible: sectionNodes().length > 0" oncontextmenu="return false;" class="list-group space-box-content">
-            <!-- ko template: { name: 'section-template', foreach: sectionNodes } -->
-            <!-- /ko -->
-        </ul>
-        <div class="alert alert-info" data-bind="visible: sectionNodes().length < 1">You don't have any sections created yet. Use the <a href="#" class="label label-info" data-bind="    click: cms.viewmodel.createSectionForm.show">Create new section</a> form to create your first site section.</div>
     </div>
 </div>
 <!---------------------------------- Modals ---------------------------------->

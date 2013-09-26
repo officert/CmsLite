@@ -45,7 +45,6 @@
         self.name = undefined;
     }
     
-
     cms.mapping = {
         mapJsonToSectionNodeViewModel: function (json) {
             var section = new sectionNodeViewModel();
@@ -84,7 +83,7 @@
             page.url = parentNode ? parentNode.url + "/" + json.UrlName : null;
             page.iconImageName = cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/' + json.IconImageName);
             page.parentNode = parentNode;
-            page.editUrl = cms.utils.mapPath("~/Admin/SiteSections/EditPage/" + json.Id);
+            page.editUrl = cms.utils.mapPath("~/Admin/Pages/EditPage/" + json.Id);
             page.isSelected = ko.observable(false);
             ko.utils.arrayForEach(json.PageNodes, function (pageNode) {
                 var newPage = cms.mapping.mapJsonToPageNodeViewModel(pageNode, page);

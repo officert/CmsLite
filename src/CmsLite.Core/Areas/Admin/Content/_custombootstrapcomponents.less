@@ -25,56 +25,55 @@
     &.active {
         .transition(background-image);
     }
+    /*> i {
+        margin-right: @btn-icon-margin;
+    }*/
 }
 
 .btn-default {
-    .button-variant(@btn-default-color;
-    @btn-default-bg;
-    @btn-default-border
-    );
+    .box-shadow-inset-top();
+
     #gradient.vertical(@btn-default-bg, darken(@btn-default-bg, 5%));
 }
 
 .btn-primary {
-    .button-variant(@btn-primary-color;
-    @btn-primary-bg;
-    @btn-primary-border
-    );
+    .box-shadow-inset-top(lighten(@btn-primary-bg, 35%));
+
     #gradient.vertical(@btn-primary-bg, darken(@btn-primary-bg, 5%));
 }
 // Warning appears as orange
 .btn-warning {
-    .button-variant(@btn-warning-color;
-    @btn-warning-bg;
-    @btn-warning-border
-    );
+    .box-shadow-inset-top(lighten(@btn-warning-bg, 35%));
+
     #gradient.vertical(@btn-warning-bg, darken(@btn-warning-bg, 5%));
 }
 // Danger and error appear as red
 .btn-danger {
-    .button-variant(@btn-danger-color;
-    @btn-danger-bg;
-    @btn-danger-border
-    );
+    .box-shadow-inset-top(lighten(@btn-danger-bg, 35%));
+
     #gradient.vertical(@btn-danger-bg, darken(@btn-danger-bg, 5%));
 }
 // Success appears as green
 .btn-success {
-    .button-variant(@btn-success-color;
-    @btn-success-bg;
-    @btn-success-border
-    );
+    .box-shadow-inset-top(lighten(@btn-success-bg, 35%));
+
     #gradient.vertical(@btn-success-bg, darken(@btn-success-bg, 5%));
 }
 // Info appears as blue-green
 .btn-info {
-    .button-variant(@btn-info-color;
-    @btn-info-bg;
-    @btn-info-border
-    );
+    .box-shadow-inset-top(lighten(@btn-info-bg, 35%));
+
     #gradient.vertical(@btn-info-bg, darken(@btn-info-bg, 5%));
 }
 
+/* Button Groups */
+.btn-group {
+    > .btn {
+        /*> i {
+            margin-right: @btn-icon-margin;
+        }*/
+    }
+}
 
 /* Navbar */
 // Inverted navbar
@@ -89,9 +88,61 @@
     }
 }
 
-/* Alers */
+/* Alerts */
 .alert {
     > i {
         margin-right: @btn-icon-margin;
+    }
+
+    ul {
+        padding-left: 20px;
+    }
+}
+
+/* Wells */
+.well {
+    .btn-group {
+        > .btn {
+            > i {
+                margin-right: 0;
+            }
+        }
+    }
+}
+
+/* Panels */
+.panel-default {
+    .panel-heading {
+        padding: 5px 15px;
+
+        > h4 {
+            display: inline-block;
+            margin-top: 3px;
+            margin-bottom: 1px;
+            font-size: @font-size-large;
+        }
+
+        > i {
+            float: left;
+            margin-right: @btn-icon-margin;
+            font-size: @icon-font-size-large;
+            margin-top: -1px;
+        }
+
+        > .btn-group {
+            margin-top: -6px;
+            margin-right: -16px;
+            margin-bottom: -6px;
+
+            &.pull-right {
+                > .btn {
+                    border-radius: 0;
+
+                    &:last-child {
+                        border-top-right-radius: @border-radius-base;
+                    }
+                }
+            }
+        }
     }
 }

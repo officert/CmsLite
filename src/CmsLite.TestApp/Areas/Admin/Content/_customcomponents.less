@@ -2,57 +2,6 @@
 .content-area {
     padding-left: 20px;
 }
-/* Buttons */
-.btn {
-    > i {
-        margin-right: @btn-icon-margin;
-    }
-}
-
-.btn-default {
-    .box-shadow-inset-top();
-}
-
-.btn-primary {
-    .box-shadow-inset-top(lighten(@btn-primary-bg, 35%));
-}
-
-// Danger and error appear as red
-.btn-danger {
-    .box-shadow-inset-top(lighten(@btn-danger-bg, 35%));
-}
-// Success appears as green
-.btn-success {
-    .box-shadow-inset-top(lighten(@btn-success-bg, 35%));
-}
-// Info appears as blue-green
-.btn-info {
-    .box-shadow-inset-top(lighten(@btn-info-bg, 35%));
-}
-/* Button Groups */
-.btn-group {
-    > .btn {
-        > i {
-            margin-right: @btn-icon-margin;
-        }
-    }
-}
-
-.well {
-    .btn-group {
-        > .btn {
-            > i {
-                margin-right: 0;
-            }
-        }
-    }
-}
-/* Alerts */
-.alert {
-    ul {
-        padding-left: 20px;
-    }
-}
 
 /* Space Box */
 .space-box(@background, @border-color) {

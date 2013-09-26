@@ -259,6 +259,24 @@ namespace CmsLite.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Properties cannot be null..
+        /// </summary>
+        public static string PropertiesCannotBeNull {
+            get {
+                return ResourceManager.GetString("PropertiesCannotBeNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All properties must have ids..
+        /// </summary>
+        public static string PropertiesMustHaveIds {
+            get {
+                return ResourceManager.GetString("PropertiesMustHaveIds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No Property with the id {0} exists..
         /// </summary>
         public static string PropertyNotFound {
@@ -336,6 +354,15 @@ namespace CmsLite.Resources {
         public static string SectionNodeNotFound {
             get {
                 return ResourceManager.GetString("SectionNodeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Section Node with the url name {0} was not found..
+        /// </summary>
+        public static string SectionNodeNotFoundForUrlName {
+            get {
+                return ResourceManager.GetString("SectionNodeNotFoundForUrlName", resourceCulture);
             }
         }
         

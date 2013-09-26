@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
@@ -132,23 +134,23 @@ namespace CmsLite.Services
             return pageNode;
         }
 
-        public void Update(PageNode pageNodeWithUpdates)
+        public void Update(int pageId, IEnumerable<Property> properties)
         {
-            var pageDbSet = UnitOfWork.Context.GetDbSet<PageNode>();
-            var page = pageDbSet.FirstOrDefault(x => x.Id == pageNodeWithUpdates.Id);
+            var page = Find(x => x.Id == pageId);
 
-            if (page == null)
-                throw new ArgumentException(string.Format("The page with id : {0} does not exist.", pageNodeWithUpdates.Id));
+            if (page == null) throw new ArgumentException(Messages.PageNodeNotFound.Format(pageId));
 
-            foreach (var property in pageNodeWithUpdates.Properties)
+            if (properties == null) throw new ArgumentException(Messages.PropertiesCannotBeNull);
+
+            properties = properties.ToList();
+
+            if (properties.Any(x => x.Id < 1)) throw new InvalidOperationException(Messages.PropertiesMustHaveIds);
+
+            foreach (var property in properties)
             {
-                if (property.Id < 1)
-                    throw new ArgumentException("All properties must have an Id.");
-
                 var pageProperty = page.Properties.FirstOrDefault(x => x.Id == property.Id);
 
-                if (pageProperty == null)
-                    throw new ArgumentException(string.Format("Sorry, the property with Id : {0} does not exist on this page.", property.Id));
+                if (pageProperty == null) throw new ArgumentException(Messages.PropertyNotFound.Format(property.Id));
 
                 pageProperty.Text = property.Text;
             }

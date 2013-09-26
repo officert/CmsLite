@@ -82,7 +82,7 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _templateEngine.ProcessMvcFiles(_assembly);
+            _templateEngine.GenerateTemplates(_assembly);
 
             //assert
             var sectionTemplates = _sectionTemplateService.GetAll();
@@ -95,7 +95,7 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _templateEngine.ProcessMvcFiles(_assembly);
+            _templateEngine.GenerateTemplates(_assembly);
 
             //assert
             var sectionTemplates = _sectionTemplateService.GetAll();
@@ -108,7 +108,7 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _templateEngine.ProcessMvcFiles(_assembly);
+            _templateEngine.GenerateTemplates(_assembly);
 
             //assert
             var sectionTemplates = _sectionTemplateService.GetAll();
@@ -121,7 +121,7 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _templateEngine.ProcessMvcFiles(_assembly);
+            _templateEngine.GenerateTemplates(_assembly);
 
             //assert
             var sectionTemplates = _sectionTemplateService.GetAll();
@@ -134,7 +134,7 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _templateEngine.ProcessMvcFiles(_assembly);
+            _templateEngine.GenerateTemplates(_assembly);
 
             //assert
             var sectionTemplates = _sectionTemplateService.GetAll();
@@ -158,7 +158,7 @@ namespace CmsLite.Integration
             _dbContext.SaveChanges();
 
             //act
-            _templateEngine.ProcessMvcFiles(_assembly);
+            _templateEngine.GenerateTemplates(_assembly);
 
             //assert
             var sectionTemplates = _sectionTemplateService.GetAll();
@@ -253,7 +253,7 @@ namespace CmsLite.Integration
             _dbContext.SaveChanges();
 
             //act
-            _templateEngine.ProcessMvcFiles(_assembly);
+            _templateEngine.GenerateTemplates(_assembly);
 
             //assert
             var sectionTemplates = _sectionTemplateService.GetAll();
@@ -284,7 +284,7 @@ namespace CmsLite.Integration
             _dbContext.SaveChanges();
 
             //act
-            _templateEngine.ProcessMvcFiles(_assembly);
+            _templateEngine.GenerateTemplates(_assembly);
 
             //assert
             var sectionTemplates = _sectionTemplateService.GetAll();
@@ -326,7 +326,7 @@ namespace CmsLite.Integration
             _dbContext.SaveChanges();
 
             //act
-            _templateEngine.ProcessMvcFiles(_assembly);
+            _templateEngine.GenerateTemplates(_assembly);
 
             //assert
             var sectionTemplates = _sectionTemplateService.GetAll();
@@ -346,7 +346,7 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _templateEngine.ProcessMvcFiles(_assembly);
+            _templateEngine.GenerateTemplates(_assembly);
 
             //assert
             var sectionTemplates = _sectionTemplateService.GetAll();
@@ -360,7 +360,7 @@ namespace CmsLite.Integration
             //arrange
 
             //act
-            _templateEngine.ProcessMvcFiles(_assembly);
+            _templateEngine.GenerateTemplates(_assembly);
 
             //assert
             var sectionTemplates = _sectionTemplateService.GetAll();

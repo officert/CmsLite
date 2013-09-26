@@ -6,22 +6,23 @@ using System.Reflection;
 using System.Web;
 using CmsLite.Core.Attributes;
 using CmsLite.Core.Constants;
+using CmsLite.Core.Extensions;
 using CmsLite.Core.Interfaces;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
+using CmsLite.Interfaces.Services;
 using CmsLite.Interfaces.Templating;
+using CmsLite.Resources;
 
 namespace CmsLite.Core.Helpers
 {
     public class CmsModelHelper : ICmsModelHelper
     {
-        private readonly IDbContext _dbContext;
-        private readonly ITemplateEngine _mvcFileManager;
+        private readonly ISectionNodeService _sectionNodeService;
 
-        public CmsModelHelper(IDbContext dbContext, ITemplateEngine mvcFileManager)
+        public CmsModelHelper(ISectionNodeService sectionNodeService)
         {
-            _dbContext = dbContext;
-            _mvcFileManager = mvcFileManager;
+            _sectionNodeService = sectionNodeService;
         }
 
         public T GetModel<T>(HttpContextBase httpContextBase) where T : class , new()
@@ -35,16 +36,11 @@ namespace CmsLite.Core.Helpers
 
             var cmsRouteDataValues = GetCmsRouteDataValues(routeDataValues);
 
-            var sectionNodeDbSet = _dbContext.GetDbSet<SectionNode>()
-                                .Include(x => x.SectionTemplate)
-                                .Include(x => x.PageNodes.Select(y => y.PageTemplate));
-
             var controllerName = cmsRouteDataValues[0].Value.ToString();
 
-            var sectionNode = NodeHelper.GetControllerSectionNode(sectionNodeDbSet, controllerName);
+            var sectionNode = _sectionNodeService.Find(x => x.UrlName.ToLower() == controllerName);
 
-            if (sectionNode == null)
-                throw new ArgumentException(string.Format("The section with the url name : {0} was not found.", controllerName));
+            if (sectionNode == null) throw new ArgumentException(string.Format(Messages.SectionNodeNotFoundForUrlName, controllerName));
 
             PageNode pageNode = null;
 
@@ -62,7 +58,7 @@ namespace CmsLite.Core.Helpers
 
             var modelName = pageNode.PageTemplate.ModelName;
 
-            var modelType = _mvcFileManager.GetModelType(Assembly.GetCallingAssembly(), modelName);
+            var modelType = Assembly.GetCallingAssembly().GetModels().FirstOrDefault(x => x.Name == modelName);
             var modelInstance = (T) Activator.CreateInstance(modelType);
 
             var props = modelType.GetMembers();
