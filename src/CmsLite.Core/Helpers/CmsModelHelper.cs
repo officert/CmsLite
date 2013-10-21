@@ -38,7 +38,7 @@ namespace CmsLite.Core.Helpers
 
             var controllerName = cmsRouteDataValues[0].Value.ToString();
 
-            var sectionNode = _sectionNodeService.Find(x => x.UrlName.ToLower() == controllerName);
+            var sectionNode = _sectionNodeService.GetByUrlName(controllerName);
 
             if (sectionNode == null) throw new ArgumentException(string.Format(Messages.SectionNodeNotFoundForUrlName, controllerName));
 

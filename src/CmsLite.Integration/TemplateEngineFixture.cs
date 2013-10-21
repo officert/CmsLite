@@ -85,7 +85,7 @@ namespace CmsLite.Integration
             _templateEngine.GenerateTemplates(_assembly);
 
             //assert
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
             sectionTemplates.Count().Should().Be.EqualTo(NumValidControllersInCurrentProject);
         }
 
@@ -98,7 +98,7 @@ namespace CmsLite.Integration
             _templateEngine.GenerateTemplates(_assembly);
 
             //assert
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
             sectionTemplates.Count().Should().Be.EqualTo(NumValidControllersInCurrentProject);
         }
 
@@ -111,7 +111,7 @@ namespace CmsLite.Integration
             _templateEngine.GenerateTemplates(_assembly);
 
             //assert
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
             sectionTemplates.Count().Should().Be.EqualTo(NumValidControllersInCurrentProject);
         }
 
@@ -124,7 +124,7 @@ namespace CmsLite.Integration
             _templateEngine.GenerateTemplates(_assembly);
 
             //assert
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
             sectionTemplates.FirstOrDefault(x => x.ControllerName == "TestController1_Valid").Name.Should().Be.EqualTo("TestController1");
         }
 
@@ -137,7 +137,7 @@ namespace CmsLite.Integration
             _templateEngine.GenerateTemplates(_assembly);
 
             //assert
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
             sectionTemplates.FirstOrDefault(x => x.ControllerName == "TestController1_Valid").PageTemplates.Count.Should().Be.EqualTo(NumValidActionsOnController);
         }
 
@@ -161,7 +161,7 @@ namespace CmsLite.Integration
             _templateEngine.GenerateTemplates(_assembly);
 
             //assert
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
             var cleanedUpSectionTemplates = sectionTemplates.Where(x => x.ControllerName == controllerName);
             cleanedUpSectionTemplates.Count().Should().Be.EqualTo(0);
         }
@@ -256,7 +256,7 @@ namespace CmsLite.Integration
             _templateEngine.GenerateTemplates(_assembly);
 
             //assert
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
             var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
             validTemplate.Name.Should().Be.EqualTo("TestController1");
         }
@@ -287,7 +287,7 @@ namespace CmsLite.Integration
             _templateEngine.GenerateTemplates(_assembly);
 
             //assert
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
             var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
             validTemplate.PageTemplates.Count.Should().Be.EqualTo(NumValidActionsOnController);
         }
@@ -329,7 +329,7 @@ namespace CmsLite.Integration
             _templateEngine.GenerateTemplates(_assembly);
 
             //assert
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
             var validTemplate = sectionTemplates.FirstOrDefault(x => x.ControllerName == controllerName);
             validTemplate.PageTemplates.Count.Should().Be.EqualTo(NumValidActionsOnController);
 
@@ -349,7 +349,7 @@ namespace CmsLite.Integration
             _templateEngine.GenerateTemplates(_assembly);
 
             //assert
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
             var validTemplates = sectionTemplates;
             validTemplates.Count().Should().Be.EqualTo(NumValidControllersInCurrentProject);
         }
@@ -363,7 +363,7 @@ namespace CmsLite.Integration
             _templateEngine.GenerateTemplates(_assembly);
 
             //assert
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
             sectionTemplates.Count().Should().Be.EqualTo(NumValidControllersInCurrentProject);
         }
 
@@ -811,7 +811,7 @@ namespace CmsLite.Integration
 
         private void DeleteAllSectionTemplates()
         {
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
             foreach (var sectionTemplate in sectionTemplates)
             {
                 _sectionTemplateService.Delete(sectionTemplate.Id);

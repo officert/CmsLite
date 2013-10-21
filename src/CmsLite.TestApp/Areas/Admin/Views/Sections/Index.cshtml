@@ -1,0 +1,188 @@
+﻿@model CmsLite.Core.Areas.Admin.Models.SiteSectionsModel
+@{
+    ViewBag.Title = "Cms Lite - PageTypes";
+}
+@section Scripts
+{
+    <script src="@Url.Content("~/Areas/Admin/Scripts/source/page.sitesections.js")"></script>
+    <script>
+        $(document).ready(function () {
+            (function() {
+                var sectionNodes = @Html.Raw(Json.Encode(Model.Sections));
+                var sectionTemplates = @Html.Raw(Json.Encode(Model.SectionTemplates));
+                cms.init(sectionNodes, sectionTemplates);
+            })();
+        });
+    </script>
+    <script type="text/html" id="section-template">
+        <li class="node">
+            <a href="#" data-bind="click: $root.selectNode, css: { active : isSelected }">
+                <img alt="icon" data-bind="attr: { src : iconImageName }" /><span data-bind="text: displayName"></span>
+            </a>
+            <ul data-bind="visible: pageNodes">
+                <!-- ko template: { name: 'page-template', foreach: pageNodes } -->
+                <!-- /ko -->
+            </ul>
+        </li>
+    </script>
+    <script type="text/html" id="page-template">
+        <li class="node">
+            <a href="#" data-bind="click: $root.selectNode, css: { active : isSelected }">
+                <img alt="icon" data-bind="attr: { src : iconImageName }" /><span data-bind="text: displayName"></span>
+            </a>
+            <ul data-bind="visible: pageNodes">
+                <!-- ko template: { name: 'page-template', foreach: pageNodes } -->
+                <!-- /ko -->
+            </ul>
+        </li>
+    </script>
+}
+<div id="sections">
+    <header class="page-header">
+        <h3>
+            <i class="icon-book"></i>Sections</h3>
+        <div class="btn-group">
+            @*<button class="btn btn-default" type="button" data-bind="click: toggleSectionsOpen, css: { 'active': allAccordionsOpen() }"><i data-bind="    css: !allAccordionsOpen() ? 'icon-expand' : 'icon-collapse'"></i><span data-bind="    text: !allAccordionsOpen() ? 'Open All' : 'Close All'"></span></button>*@
+            <button id="create-section-trigger" class="btn btn-default" type="button" data-bind="click: createSectionForm.show"><i class="icon-expand-alt"></i><span>Create new section</span> </button>
+        </div>
+    </header>
+    <div class="" data-bind="css: getPageListClass">
+        <ul data-bind="visible: sectionNodes().length > 0" oncontextmenu="return false;" class="list-group space-box-content">
+            <!-- ko template: { name: 'section-template', foreach: sectionNodes } -->
+            <!-- /ko -->
+        </ul>
+        <div class="alert alert-info" data-bind="visible: sectionNodes().length < 1">You don't have any sections created yet. Use the <a href="#" class="label label-info" data-bind="    click: cms.viewmodel.createSectionForm.show">Create new section</a> form to create your first site section.</div>
+    </div>
+    <div id="node-sidebar" class="col-md-3" data-bind="visible: selectedNode()">
+        @*        <div class="alert alert-info">
+            <i class="icon-info-sign icon-2x"></i>Click on a node in the tree to <strong>select</strong> it, then use these buttons to 
+            <div class="label label-danger">Delete the node</div>
+            ,
+            <div class="label label-info">Edit the node</div>
+            or,
+            <div class="label label-success">Create child nodes</div>
+            .
+        </div>*@
+        <!-- Selected Node -->
+        <div class="btn-group-vertical col-md-2" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'">
+            <a title="View Section" href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url  }"><i class="icon-share-alt"></i></a>
+            <a title="Trash Section" href="#" class="btn btn-default" data-bind="click: function() { $root.deleteSectionForm.show($root.selectedNode()) }"><i class="icon-trash"></i></a>
+            <a title="Create Child Page" href="#" class="btn btn-default" data-bind="click: function() { $root.createPageForm.show($root.selectedNode()) }"><i class="icon-plus"></i></a>
+        </div>
+        <div class="btn-group-vertical col-md-2" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'">
+            <a title="View Page" href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url }"><i class="icon-share-alt"></i></a>
+            <a title="Trash Page" href="#" class="btn btn-default" data-bind="click: function() { $root.deletePageForm.show($root.selectedNode()) }"><i class="icon-trash"></i></a>
+            <a title="Create Child Page" href="#" class="btn btn-default" data-bind="visible: selectedNode() && selectedNode().pageTemplates().length > 0, click: function() { $root.createPageForm.show($root.selectedNode()) }"><i class="icon-plus"></i></a>
+            <a title="Edit Page" href="#" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().editUrl  }"><i class="icon-edit"></i></a>
+        </div>
+        <div class="panel panel-default col-md-10" data-bind="visible: selectedNode()">
+            <div class="panel-heading">
+                <i class="icon-info-sign"></i>
+                <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span>Section Info</h4>
+                <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span>Page Info</h4>
+                <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-default" data-bind="click: self.hideNodeInfo">
+                        <i class="icon-remove"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="control-label">Display name :</label>
+                    <span data-bind="text: selectedNode() && selectedNode().displayName"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Url name :</label>
+                    <span data-bind="text: selectedNode() && selectedNode().urlName"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!---------------------------------- Modals ---------------------------------->
+<div id="create-sections-form" class="modal fade" tabindex="-1" role="dialog" data-bind="bootstrapmodal : {}, onhide: hide">
+    <div class="modal-dialog">
+        <form class="modal-content" action="@Url.Action("CreateSection")" method="POST">
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal"><i class="icon-remove"></i></button>
+                <h4>Add a new section</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">Select a section template :</label>
+                    <select class="form-control" data-val="true" data-val-required="Select a Section Template" data-bind="options: sectionTemplates, optionsCaption : '--- Select ---', optionsText: 'name', optionsValue  : 'id', value : selectedSectionTemplateId"></select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Display name :</label>
+                    <input class="form-control" name="DisplayName" data-val="true" data-val-required="Enter a Display Name" data-bind="value: displayName" type="text" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Url name:</label>
+                    <input class="form-control" name="UrlName" data-val="true" data-val-required="Enter a Url Name" data-bind="value: urlName" type="text" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" type="submit" data-bind="click: create"><i class="icon-plus"></i>Create Section</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="create-page-form" class="modal fade" tabindex="-1" role="dialog" data-bind="bootstrapmodal : {}, onhide: hide">
+    <div class="modal-dialog">
+        <form class="modal-content" action="@Url.Action("CreateSection")">
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal"><i class="icon-remove"></i></button>
+                <h4>Add a new page</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">Select a section template :</label>
+                    <select class="form-control" data-val="true" data-val-required="Select a Page Template" data-bind="options: parentNode() !== undefined ? parentNode().pageTemplates : null, optionsCaption : '--- Select ---', optionsText: 'name', optionsValue  : 'id', value : selectedPageTemplateId"></select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Display name :</label>
+                    <input class="form-control" name="DisplayName" data-val="true" data-val-required="Enter a Display Name" data-bind="value: displayName" type="text" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Url name:</label>
+                    <input class="form-control" name="UrlName" data-val="true" data-val-required="Enter a Url Name" data-bind="value: urlName" type="text" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" type="button" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" type="submit" data-bind="click: create"><i class="icon-plus"></i>Create Page</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="delete-section-form" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body container">
+                <div class="alert alert-danger">
+                    <p>Are you sure you would like to delete this section? Deleting this section will delete all the pages that belong to it.</p>
+                </div>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger" data-bind="click: cms.viewmodel.deleteSectionForm.delete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="delete-page-form" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body container">
+                <div class="alert alert-danger">
+                    <p>Are you sure you would like to delete this page? Deleting this section will delete all the pages that belong to it.</p>
+                </div>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger" data-bind="click: cms.viewmodel.deletePageForm.delete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

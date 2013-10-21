@@ -1,8 +1,8 @@
 ﻿@using CmsLite.Core.Extensions
 @model CmsLite.Core.Areas.Admin.ViewModels.PropertyViewModel
 
-@Html.Content().PluginScripts.Add("richtexteditor/ckeditor/ckeditor.js")
-@Html.Content().PluginScripts.Add("richtexteditor/RichTextEditor.js")
+@Html.Script(@<script src="@Url.Content("~/Areas/Admin/Scripts/PropertyPlugins/RichTextEditor/ckeditor/ckeditor.js")"></script>)
+@Html.Script(@<script src="@Url.Content("~/Areas/Admin/Scripts/PropertyPlugins/RichTextEditor/RichTextEditor.js")"></script>)
 
 @Html.TextAreaFor(x => x.Text, new { @class = "richtexteditor" })
 

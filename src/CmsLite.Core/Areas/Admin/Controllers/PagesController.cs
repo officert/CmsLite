@@ -24,7 +24,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
         [ImportModelStateFromTempData]
         public ActionResult EditPage(int id)
         {
-            var model = _mapper.Map<PageNode, PageNodeViewModel>(_pageNodeService.GetWithDetails(id));
+            var model = _mapper.Map<PageNode, PageNodeViewModel>(_pageNodeService.GetByIdWithDetails(id));
 
             model.SidebarMenu = GetAdminMenu();
             model.UserMenu = GetAdminUserMenu();

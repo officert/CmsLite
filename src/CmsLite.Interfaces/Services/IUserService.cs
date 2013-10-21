@@ -2,8 +2,10 @@
 
 namespace CmsLite.Interfaces.Services
 {
-    public interface IUserService : IServiceBase<User>
+    public interface IUserService
     {
+        User GetByEmail(string email);
+
         User Create(string email, string password);
 
         void ActivateUser(User user);

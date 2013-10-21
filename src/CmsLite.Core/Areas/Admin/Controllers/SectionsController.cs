@@ -28,7 +28,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
         public ActionResult Index()
         {
             var sections = _sectionNodeService.GetAllWithDetails();
-            var sectionTemplates = _sectionTemplateService.GetAll();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
 
             var model = new SiteSectionsModel
             {

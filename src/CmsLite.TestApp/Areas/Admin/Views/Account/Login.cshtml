@@ -1,0 +1,36 @@
+﻿@model CmsLite.Core.Areas.Admin.Models.SignInModel
+@{
+    ViewBag.Title = "SignIn";
+    Layout = "~/Areas/Admin/Views/Shared/_AccountLayout.cshtml";
+}
+@using (Html.BeginForm("Login", "Account", new { area = "admin" }, FormMethod.Post, new { @id = "signin" }))
+{
+    <div class="custom-form">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="icon-user"></i></span>
+            @*@Html.LabelFor(x => x.Email, new { @class = "control-label" })*@
+            @Html.TextBoxFor(x => x.Email, new { @class = "form-control", @placeholder = "Enter your email" })
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon"><i class="icon-key"></i></span>
+            @*@Html.LabelFor(x => x.Password, new { @class = "control-label" })*@
+            @Html.PasswordFor(x => x.Password, new { @class = "form-control", @placeholder = "Enter your password" })
+        </div>
+        <div class="checkbox">
+            <label>
+                @Html.CheckBoxFor(m => m.RememberMe)
+                Remember my login
+            </label>
+        </div>
+        <button class="btn btn-primary pull-right" type="submit"><i class="icon-signin"></i>Sign In</button>
+    </div>
+}
+<div class="alert alert-info">
+    If you don't already have an account, <a href="@Url.Action("Register", "Account", new { area = "admin" })">create one</a>
+</div>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @Html.ValidationSummary(false)
+    </div>
+}

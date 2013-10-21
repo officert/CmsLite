@@ -1,0 +1,5 @@
+﻿@model CmsLite.Core.Areas.Admin.ViewModels.PropertyViewModel
+
+@Html.TextBoxFor(x => x.Text, new { data_val = "true", data_val_number = "* Must be a number.", style = "width:30px" })
+
+@Html.HiddenFor(m => m.Id)

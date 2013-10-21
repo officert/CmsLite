@@ -3,7 +3,7 @@ using CmsLite.Utilities.Cms;
 
 namespace CmsLite.Interfaces.Services
 {
-    public interface IPropertyTemplateService : IServiceBase<PropertyTemplate>
+    public interface IPropertyTemplateService
     {
         PropertyTemplate Create(PageTemplate pageTemplate,
                                     string propertyName,

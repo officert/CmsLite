@@ -8,9 +8,9 @@ namespace CmsLite.Core.Areas.Admin.Controllers
     [Authorize]
     public class AdminImagesController : AdminBaseController
     {
-        private readonly IMediaService _mediaService;
+        private readonly IFileService _mediaService;
 
-        public AdminImagesController(IMediaService mediaService)
+        public AdminImagesController(IFileService mediaService)
         {
             _mediaService = mediaService;
         }
@@ -21,7 +21,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
         {
             if(id < 1) throw new ArgumentException("Id cannot be 0");
 
-            var file = _mediaService.Find(x => x.Id == id);
+            var file = _mediaService.GetById(id);
             if (file != null)
             {
                 GetImage(file.FileData, 120, 120, false, false);

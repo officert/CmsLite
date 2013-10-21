@@ -56,7 +56,7 @@ namespace CmsLite.Core.Templating
         private void ProcessControllers()
         {
             _controllers = _controllers.ToList();
-            var sectionTemplateDbSet = _sectionTemplateService.GetAll().ToList();
+            var sectionTemplateDbSet = _sectionTemplateService.GetAllSectionTemplates().ToList();
 
             var controllerNames = _controllers.Select(y => y.Name).ToList();
             var sectionTemplateControllerNames = sectionTemplateDbSet.Select(x => x.ControllerName).ToList();
@@ -325,7 +325,6 @@ namespace CmsLite.Core.Templating
 
                     propertyTemplate.DisplayName = propertyTemplateAttribute.DisplayName;
                     propertyTemplate.TabName = propertyTemplateAttribute.TabName;
-                    propertyTemplate.TabOrder = propertyTemplateAttribute.TabOrder;
                     propertyTemplate.Description = propertyTemplateAttribute.Description;
                     propertyTemplate.Required = propertyTemplateAttribute.Required;     //what are the reprocussions of changing a property template to required?
 

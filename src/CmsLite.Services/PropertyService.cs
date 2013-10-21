@@ -9,11 +9,13 @@ using CmsLite.Utilities.Cms;
 
 namespace CmsLite.Services
 {
-    public class PropertyService : ServiceBase<Property>, IPropertyService
+    public class PropertyService : IPropertyService
     {
+        private readonly IUnitOfWork _unitOfWork;
+
         public PropertyService(IUnitOfWork unitOfWork)
-            : base(unitOfWork)
         {
+            _unitOfWork = unitOfWork;
         }
 
         public Property Create(PageNode pageNode, PropertyTemplate propertyTemplate, string text = null, bool commit = true)
@@ -29,7 +31,7 @@ namespace CmsLite.Services
 
         public Property Create(int pageNodeId, int propertyTemplateId, string text = null, bool commit = true)
         {
-            var pageNode = UnitOfWork.Context.GetDbSet<PageNode>()
+            var pageNode = _unitOfWork.Context.GetDbSet<PageNode>()
                         .Include(x => x.PageTemplate.PropertyTemplates)
                         .FirstOrDefault(x => x.Id == pageNodeId);
 
@@ -48,7 +50,7 @@ namespace CmsLite.Services
         {
             if (id < 1) throw new ArgumentException("id");
 
-            var propertyDbSet = UnitOfWork.Context.GetDbSet<Property>();
+            var propertyDbSet = _unitOfWork.Context.GetDbSet<Property>();
             var property = propertyDbSet.FirstOrDefault(x => x.Id == id);
 
             if (property == null)
@@ -58,7 +60,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
         }
 
@@ -66,7 +68,7 @@ namespace CmsLite.Services
 
         private Property CreateProperty(PageNode pageNode, PropertyTemplate propertyTemplate, string text = null, bool commit = true)
         {
-            var propertyDbSet = UnitOfWork.Context.GetDbSet<Property>();
+            var propertyDbSet = _unitOfWork.Context.GetDbSet<Property>();
 
             var property = propertyDbSet.Create();
             property.PropertyTemplate = propertyTemplate;
@@ -80,7 +82,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
 
             return property;

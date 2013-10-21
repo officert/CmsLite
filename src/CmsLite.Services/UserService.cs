@@ -1,24 +1,28 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Mail;
-using System.Net;
 using CmsLite.Domains.Entities;
-using CmsLite.Interfaces.Authentication;
 using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
 using CmsLite.Services.Helpers;
+using CmsLite.Utilities.Extensions;
 
 namespace CmsLite.Services
 {
-    public class UserService : ServiceBase<User>, IUserService
+    public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
 
         public UserService(IUnitOfWork unitOfWork)
-            : base(unitOfWork)
         {
             _unitOfWork = unitOfWork;
+        }
+
+        public User GetByEmail(string email)
+        {
+            if(email.IsNullOrEmpty()) throw new ArgumentException("email");
+
+            return _unitOfWork.Context.GetDbSet<User>().FirstOrDefault(x => x.Email == email);
         }
 
         public void ActivateUser(User user)
@@ -64,7 +68,7 @@ namespace CmsLite.Services
 
         public bool ChangeUserPassword(string userName, string newPassword)
         {
-            var userDbSet = UnitOfWork.Context.GetDbSet<User>();
+            var userDbSet = _unitOfWork.Context.GetDbSet<User>();
 
             var user = userDbSet.FirstOrDefault(x => x.UserName == userName);
 

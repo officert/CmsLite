@@ -25,44 +25,39 @@
     &.active {
         .transition(background-image);
     }
-    /*> i {
-        margin-right: @btn-icon-margin;
-    }*/
+
+    &:hover {
+        border-width: 1px;
+    }
 }
 
 .btn-default {
     .box-shadow-inset-top();
-
     #gradient.vertical(@btn-default-bg, darken(@btn-default-bg, 5%));
 }
 
 .btn-primary {
-    .box-shadow-inset-top(lighten(@btn-primary-bg, 35%));
-
+    .box-shadow-inset-top(lighten(@btn-primary-bg, 25%));
     #gradient.vertical(@btn-primary-bg, darken(@btn-primary-bg, 5%));
 }
 // Warning appears as orange
 .btn-warning {
     .box-shadow-inset-top(lighten(@btn-warning-bg, 35%));
-
     #gradient.vertical(@btn-warning-bg, darken(@btn-warning-bg, 5%));
 }
 // Danger and error appear as red
 .btn-danger {
     .box-shadow-inset-top(lighten(@btn-danger-bg, 35%));
-
     #gradient.vertical(@btn-danger-bg, darken(@btn-danger-bg, 5%));
 }
 // Success appears as green
 .btn-success {
     .box-shadow-inset-top(lighten(@btn-success-bg, 35%));
-
     #gradient.vertical(@btn-success-bg, darken(@btn-success-bg, 5%));
 }
 // Info appears as blue-green
 .btn-info {
     .box-shadow-inset-top(lighten(@btn-info-bg, 35%));
-
     #gradient.vertical(@btn-info-bg, darken(@btn-info-bg, 5%));
 }
 
@@ -72,6 +67,16 @@
         /*> i {
             margin-right: @btn-icon-margin;
         }*/
+    }
+}
+
+.btn-group-vertical {
+    .btn {
+        &:hover {
+        }
+
+        &:last-child {
+        }
     }
 }
 
@@ -113,7 +118,6 @@
 /* Panels */
 .panel-default {
     .panel-heading {
-        padding: 5px 15px;
 
         > h4 {
             display: inline-block;
@@ -130,12 +134,13 @@
         }
 
         > .btn-group {
-            margin-top: -6px;
+            margin-top: -11px;
             margin-right: -16px;
             margin-bottom: -6px;
 
             &.pull-right {
                 > .btn {
+                    padding: 11px 12px;
                     border-radius: 0;
 
                     &:last-child {
@@ -145,4 +150,8 @@
             }
         }
     }
+}
+
+/* Input Groups */
+.input-group-addon {
 }

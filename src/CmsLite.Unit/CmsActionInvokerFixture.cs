@@ -71,7 +71,7 @@ namespace CmsLite.Unit
             const string actionName = "Foobar";
             const string controllerName = "foobar";
 
-            _sectionNodeServiceMock.Setup(x => x.Find(It.IsAny<Expression<Func<SectionNode, bool>>>())).Returns((SectionNode)null);
+            _sectionNodeServiceMock.Setup(x => x.GetByUrlName(It.IsAny<string>())).Returns((SectionNode)null);
 
             //act + assert
             Assert.That(() => _actionInvoker.InvokeAction(_controllerContextMock.Object, actionName),

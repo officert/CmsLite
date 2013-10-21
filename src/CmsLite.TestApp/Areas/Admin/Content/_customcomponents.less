@@ -13,6 +13,13 @@
         border: 1px solid @border-color;
         padding: 20px;
         overflow: hidden;
+
+        .btn {
+
+            > i {
+                margin-right: @btn-icon-margin;
+            }
+        }
     }
 }
 
@@ -44,5 +51,13 @@
                 }
             }
         }
+    }
+}
+
+/* Custom Form */
+.custom-form {
+    padding:10px 15px;
+    .input-group-addon {
+        width:30px;
     }
 }

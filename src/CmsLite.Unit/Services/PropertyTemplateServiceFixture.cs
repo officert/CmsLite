@@ -88,27 +88,6 @@ namespace CmsLite.Unit.Services
         }
 
         [Test]
-        public void Create_TabOrderIsNull_Uses1AsTabOrder()
-        {
-            //arrange
-            int? tabOrder = null;
-
-            var pageTemplate = new PageTemplate { Id = 1 };
-
-            _dbContextMock.Setup(x => x.GetDbSet<PageTemplate>()).Returns(new InMemoryDbSet<PageTemplate>
-            {
-                pageTemplate
-            });
-            _dbContextMock.Setup(x => x.GetDbSet<PropertyTemplate>()).Returns(new InMemoryDbSet<PropertyTemplate>());
-
-            //act
-            var propertyTemplate = _propertyTemplateService.Create(pageTemplate.Id, "Foobar", CmsPropertyType.ImagePicker, tabOrder);
-
-            //assert
-            propertyTemplate.TabOrder.Should().Be.EqualTo(1);
-        }
-
-        [Test]
         public void Create_TabNameIsNullOrEmpty_UsesDefaultTabName()
         {
             //arrange

@@ -151,7 +151,6 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\IocConfig.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
-    <Compile Include="Helpers\ContentHelpers.cs" />
     <Compile Include="Extensions\HtmlHelperExtensions.cs" />
     <Compile Include="Interfaces\IContainer.cs" />
     <Compile Include="Ioc\NinjectWebCommon.cs" />
@@ -531,6 +530,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Trash\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Shared\PropertyPluginTemplates\Number.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

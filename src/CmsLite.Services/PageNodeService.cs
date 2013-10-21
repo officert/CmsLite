@@ -1,33 +1,36 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
-using CmsLite.Services.Extensions;
 using CmsLite.Services.Helpers;
 using CmsLite.Utilities.Cms;
 using CmsLite.Utilities.Extensions;
 
 namespace CmsLite.Services
 {
-    public class PageNodeService : ServiceBase<PageNode>, IPageNodeService
+    public class PageNodeService : IPageNodeService
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IPropertyService _propertyService;
 
         public PageNodeService(IUnitOfWork unitOfWork, IPropertyService propertyService)
-            : base(unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _propertyService = propertyService;
         }
 
-        public PageNode GetWithDetails(int id)
+        public PageNode GetById(int id)
         {
-            return UnitOfWork.Context.GetDbSet<PageNode>()
+            return _unitOfWork.Context.GetDbSet<PageNode>().FirstOrDefault(x => x.Id == id);
+        }
+
+        public PageNode GetByIdWithDetails(int id)
+        {
+            return _unitOfWork.Context.GetDbSet<PageNode>()
                 .Include(x => x.PageTemplate)
                 .Include(x => x.Properties.Select(y => y.PropertyTemplate))
                 .FirstOrDefault(x => x.Id == id);
@@ -41,9 +44,9 @@ namespace CmsLite.Services
             if (urlName.IsNullOrEmpty())
                 throw new ArgumentException(Messages.PageNodeUrlNameCannotBeNull);
 
-            var pageNodeDbSet = UnitOfWork.Context.GetDbSet<PageNode>();
+            var pageNodeDbSet = _unitOfWork.Context.GetDbSet<PageNode>();
 
-            var parentSectionNode = UnitOfWork.Context.GetDbSet<SectionNode>()
+            var parentSectionNode = _unitOfWork.Context.GetDbSet<SectionNode>()
                         .Include(x => x.SectionTemplate.PageTemplates.Select(y => y.PropertyTemplates))
                         .Include(x => x.PageNodes)
                         .FirstOrDefault(x => x.Id == sectionId);        //TODO: should use service instead of UnitOfWork directly, but issues with Ninject circular dependencies
@@ -79,7 +82,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
 
             return pageNode;
@@ -93,7 +96,7 @@ namespace CmsLite.Services
             if (urlName.IsNullOrEmpty())
                 throw new ArgumentException(Messages.PageNodeUrlNameCannotBeNull);
 
-            var pageNodeDbSet = UnitOfWork.Context.GetDbSet<PageNode>();
+            var pageNodeDbSet = _unitOfWork.Context.GetDbSet<PageNode>();
             var pageNodes = pageNodeDbSet
                             .Include(x => x.PageNodes)
                             .Include(x => x.PageTemplate.PageTemplates);
@@ -130,13 +133,13 @@ namespace CmsLite.Services
 
             AddPropertiesForPageTemplatesPropertyTemplates(pageTemplate, pageNode);
 
-            UnitOfWork.Commit();
+            _unitOfWork.Commit();
             return pageNode;
         }
 
         public void Update(int pageId, IEnumerable<Property> properties)
         {
-            var page = Find(x => x.Id == pageId);
+            var page = GetById(pageId);
 
             if (page == null) throw new ArgumentException(Messages.PageNodeNotFound.Format(pageId));
 
@@ -155,7 +158,7 @@ namespace CmsLite.Services
                 pageProperty.Text = property.Text;
             }
 
-            UnitOfWork.Commit();
+            _unitOfWork.Commit();
         }
 
         public void Delete(PageNode pageNode, bool commit = true)
@@ -168,7 +171,7 @@ namespace CmsLite.Services
 
         public void Delete(int id, bool commit = true)
         {
-            var pageNodeDbSet = UnitOfWork.Context.GetDbSet<PageNode>();
+            var pageNodeDbSet = _unitOfWork.Context.GetDbSet<PageNode>();
             var pageNodes = pageNodeDbSet
                         .Include(x => x.Properties)
                         .Include(x => x.PageNodes);
@@ -185,7 +188,7 @@ namespace CmsLite.Services
 
         private void DeletePageNode(PageNode pageNode, bool commit = true)
         {
-            var pageNodeDbSet = UnitOfWork.Context.GetDbSet<PageNode>();
+            var pageNodeDbSet = _unitOfWork.Context.GetDbSet<PageNode>();
 
             if (pageNode.PageNodes != null && pageNode.PageNodes.Any())
             {
@@ -199,7 +202,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
         }
 

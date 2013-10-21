@@ -17,7 +17,7 @@ namespace CmsLite.Services.Ioc
             Bind<IPropertyTemplateService>().To<PropertyTemplateService>().InRequestScope();
             Bind<IPropertyService>().To<PropertyService>().InRequestScope();
 
-            Bind<IMediaService>().To<MediaService>().InRequestScope();
+            Bind<IFileService>().To<FileService>().InRequestScope();
         }
     }
 }

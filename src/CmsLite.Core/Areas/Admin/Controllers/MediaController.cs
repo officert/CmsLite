@@ -10,9 +10,9 @@ namespace CmsLite.Core.Areas.Admin.Controllers
     [Authorize]
     public class MediaController : AdminBaseController
     {
-        private readonly IMediaService _mediaService;
+        private readonly IFileService _mediaService;
 
-        public MediaController(IMediaService mediaService)
+        public MediaController(IFileService mediaService)
         {
             _mediaService = mediaService;
         }
@@ -22,7 +22,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
         {
             var model = new MediaModel
             {
-                Files = _mediaService.GetAll(),
+                Files = _mediaService.GetAllFiles(),
                 UploadFile = new UploadFileViewModel(),
                 SidebarMenu = GetAdminMenu(),
                 UserMenu = GetAdminUserMenu()

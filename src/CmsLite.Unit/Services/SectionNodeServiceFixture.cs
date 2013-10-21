@@ -157,7 +157,7 @@ namespace CmsLite.Unit.Services
                     UrlName = formattedUrlName
                 }
             });
-            _sectionTemplateServiceMock.Setup(x => x.Find(It.IsAny<Expression<Func<SectionTemplate, bool>>>())).Returns(sectionTemplate);
+            _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
 
             //act + assert
@@ -172,7 +172,7 @@ namespace CmsLite.Unit.Services
             //arrange
             const int sectionTemplateId = 999999;
             _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>());
-            _sectionTemplateServiceMock.Setup(x => x.Find(It.IsAny<Expression<Func<SectionTemplate, bool>>>())).Returns((SectionTemplate)null);
+            _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns((SectionTemplate)null);
 
             //act + assert
             Assert.That(() => _sectionNodeService.Create(sectionTemplateId, "Foobar", "foobar"),
@@ -188,7 +188,7 @@ namespace CmsLite.Unit.Services
             var formattedUrlName = CmsUrlHelper.FormatUrlName(urlName);
             var sectionTemplate = new SectionTemplate{ Id = 1 };
             _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>());
-            _sectionTemplateServiceMock.Setup(x => x.Find(It.IsAny<Expression<Func<SectionTemplate, bool>>>())).Returns(sectionTemplate);
+            _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
             var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", urlName);
@@ -203,7 +203,7 @@ namespace CmsLite.Unit.Services
             //arrange
             var sectionTemplate = new SectionTemplate { Id = 1 };
             _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>());
-            _sectionTemplateServiceMock.Setup(x => x.Find(It.IsAny<Expression<Func<SectionTemplate, bool>>>())).Returns(sectionTemplate);
+            _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
             var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", "Foobar");
@@ -224,7 +224,7 @@ namespace CmsLite.Unit.Services
                     Id = 1
                 }
             });
-            _sectionTemplateServiceMock.Setup(x => x.Find(It.IsAny<Expression<Func<SectionTemplate, bool>>>())).Returns(sectionTemplate);
+            _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
             var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar2");
@@ -239,7 +239,7 @@ namespace CmsLite.Unit.Services
             //arrange
             var sectionTemplate = new SectionTemplate { Id = 1 };
             _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>());
-            _sectionTemplateServiceMock.Setup(x => x.Find(It.IsAny<Expression<Func<SectionTemplate, bool>>>())).Returns(sectionTemplate);
+            _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
             var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar2");
@@ -254,7 +254,7 @@ namespace CmsLite.Unit.Services
             //arrange
             var sectionTemplate = new SectionTemplate { Id = 1 };
             _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>());
-            _sectionTemplateServiceMock.Setup(x => x.Find(It.IsAny<Expression<Func<SectionTemplate, bool>>>())).Returns(sectionTemplate);
+            _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
             var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar2");
@@ -269,7 +269,7 @@ namespace CmsLite.Unit.Services
             //arrange
             var sectionTemplate = new SectionTemplate { Id = 1 };
             _dbContextMock.Setup(x => x.GetDbSet<SectionNode>()).Returns(new InMemoryDbSet<SectionNode>());
-            _sectionTemplateServiceMock.Setup(x => x.Find(It.IsAny<Expression<Func<SectionTemplate, bool>>>())).Returns(sectionTemplate);
+            _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
             var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar2");
@@ -332,7 +332,7 @@ namespace CmsLite.Unit.Services
             _sectionNodeService.Trash(sectionNode.Id);
 
             //assert
-            _sectionNodeService.Find(x => x.Id == sectionNode.Id).InTrash.Should().Be.True();
+            _sectionNodeService.GetById(sectionNode.Id).InTrash.Should().Be.True();
         }
 
         #endregion
@@ -349,13 +349,13 @@ namespace CmsLite.Unit.Services
             {
                 sectionNode
             });
-            _sectionTemplateServiceMock.Setup(x => x.Find(It.IsAny<Expression<Func<SectionTemplate, bool>>>())).Returns(sectionTemplate);
+            _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
             _sectionNodeService.Delete(sectionNode.Id);
 
             //assert
-            var foundSectionNode = _sectionNodeService.Find(x => x.Id == sectionNode.Id);
+            var foundSectionNode = _sectionNodeService.GetById(sectionNode.Id);
             foundSectionNode.Should().Be.Null();
         }
 

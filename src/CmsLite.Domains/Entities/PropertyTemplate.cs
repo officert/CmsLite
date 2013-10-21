@@ -29,8 +29,6 @@ namespace CmsLite.Domains.Entities
         [StringLength(255)]
         public string TabName { get; set; }
 
-        public int TabOrder { get; set; }
-
         public bool Required { get; set; }
 
         [ForeignKey("ParentPageTemplate")]

@@ -69,7 +69,7 @@
     <Compile Include="Helpers\AuthenticationHelper.cs" />
     <Compile Include="Helpers\CmsUrlHelper.cs" />
     <Compile Include="Ioc\ServicesNinjectModule.cs" />
-    <Compile Include="MediaService.cs" />
+    <Compile Include="FileService.cs" />
     <Compile Include="PageNodeService.cs" />
     <Compile Include="PageTemplateService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -77,7 +77,6 @@
     <Compile Include="PropertyTemplateService.cs" />
     <Compile Include="SectionNodeService.cs" />
     <Compile Include="SectionTemplateService.cs" />
-    <Compile Include="ServiceBase.cs" />
     <Compile Include="UserService.cs" />
   </ItemGroup>
   <ItemGroup>

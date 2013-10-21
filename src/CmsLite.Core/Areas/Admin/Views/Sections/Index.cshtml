@@ -17,7 +17,7 @@
     <script type="text/html" id="section-template">
         <li class="node">
             <a href="#" data-bind="click: $root.selectNode, css: { active : isSelected }">
-                <img alt="icon" data-bind="attr: { src : iconImageName }" /><span data-bind="    text: displayName"></span>
+                <img alt="icon" data-bind="attr: { src : iconImageName }" /><span data-bind="text: displayName"></span>
             </a>
             <ul data-bind="visible: pageNodes">
                 <!-- ko template: { name: 'page-template', foreach: pageNodes } -->
@@ -28,7 +28,7 @@
     <script type="text/html" id="page-template">
         <li class="node">
             <a href="#" data-bind="click: $root.selectNode, css: { active : isSelected }">
-                <img alt="icon" data-bind="attr: { src : iconImageName }" /><span data-bind="    text: displayName"></span>
+                <img alt="icon" data-bind="attr: { src : iconImageName }" /><span data-bind="text: displayName"></span>
             </a>
             <ul data-bind="visible: pageNodes">
                 <!-- ko template: { name: 'page-template', foreach: pageNodes } -->
@@ -54,7 +54,7 @@
         <div class="alert alert-info" data-bind="visible: sectionNodes().length < 1">You don't have any sections created yet. Use the <a href="#" class="label label-info" data-bind="    click: cms.viewmodel.createSectionForm.show">Create new section</a> form to create your first site section.</div>
     </div>
     <div id="node-sidebar" class="col-md-3" data-bind="visible: selectedNode()">
-@*        <div class="alert alert-info">
+        @*        <div class="alert alert-info">
             <i class="icon-info-sign icon-2x"></i>Click on a node in the tree to <strong>select</strong> it, then use these buttons to 
             <div class="label label-danger">Delete the node</div>
             ,
@@ -64,11 +64,22 @@
             .
         </div>*@
         <!-- Selected Node -->
-        <div class="panel panel-default" data-bind="visible: selectedNode()">
+        <div class="btn-group-vertical col-md-2" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'">
+            <a title="View Section" href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url  }"><i class="icon-share-alt"></i></a>
+            <a title="Trash Section" href="#" class="btn btn-default" data-bind="click: function() { $root.deleteSectionForm.show($root.selectedNode()) }"><i class="icon-trash"></i></a>
+            <a title="Create Child Page" href="#" class="btn btn-default" data-bind="click: function() { $root.createPageForm.show($root.selectedNode()) }"><i class="icon-plus"></i></a>
+        </div>
+        <div class="btn-group-vertical col-md-2" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'">
+            <a title="View Page" href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url }"><i class="icon-share-alt"></i></a>
+            <a title="Trash Page" href="#" class="btn btn-default" data-bind="click: function() { $root.deletePageForm.show($root.selectedNode()) }"><i class="icon-trash"></i></a>
+            <a title="Create Child Page" href="#" class="btn btn-default" data-bind="visible: selectedNode() && selectedNode().pageTemplates().length > 0, click: function() { $root.createPageForm.show($root.selectedNode()) }"><i class="icon-plus"></i></a>
+            <a title="Edit Page" href="#" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().editUrl  }"><i class="icon-edit"></i></a>
+        </div>
+        <div class="panel panel-default col-md-10" data-bind="visible: selectedNode()">
             <div class="panel-heading">
                 <i class="icon-info-sign"></i>
-                <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span> Section Info</h4>
-                <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span> Page Info</h4>
+                <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span>Section Info</h4>
+                <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span>Page Info</h4>
                 <div class="btn-group pull-right">
                     <button type="button" class="btn btn-default" data-bind="click: self.hideNodeInfo">
                         <i class="icon-remove"></i>
@@ -83,17 +94,6 @@
                 <div class="form-group">
                     <label class="control-label">Url name :</label>
                     <span data-bind="text: selectedNode() && selectedNode().urlName"></span>
-                </div>
-                <div class="btn-group" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'">
-                    <a title="View Section" href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url  }"><i class="icon-share-alt"></i></a>
-                    <button title="Trash Section" type="button" class="btn btn-default" data-bind="click: function() { $root.deleteSectionForm.show($root.selectedNode()) }"><i class="icon-trash"></i></button>
-                    <button title="Create Child Page"  type="button" class="btn btn-default" data-bind="click: function() { $root.createPageForm.show($root.selectedNode()) }"><i class="icon-plus"></i></button>
-                </div>
-                <div class="btn-group" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'">
-                    <a title="View Page"  href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url  }"><i class="icon-share-alt"></i></a>
-                    <button title="Trash Page" type="button" class="btn btn-default" data-bind="click: function() { $root.deletePageForm.show($root.selectedNode()) }"><i class="icon-trash"></i></button>
-                    <button title="Create Child Page" type="button" class="btn btn-default" data-bind="visible: selectedNode() && selectedNode().pageTemplates().length > 0, click: function() { $root.createPageForm.show($root.selectedNode()) }"><i class="icon-plus"></i></button>
-                    <a title="Edit Page" href="#" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().editUrl  }"><i class="icon-edit"></i></a>
                 </div>
             </div>
         </div>

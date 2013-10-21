@@ -56,14 +56,13 @@
     <Compile Include="Data\IDbContext.cs" />
     <Compile Include="Data\IUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\IMediaService.cs" />
+    <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\IPageNodeService.cs" />
     <Compile Include="Services\IPageTemplateService.cs" />
     <Compile Include="Services\IPropertyService.cs" />
     <Compile Include="Services\IPropertyTemplateService.cs" />
     <Compile Include="Services\ISectionNodeService.cs" />
     <Compile Include="Services\ISectionTemplateService.cs" />
-    <Compile Include="Services\IServiceBase.cs" />
     <Compile Include="Services\IUserService.cs" />
   </ItemGroup>
   <ItemGroup>

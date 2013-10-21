@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using CmsLite.Domains.Entities;
@@ -10,14 +11,25 @@ using CmsLite.Utilities.Extensions;
 
 namespace CmsLite.Services
 {
-    public class SectionTemplateService : ServiceBase<SectionTemplate>, ISectionTemplateService
+    public class SectionTemplateService : ISectionTemplateService
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IPageTemplateService _pageTemplateService;
 
         public SectionTemplateService(IUnitOfWork unitOfWork, IPageTemplateService pageTemplateService)
-            : base(unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _pageTemplateService = pageTemplateService;
+        }
+
+        public SectionTemplate GetById(int id)
+        {
+            return _unitOfWork.Context.GetDbSet<SectionTemplate>().FirstOrDefault(x => x.Id == id);
+        }
+
+        public IEnumerable<SectionTemplate> GetAllSectionTemplates()
+        {
+            return _unitOfWork.Context.GetDbSet<SectionTemplate>().OrderBy(x => x.Id);
         }
 
         public SectionTemplate Create(string controllerName, string name = null, string iconImageName = null, bool commit = true)
@@ -25,7 +37,7 @@ namespace CmsLite.Services
             if (controllerName.IsNullOrEmpty())
                 throw new ArgumentException(Messages.SectionTemplateControllerNameCannotBeNull);
 
-            var sectionTemplateDbSet = UnitOfWork.Context.GetDbSet<SectionTemplate>();
+            var sectionTemplateDbSet = _unitOfWork.Context.GetDbSet<SectionTemplate>();
 
             if(sectionTemplateDbSet.Any(x => x.ControllerName == controllerName))
                 throw new ArgumentException(string.Format(Messages.SectionTemplateControllerNameMustBeUnique, controllerName));
@@ -43,7 +55,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
 
             return sectionTemplate;
@@ -56,7 +68,7 @@ namespace CmsLite.Services
 
         public SectionTemplate Update(int id, string name, string iconImageName = null,  bool commit = true)
         {
-            var sectionTemplateDbSet = UnitOfWork.Context.GetDbSet<SectionTemplate>();
+            var sectionTemplateDbSet = _unitOfWork.Context.GetDbSet<SectionTemplate>();
             var sectionTemplate = sectionTemplateDbSet.Include(x => x.PageTemplates).FirstOrDefault(x => x.Id == id);
 
             return UpdateSectionTemplate(sectionTemplate, name, iconImageName, commit);
@@ -66,7 +78,7 @@ namespace CmsLite.Services
         {
             if (id < 1) throw new ArgumentException("id");
 
-            var sectionTemplateDbSet = UnitOfWork.Context.GetDbSet<SectionTemplate>();
+            var sectionTemplateDbSet = _unitOfWork.Context.GetDbSet<SectionTemplate>();
             var sectionTemplate = sectionTemplateDbSet.Include(x => x.PageTemplates).FirstOrDefault(x => x.Id == id);
 
             if(sectionTemplate == null)
@@ -84,7 +96,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
         }
 
@@ -104,7 +116,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
 
             return sectionTemplate;

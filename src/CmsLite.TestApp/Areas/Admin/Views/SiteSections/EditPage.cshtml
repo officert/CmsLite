@@ -1,0 +1,50 @@
+﻿@model CmsLite.Core.Areas.Admin.ViewModels.PageNodeViewModel
+@using CmsLite.Core.Helpers
+@{
+    ViewBag.Title = "EditPage";
+}
+@{
+    var propertyGroups = Model.Properties.GroupBy(x => x.TabName, y => y).ToList();
+}
+@section Scripts
+{
+    <script src="@Url.Content("~/Areas/Admin/Scripts/source/page.editpage.js")"></script>
+    <script>
+        $(document).ready(function () {
+            (function () {
+                var pageNode = @Html.Raw(Json.Encode(Model));
+                cms.init(pageNode);
+            })();
+        });
+    </script>
+    @Html.Content().PluginScripts.Render(Html)
+}
+<div id="edit-page">
+    @using (Html.BeginForm("EditPage", "SiteSections", FormMethod.Post, new { area = "admin" }))
+    {
+        @Html.HiddenFor(x => x.Id)
+        <header class="page-header">
+            <h3>
+                <i class="icon-edit"></i>Edit @Model.DisplayName Page</h3>
+            <div id="tab-bar">
+                <ul class="nav nav-tabs">
+                    @foreach (var propGroup in propertyGroups)
+                    {
+                        <li class="simple-tab"><a href="#">@propGroup.Key</a> </li>
+                    }
+                    <li><a href="#" data-bind="click: toggleToolbar"><i class="icon-collapse-alt"></i>Collapse Tools</a> </li>
+                </ul>
+            </div>
+            <div id="toolbar">
+            </div>
+        </header> 
+        <div class="page-content tab-content">
+            @foreach (var propGroup in propertyGroups)
+            {
+                <div class="tab-pane">
+                    @Html.EditorFor(m => m.Properties, new { tabName = propGroup.Key })
+                </div>
+            }
+        </div>
+    }
+</div>

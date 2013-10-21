@@ -12,16 +12,29 @@ using CmsLite.Utilities.Extensions;
 
 namespace CmsLite.Services
 {
-    public class SectionNodeService : ServiceBase<SectionNode>, ISectionNodeService
+    public class SectionNodeService : ISectionNodeService
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ISectionTemplateService _sectionTemplateService; 
         private readonly IPageNodeService _pageNodeService;
 
         public SectionNodeService(IUnitOfWork unitOfWork, ISectionTemplateService sectionTemplateService, IPageNodeService pageNodeService)
-            : base(unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _sectionTemplateService = sectionTemplateService;
             _pageNodeService = pageNodeService;
+        }
+
+        public SectionNode GetById(int id)
+        {
+            return _unitOfWork.Context.GetDbSet<SectionNode>().FirstOrDefault(x => x.Id == id);
+        }
+
+        public SectionNode GetByUrlName(string urlName)
+        {
+            if(urlName.IsNullOrEmpty()) throw new ArgumentException("urlName");
+
+            return _unitOfWork.Context.GetDbSet<SectionNode>().FirstOrDefault(x => x.UrlName.ToLower() == urlName.ToLower());
         }
 
         /// <summary>
@@ -30,14 +43,14 @@ namespace CmsLite.Services
         /// <returns></returns>
         public IEnumerable<SectionNode> GetAllWithDetails()
         {
-            return UnitOfWork.Context.GetDbSet<SectionNode>()
+            return _unitOfWork.Context.GetDbSet<SectionNode>()
                     .Include(x => x.PageNodes)
                     .Include(x => x.SectionTemplate.PageTemplates.Select(y => y.PageTemplates));
         }
 
-        public IQueryable<SectionNode> GetAll(bool includeTrashed = false)
+        public IEnumerable<SectionNode> GetAll(bool includeTrashed = false)
         {
-            var sectionNodes = UnitOfWork.Context.GetDbSet<SectionNode>().AsQueryable();
+            var sectionNodes = _unitOfWork.Context.GetDbSet<SectionNode>().AsQueryable();
 
             if (!includeTrashed)
             {
@@ -49,7 +62,7 @@ namespace CmsLite.Services
 
         public IEnumerable<SectionNode> GetAllTrashed()
         {
-            return UnitOfWork.Context.GetDbSet<SectionNode>().Where(x => x.InTrash);
+            return _unitOfWork.Context.GetDbSet<SectionNode>().Where(x => x.InTrash);
         }
 
         public SectionNode Create(int sectionTemplateId, string displayName, string urlName, bool commit = true)
@@ -60,7 +73,7 @@ namespace CmsLite.Services
             if(urlName.IsNullOrEmpty())
                 throw new ArgumentException(Messages.SectionNodeUrlNameCannotBeNull);
 
-            var sectionNodeDbSet = UnitOfWork.Context.GetDbSet<SectionNode>();
+            var sectionNodeDbSet = _unitOfWork.Context.GetDbSet<SectionNode>();
             var orderedSectionNodes = sectionNodeDbSet.OrderBy(x => x.Order);
 
             var formattedUrlName = CmsUrlHelper.FormatUrlName(!string.IsNullOrEmpty(urlName) ? urlName : displayName);
@@ -68,7 +81,7 @@ namespace CmsLite.Services
             if (sectionNodeDbSet.Any(s => s.UrlName == formattedUrlName))
                 throw new ArgumentException(string.Format(Messages.SectionNodeUrlNameMustBeUnique, formattedUrlName));
 
-            var sectionTemplate = _sectionTemplateService.Find(x => x.Id == sectionTemplateId);
+            var sectionTemplate = _sectionTemplateService.GetById(sectionTemplateId);
 
             if (sectionTemplate == null)
                 throw new ArgumentException(string.Format(Messages.SectionTemplateNotFound, sectionTemplateId));
@@ -91,7 +104,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
 
             return section;
@@ -99,7 +112,7 @@ namespace CmsLite.Services
 
         public void Trash(int id, bool commit = false)
         {
-            var sectionNodeDbSet = UnitOfWork.Context.GetDbSet<SectionNode>();
+            var sectionNodeDbSet = _unitOfWork.Context.GetDbSet<SectionNode>();
 
             var sectionNode = sectionNodeDbSet.FirstOrDefault(x => x.Id == id);
 
@@ -111,13 +124,13 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
         }
 
         public void Delete(int id, bool commit = true)
         {
-            var sectionNodeDbSet = UnitOfWork.Context.GetDbSet<SectionNode>();
+            var sectionNodeDbSet = _unitOfWork.Context.GetDbSet<SectionNode>();
 
             var sectionNode = sectionNodeDbSet
                         .Include(x => x.PageNodes.Select(y => y.PageNodes))
@@ -138,7 +151,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
         }
     }

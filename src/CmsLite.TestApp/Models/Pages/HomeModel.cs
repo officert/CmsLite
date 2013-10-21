@@ -19,12 +19,12 @@ namespace CmsLite.TestApp.Models.Pages
 
         [CmsModelProperty(
             DisplayName = "Title",
-            PropertyType = CmsPropertyType.RichTextEditor,
-            Description = "The title of this page.",
+            PropertyType = CmsPropertyType.Number,
+            Description = "Some number.",
             TabName = "General",
             TabOrder = 1
             )]
-        public string Poopshannks { get; set; }
+        public string Foobar { get; set; }
 
         #endregion
 
@@ -33,7 +33,7 @@ namespace CmsLite.TestApp.Models.Pages
         [CmsModelProperty(
             DisplayName = "Banner Text Middle",
             PropertyType = CmsPropertyType.RichTextEditor,
-            Description = "Some shit goes here",
+            Description = "Some stuff goes here",
             TabName = "Home",
             TabOrder = 2
             )]
@@ -42,7 +42,7 @@ namespace CmsLite.TestApp.Models.Pages
         [CmsModelProperty(
             DisplayName = "Banner Text Left",
             PropertyType = CmsPropertyType.RichTextEditor,
-            Description = "Text to go under the banner",
+            Description = "Text to go under the banner asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as",
             TabName = "Home",
             TabOrder = 2
             )]

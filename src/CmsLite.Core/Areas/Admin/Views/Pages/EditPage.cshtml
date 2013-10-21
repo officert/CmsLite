@@ -1,23 +1,21 @@
-﻿@model CmsLite.Core.Areas.Admin.ViewModels.PageNodeViewModel
-@using CmsLite.Core.Extensions
+﻿@using CmsLite.Core.Extensions
+@model CmsLite.Core.Areas.Admin.ViewModels.PageNodeViewModel
 @{
     ViewBag.Title = "EditPage";
 }
 @{
-    var propertyGroups = Model.Properties.GroupBy(x => x.TabName, y => y).ToList();
+    var propertyTabGroups = Model.Properties.GroupBy(x => x.TabName, y => y).ToList();
 }
 @section Scripts
 {
     <script src="@Url.Content("~/Areas/Admin/Scripts/source/page.editpage.js")"></script>
     <script>
         $(document).ready(function () {
-            (function () {
-                var pageNode = @Html.Raw(Json.Encode(Model));
-                cms.init(pageNode);
-            })();
+            var pageNode = @Html.Raw(Json.Encode(Model));
+            cms.init(pageNode);
         });
     </script>
-    @Html.Content().PluginScripts.Render(Html)
+    @Html.RenderScripts()
 }
 <div id="edit-page">
     @using (Html.BeginForm("EditPage", "Pages", FormMethod.Post, new { area = "admin" }))
@@ -28,7 +26,7 @@
                 <i class="icon-edit"></i>Edit @Model.DisplayName Page</h3>
             <div id="tab-bar">
                 <ul class="nav nav-tabs">
-                    @foreach (var propGroup in propertyGroups)
+                    @foreach (var propGroup in propertyTabGroups)
                     {
                         <li class="simple-tab"><a href="#">@propGroup.Key</a> </li>
                     }
@@ -39,7 +37,7 @@
             </div>
         </header> 
         <div class="page-content tab-content">
-            @foreach (var propGroup in propertyGroups)
+            @foreach (var propGroup in propertyTabGroups)
             {
                 <div class="tab-pane">
                     @Html.EditorFor(m => m.Properties, new { tabName = propGroup.Key })

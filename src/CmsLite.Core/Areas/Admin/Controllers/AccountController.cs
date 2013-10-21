@@ -32,7 +32,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = _userService.Find(x => x.Email == viewModel.Email);
+                var user = _userService.GetByEmail(viewModel.Email);
                 if (user == null)
                 {
                     ModelState.AddModelError("UserNotFound", Messages.UserNameNotFound);
@@ -141,7 +141,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
 
         public ActionResult Activate(string email, string key = "")
         {
-            var user = _userService.Find(x => x.Email == email);
+            var user = _userService.GetByEmail(email);
             if (user == null)
             {
                 //TODO: redirect / add modelState error

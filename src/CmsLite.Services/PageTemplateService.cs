@@ -10,21 +10,27 @@ using CmsLite.Utilities.Extensions;
 
 namespace CmsLite.Services
 {
-    public class PageTemplateService : ServiceBase<PageTemplate>, IPageTemplateService
+    public class PageTemplateService : IPageTemplateService
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IPageNodeService _pageNodeService;
         private readonly IPropertyTemplateService _propertyTemplateService;
 
-        public PageTemplateService(IUnitOfWork unitOfWork, IPageNodeService pageNodeService, IPropertyTemplateService propertyTemplateService)
-            : base(unitOfWork)
+        public PageTemplateService(IUnitOfWork unitOfWork,IPageNodeService pageNodeService, IPropertyTemplateService propertyTemplateService)
         {
+            _unitOfWork = unitOfWork;
             _pageNodeService = pageNodeService;
             _propertyTemplateService = propertyTemplateService;
         }
 
+        public PageTemplate GetById(int id)
+        {
+            return _unitOfWork.Context.GetDbSet<PageTemplate>().FirstOrDefault(x => x.Id == id);
+        }
+
         public PageTemplate Find(int sectionTemplateId, int pageTemplateId)
         {
-            var sectionTemplate = UnitOfWork.Context.GetDbSet<SectionTemplate>()
+            var sectionTemplate = _unitOfWork.Context.GetDbSet<SectionTemplate>()
                             .Include(x => x.PageTemplates)
                             .FirstOrDefault(x => x.Id == sectionTemplateId);
 
@@ -58,7 +64,7 @@ namespace CmsLite.Services
             if (modelName.IsNullOrEmpty())
                 throw new ArgumentException(Messages.PageTemplateModelNameCannotBeNull);
 
-            var sectionTemplate = UnitOfWork.Context.GetDbSet<SectionTemplate>().FirstOrDefault(x => x.Id == sectionTemplateId);
+            var sectionTemplate = _unitOfWork.Context.GetDbSet<SectionTemplate>().FirstOrDefault(x => x.Id == sectionTemplateId);
 
             if (sectionTemplate == null)
                 throw new ArgumentException(string.Format(Messages.SectionTemplateNotFound, sectionTemplateId));
@@ -74,12 +80,12 @@ namespace CmsLite.Services
             if (modelName.IsNullOrEmpty())
                 throw new ArgumentException(Messages.PageTemplateModelNameCannotBeNull);
 
-            var parentPageTemplate = Find(x => x.Id == pageTemplateId);
+            var parentPageTemplate = GetById(pageTemplateId);
 
             if (parentPageTemplate == null)
                 throw new ArgumentException(string.Format(Messages.PageTemplateNotFound, pageTemplateId));
 
-            var pageTemplateDbSet = UnitOfWork.Context.GetDbSet<PageTemplate>();
+            var pageTemplateDbSet = _unitOfWork.Context.GetDbSet<PageTemplate>();
 
             var pageTemplate = pageTemplateDbSet.Create();
             pageTemplate.ParentPageTemplate = parentPageTemplate;
@@ -96,7 +102,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
 
             return pageTemplate;
@@ -104,7 +110,7 @@ namespace CmsLite.Services
 
         public PageTemplate Update(PageTemplate pageTemplate, string modelName, string name = null, string iconImageName = null, bool commit = true)
         {
-            pageTemplate = UnitOfWork.Context.GetDbSet<PageTemplate>()
+            pageTemplate = _unitOfWork.Context.GetDbSet<PageTemplate>()
                             .Include(x => x.PropertyTemplates)
                             .FirstOrDefault(x => x.Id == pageTemplate.Id);
 
@@ -125,7 +131,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
 
             return pageTemplate;
@@ -141,7 +147,7 @@ namespace CmsLite.Services
 
         public void Delete(int id, bool commit = true)
         {
-            var pageTemplateDbSet = UnitOfWork.Context.GetDbSet<PageTemplate>();
+            var pageTemplateDbSet = _unitOfWork.Context.GetDbSet<PageTemplate>();
             var pageTemplates = pageTemplateDbSet
                                 .Include(x => x.PageTemplates)
                                 .Include(x => x.PageNodes);
@@ -157,7 +163,7 @@ namespace CmsLite.Services
 
         private PageTemplate CreatePageTemplateForSectionTemplate(SectionTemplate sectionTemplate, string actionName, string modelName, string name = "", string iconImageName = "", bool commit = true)
         {
-            var pageTemplateDbSet = UnitOfWork.Context.GetDbSet<PageTemplate>();
+            var pageTemplateDbSet = _unitOfWork.Context.GetDbSet<PageTemplate>();
 
             var pageTemplate = pageTemplateDbSet.Create();
             pageTemplate.ParentSectionTemplate = sectionTemplate;
@@ -174,7 +180,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
 
             return pageTemplate;
@@ -182,7 +188,7 @@ namespace CmsLite.Services
 
         private void DeletePageTemplate(PageTemplate pageTemplate, bool commit = true)
         {
-            var pageTemplateDbSet = UnitOfWork.Context.GetDbSet<PageTemplate>();
+            var pageTemplateDbSet = _unitOfWork.Context.GetDbSet<PageTemplate>();
 
             if (pageTemplate.PageNodes != null && pageTemplate.PageNodes.Any())
             {
@@ -204,7 +210,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
         }
 

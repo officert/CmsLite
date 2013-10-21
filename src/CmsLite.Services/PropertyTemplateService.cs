@@ -10,13 +10,14 @@ using CmsLite.Utilities.Extensions;
 
 namespace CmsLite.Services
 {
-    public class PropertyTemplateService : ServiceBase<PropertyTemplate>, IPropertyTemplateService
+    public class PropertyTemplateService : IPropertyTemplateService
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IPropertyService _propertyService;
 
         public PropertyTemplateService(IUnitOfWork unitOfWork, IPropertyService propertyService)
-            : base(unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _propertyService = propertyService;
         }
 
@@ -36,7 +37,7 @@ namespace CmsLite.Services
             if (propertyName.IsNullOrEmpty())
                 throw new ArgumentException(Messages.PropertyTemplatePropertyNameCannotBeNull);
 
-            var pageTemplate = UnitOfWork.Context.GetDbSet<PageTemplate>()
+            var pageTemplate = _unitOfWork.Context.GetDbSet<PageTemplate>()
                         .Include(x => x.PageNodes.Select(y => y.Properties.Select(z => z.PropertyTemplate)))
                         .FirstOrDefault(x => x.Id == pageTemplateId);
 
@@ -48,7 +49,7 @@ namespace CmsLite.Services
 
         public void Delete(int id, bool commit)
         {
-            var propertyTemplateDbSet = UnitOfWork.Context.GetDbSet<PropertyTemplate>();
+            var propertyTemplateDbSet = _unitOfWork.Context.GetDbSet<PropertyTemplate>();
             var propertyTemplate = propertyTemplateDbSet.FirstOrDefault(x => x.Id == id);
 
             if(propertyTemplate == null)
@@ -58,7 +59,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
         }
 
@@ -66,7 +67,7 @@ namespace CmsLite.Services
 
         private PropertyTemplate CreatePropertyTemplate(PageTemplate pageTemplate, string propertyName, CmsPropertyType propertyType, int? tabOrder, string tabName = "", bool required = false, string description = "", string displayName = "", bool commit = true)
         {
-            var propertyTemplateDbSet = UnitOfWork.Context.GetDbSet<PropertyTemplate>();
+            var propertyTemplateDbSet = _unitOfWork.Context.GetDbSet<PropertyTemplate>();
 
             var propertyTemplate = propertyTemplateDbSet.Create();
 
@@ -74,7 +75,6 @@ namespace CmsLite.Services
             propertyTemplate.PropertyName = propertyName;
             propertyTemplate.CmsPropertyType = propertyType.ToString();
             propertyTemplate.DisplayName = !displayName.IsNullOrEmpty() ? displayName : propertyName;
-            propertyTemplate.TabOrder = tabOrder.HasValue ? tabOrder.Value : 1;
             propertyTemplate.TabName = !tabName.IsNullOrEmpty() ? tabName : CmsConstants.PropertyTemplateDefaultTabName;
             propertyTemplate.Required = required;
             propertyTemplate.Description = description;
@@ -88,7 +88,7 @@ namespace CmsLite.Services
 
             if (commit)
             {
-                UnitOfWork.Commit();
+                _unitOfWork.Commit();
             }
 
             return propertyTemplate;

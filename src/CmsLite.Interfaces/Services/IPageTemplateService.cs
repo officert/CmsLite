@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using CmsLite.Domains.Entities;
+﻿using CmsLite.Domains.Entities;
 
 namespace CmsLite.Interfaces.Services
 {
-    public interface IPageTemplateService : IServiceBase<PageTemplate>
+    public interface IPageTemplateService
     {
+        PageTemplate GetById(int id);
+
         PageTemplate Find(int sectionTemplateId, int pageTemplateId);
         
         PageTemplate CreateForSectionTemplate(SectionTemplate sectionTemplate, string actionName, string modelName, string name = null, string iconImageName = null, bool commit = true);

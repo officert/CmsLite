@@ -41,7 +41,7 @@ ul, ol {
 }
 /* Icons*/
 i {
-    font-size:@icon-font-size;
+    font-size: @icon-font-size;
 }
 /* ============================== Header ==================================== */
 #header {
@@ -216,6 +216,19 @@ i {
     }
 
     > #node-sidebar {
+        > .btn-group-vertical {
+            padding-left: 0;
+            padding-right: 0;
+            > .btn {
+                border-top-right-radius:0;
+                border-bottom-right-radius:0;
+            }
+        }
+
+        > div.panel {
+            padding-left: 0;
+            padding-right: 0;
+        }
     }
 
     > .page-content {
@@ -231,9 +244,11 @@ i {
                 border-bottom-width: 1px;
                 border-color: @gray;
                 border-bottom-style: solid;
-                &:last-child { 
-                    border-bottom:0;
+
+                &:last-child {
+                    border-bottom: 0;
                 }
+
                 &.active {
                     background: @brand-info;
                 }
