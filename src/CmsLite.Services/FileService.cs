@@ -4,6 +4,7 @@ using System.Linq;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
+using CmsLite.Utilities;
 
 namespace CmsLite.Services
 {
@@ -28,8 +29,8 @@ namespace CmsLite.Services
 
         public void Create(byte[] fileData, string mimeType, string name)
         {
-            if(fileData == null || mimeType == null)
-                throw new ArgumentException("FileData and Mime Type must be provided.");
+            Ensure.ArgumentNotNull(fileData, "fileData");
+            Ensure.ArgumentNotNull(mimeType, "mimeType");
 
             var fileDbSet = _unitOfWork.Context.GetDbSet<File>();
 

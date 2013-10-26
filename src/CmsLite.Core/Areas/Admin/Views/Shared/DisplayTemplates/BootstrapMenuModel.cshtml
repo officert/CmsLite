@@ -1,0 +1,33 @@
+﻿@model MenuGen.Models.MenuModel
+
+<ul class="nav navbar-nav">
+    @foreach (var node in Model.MenuNodes)
+    {
+        if (node.ChildMenu != null && node.ChildMenu.MenuNodes != null && node.ChildMenu.MenuNodes.Any())
+        {
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">@node.Text <b class="caret"></b></a>
+            @if (node.ChildMenu != null)
+            {
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="@Url.Action(node.ActionName, node.ControllerName, node.RouteValues)">@node.Text</a>
+                    </li>
+                    @foreach (var child in node.ChildMenu.MenuNodes)
+                    {
+                        <li>
+                            <a href="@Url.Action(child.ActionName, child.ControllerName, child.RouteValues)">@child.Text</a>
+                        </li>
+                    }
+                </ul>
+            }
+        </li>
+        }
+        else
+        {
+        <li>
+            @Html.DisplayFor(m => node)
+        </li>
+        }
+    }
+</ul>

@@ -49,6 +49,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
+    <Reference Include="MenuGen">
+      <HintPath>..\packages\MenuGen.1.0\lib\net35\MenuGen.dll</HintPath>
+    </Reference>
+    <Reference Include="MenuGen.Ioc">
+      <HintPath>..\packages\MenuGen.1.0\lib\net35\MenuGen.Ioc.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -143,6 +149,7 @@
     <Compile Include="Areas\Admin\Controllers\SectionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaController.cs" />
     <Compile Include="Areas\Admin\Controllers\TrashController.cs" />
+    <Compile Include="Areas\Admin\Menus\AdminSidebarMenu.cs" />
     <Compile Include="Areas\Admin\Models\TrashModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\EditPageNodeViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\PageNodeLightViewModel.cs" />
@@ -152,7 +159,6 @@
     <Compile Include="App_Start\IocConfig.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\HtmlHelperExtensions.cs" />
-    <Compile Include="Interfaces\IContainer.cs" />
     <Compile Include="Ioc\NinjectWebCommon.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Attributes\LayoutModelAttribute .cs" />
@@ -533,6 +539,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Shared\PropertyPluginTemplates\Number.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Shared\DisplayTemplates\BootstrapMenuModel.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\DisplayTemplates\MenuModel.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\DisplayTemplates\MenuNodeModel.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Shared\DisplayTemplates\AdminSidebarMenuModel.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

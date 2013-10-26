@@ -1,0 +1,10 @@
+﻿@model MenuGen.Models.MenuNodeModel
+@{
+    var currentAction = Request.RequestContext.RouteData.GetRequiredString("action");
+    var cssClass = "";
+}
+@if (Model.ActionName == currentAction)
+{
+    cssClass = "active";
+}
+@Html.ActionLink(Model.Text, Model.ActionName, Model.ControllerName, Model.RouteValues, Model.HtmlAttributes)

@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Cms\CmsConstants.cs" />
     <Compile Include="Cms\CmsPropertyType.cs" />
+    <Compile Include="Ensure.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,5 +1,7 @@
-﻿@model CmsLite.Core.Areas.Admin.Models.AdminMenu
-@{
+﻿@using CmsLite.Core.Areas.Admin.Menus
+@using MenuGen.Extensions
+@model CmsLite.Core.Areas.Admin.Models.AdminMenu
+@*@{
     var routeData = Request.RequestContext.RouteData;
     const string activeClass = "active";
     var currentController = routeData.GetRequiredString("controller");
@@ -16,4 +18,5 @@
             <a class="list-group-item" href="@link.Url"><i class="@link.IconClass icon-left"></i><span>@link.Text</span></a>
         </li>
     }
-</ul>
+</ul>*@
+@Html.GetMenu(typeof(AdminSidebarMenu), "AdminSidebarMenuModel")

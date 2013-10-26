@@ -8,18 +8,19 @@ using CmsLite.Core.Interfaces;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
 using CmsLite.Resources;
+using Ninject;
 
 namespace CmsLite.Core.Ioc
 {
     public class IocControllerFactory : DefaultControllerFactory
     {
-        private readonly Container _container;
+        private readonly IKernel _container;
         private readonly IDbContext _dbContext;
 
-        public IocControllerFactory(Container container)
+        public IocControllerFactory(IKernel container)
         {
             _container = container;
-            _dbContext = _container.GetInstance<IDbContext>();
+            _dbContext = _container.Get<IDbContext>();
         }
 
         public override IController CreateController(RequestContext requestContext, string controllerName)
