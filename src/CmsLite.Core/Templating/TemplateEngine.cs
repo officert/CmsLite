@@ -1,25 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using CmsLite.Core.Attributes;
-using CmsLite.Core.Controllers;
 using CmsLite.Core.Extensions;
-using CmsLite.Data;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
 using CmsLite.Interfaces.Templating;
 using CmsLite.Resources;
-using CmsLite.Utilities.Cms;
-using CmsLite.Utilities.Extensions;
 
 namespace CmsLite.Core.Templating
 {
     public class TemplateEngine : ITemplateEngine
     {
+        public string Foo;
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISectionTemplateService _sectionTemplateService;
         private readonly IPageTemplateService _pageTemplateService;

@@ -3,7 +3,7 @@
 <header id="header" class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-header">
         <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".navbar-collapse">
-            <i class="icon-reorder"></i>
+            <i class="fa fa-reorder"></i>
         </button>
         <a class="navbar-brand" href="@Url.Action("Index", "Admin")">Cms Lite</a>
     </div>
@@ -11,7 +11,7 @@
         <ul class="nav navbar-nav pull-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="icon-inbox"></i>
+                    <i class="fa fa-inbox"></i>
                 </a>
                 <ul class="dropdown-menu pull-right">
                     <li></li>
@@ -19,8 +19,8 @@
             </li>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="icon-user"></i>@Request.RequestContext.HttpContext.User.Identity.Name
-                    <i class="icon-sort-down"></i>
+                    <i class="fa fa-user"></i>@Request.RequestContext.HttpContext.User.Identity.Name
+                    <i class="fa fa-sort-down"></i>
                 </a>
                 <ul class="dropdown-menu pull-right">
                     @if (Request.IsAuthenticated)

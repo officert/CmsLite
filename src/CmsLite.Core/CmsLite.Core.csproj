@@ -224,8 +224,18 @@
     <Content Include="Areas\Admin\Content\cms.min.css">
       <DependentUpon>cms.less</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Content\fontawesome\font-awesome.css" />
-    <Content Include="Areas\Admin\Content\fontawesome\font-awesome.min.css" />
+    <Content Include="Areas\Admin\Content\fontawesome\font-awesome.css">
+      <DependentUpon>font-awesome.less</DependentUpon>
+    </Content>
+    <Content Include="Areas\Admin\Content\fontawesome\font-awesome.min.css">
+      <DependentUpon>font-awesome.less</DependentUpon>
+    </Content>
+    <Content Include="Areas\Admin\Content\fontawesome\variables.css">
+      <DependentUpon>variables.less</DependentUpon>
+    </Content>
+    <Content Include="Areas\Admin\Content\fontawesome\variables.min.css">
+      <DependentUpon>variables.less</DependentUpon>
+    </Content>
     <Content Include="Areas\Admin\Content\font\fontawesome-webfont.svg" />
     <Content Include="Areas\Admin\Content\images\icons\folder.png" />
     <Content Include="Areas\Admin\Content\images\icons\home.png" />
@@ -462,10 +472,7 @@
     <Content Include="Areas\Admin\Content\bootstrap\variables.less" />
     <Content Include="Areas\Admin\Content\bootstrap\wells.less" />
     <Content Include="Areas\Admin\Content\cms.less" />
-    <Content Include="Areas\Admin\Content\fontawesome\bootstrap.less" />
     <Content Include="Areas\Admin\Content\fontawesome\core.less" />
-    <Content Include="Areas\Admin\Content\fontawesome\extras.less" />
-    <Content Include="Areas\Admin\Content\fontawesome\font-awesome-ie7.less" />
     <Content Include="Areas\Admin\Content\fontawesome\font-awesome.less" />
     <Content Include="Areas\Admin\Content\fontawesome\icons.less" />
     <Content Include="Areas\Admin\Content\fontawesome\mixins.less" />
@@ -547,6 +554,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Shared\DisplayTemplates\AdminSidebarMenuModel.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Content\fontawesome\bordered-pulled.less" />
+    <Content Include="Areas\Admin\Content\fontawesome\fixed-width.less" />
+    <Content Include="Areas\Admin\Content\fontawesome\larger.less" />
+    <Content Include="Areas\Admin\Content\fontawesome\list.less" />
+    <Content Include="Areas\Admin\Content\fontawesome\rotated-flipped.less" />
+    <Content Include="Areas\Admin\Content\fontawesome\spinning.less" />
+    <Content Include="Areas\Admin\Content\fontawesome\stacked.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

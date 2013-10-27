@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
 using CmsLite.Core.App_Start;
 using CmsLite.Core.Ioc;
+using CmsLite.Core.Templating;
 using CmsLite.Interfaces.Templating;
 using MenuGen.Ioc;
 using Ninject;
@@ -37,6 +39,9 @@ namespace CmsLite.Core
             {
                 //x.ContainerAdapter = new NinjectContainerAdapter(_kernel);
             });
+
+            var foo = _kernel.TryGet<TemplateEngine>();
+            var foo1 = _kernel.TryGet<ITemplateEngine>();
         }
     }
 

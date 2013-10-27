@@ -18,6 +18,8 @@ namespace CmsLite.Core.Ioc
             Bind<ICmsLiteHttpContext>().To<CmsHttpContext>().InRequestScope();
             Bind<IAuthenticationProvider>().To<SimpleAuthenticationProvider>().InSingletonScope();
             Bind<IMappingEngine>().ToMethod(ctx => Mapper.Engine);
+            Bind<IMappingEngine>().ToMethod(ctx => Mapper.Engine);
+
             Bind<ITemplateEngine>().To<TemplateEngine>();
 
             Bind<IActionInvoker>().To<CmsActionInvoker>();
