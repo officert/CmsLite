@@ -91,7 +91,7 @@
     </div>
 </div>
 <!---------------------------------- Modals ---------------------------------->
-<div id="create-sections-form" class="modal fade" tabindex="-1" role="dialog" data-bind="bootstrapmodal : {}, onhide: hide">
+<div id="create-sections-form" class="modal fade" tabindex="-1" role="dialog" data-bind="bootstrapmodal : { onhide: hide }">
     <div class="modal-dialog">
         <form class="modal-content" action="@Url.Action("CreateSection")" method="POST">
             <div class="modal-header">
@@ -119,7 +119,7 @@
         </form>
     </div>
 </div>
-<div id="create-page-form" class="modal fade" tabindex="-1" role="dialog" data-bind="bootstrapmodal : {}, onhide: hide">
+<div id="create-page-form" class="modal fade" tabindex="-1" role="dialog" data-bind="bootstrapmodal : { onhide: hide }">
     <div class="modal-dialog">
         <form class="modal-content" action="@Url.Action("CreateSection")">
             <div class="modal-header">

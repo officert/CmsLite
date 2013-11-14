@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
 using CmsLite.Core.App_Start;
 using CmsLite.Core.Ioc;
-using CmsLite.Core.Templating;
+using CmsLite.Interfaces.Authentication;
 using CmsLite.Interfaces.Templating;
-using MenuGen.Ioc;
+using IocLite.Interfaces;
+using MenuGen;
 using Ninject;
 
 namespace CmsLite.Core
@@ -29,19 +29,15 @@ namespace CmsLite.Core
             RazorViewEngineConfig.Configure();
             RouteConfig.RegisterRoutes(RouteTable.Routes);      //TODO: need to think more about what routes to add to a user's MVC project
 
-            ControllerBuilder.Current.SetControllerFactory(new IocControllerFactory(_kernel));                           //setup ninject as the default MVC controller factory
+            ControllerBuilder.Current.SetControllerFactory(new IocControllerFactory(_kernel));
 
             _templateEngine = _kernel.Get<ITemplateEngine>();
             _templateEngine.GenerateTemplates(Assembly.GetCallingAssembly());
 
-            var menuGen = new MenuGen.MenuGen();
-            menuGen.Init(x =>
+            MenuGen.MenuGen.Init(x =>
             {
-                //x.ContainerAdapter = new NinjectContainerAdapter(_kernel);
+                x.ContainerAdapter = new NinjectContainerAdapter(_kernel);
             });
-
-            var foo = _kernel.TryGet<TemplateEngine>();
-            var foo1 = _kernel.TryGet<ITemplateEngine>();
         }
     }
 
@@ -54,14 +50,9 @@ namespace CmsLite.Core
             _kernel = kernel;
         }
 
-        public object GetInstance(System.Type type)
+        public object TryResolve(Type type)
         {
-            return _kernel.Get(type);
-        }
-
-        public IEnumerable<object> GetInstances(System.Type type)
-        {
-            return _kernel.GetAll(type);
+            return _kernel.TryGet(type);
         }
     }
 }

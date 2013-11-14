@@ -49,11 +49,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="MenuGen">
-      <HintPath>..\packages\MenuGen.1.0\lib\net35\MenuGen.dll</HintPath>
+    <Reference Include="IocLite">
+      <HintPath>..\..\lib\IocLite.dll</HintPath>
     </Reference>
-    <Reference Include="MenuGen.Ioc">
-      <HintPath>..\packages\MenuGen.1.0\lib\net35\MenuGen.Ioc.dll</HintPath>
+    <Reference Include="MenuGen">
+      <HintPath>..\..\lib\MenuGen.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">

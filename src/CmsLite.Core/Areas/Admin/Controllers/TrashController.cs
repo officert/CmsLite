@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using AutoMapper;
+using CmsLite.Core.Areas.Admin.Menus;
 using CmsLite.Core.Areas.Admin.Models;
 using CmsLite.Core.Areas.Admin.ViewModels;
 using CmsLite.Domains.Entities;
@@ -22,7 +23,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
             _mapper = mapper;
         }
 
-        [MenuNode(Key = "Trash", Text = "Trash")]
+        [MenuNode(Key = "Trash", Text = "Trash", Menus = new[] { typeof(AdminSidebarMenu) })]
         public ActionResult Index()
         {
             var sections = _sectionNodeService.GetAllTrashed();

@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using CmsLite.Core.Areas.Admin.Menus;
 using CmsLite.Core.Areas.Admin.Models;
 using CmsLite.Core.Areas.Admin.ViewModels;
 using CmsLite.Core.Attributes;
@@ -19,7 +20,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
         }
 
         [ImportModelStateFromTempData]
-        [MenuNode(Key = "Media", Text = "Media")]
+        [MenuNode(Key = "Media", Text = "Media", Menus = new[] { typeof(AdminSidebarMenu) })]
         public ActionResult Index()
         {
             var model = new MediaModel

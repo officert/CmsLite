@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using CmsLite.Core.Areas.Admin.Menus;
 using CmsLite.Core.Areas.Admin.Models;
 using CmsLite.Core.Areas.Admin.ViewModels;
 using CmsLite.Domains.Entities;
@@ -26,7 +27,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
             _sectionTemplateService = sectionTemplateService;
         }
 
-        [MenuNode(Key = "SiteSections", Text = "Site Sections")]
+        [MenuNode(Key = "SiteSections", Text = "Site Sections", Menus = new[] { typeof(AdminSidebarMenu) })]
         public ActionResult Index()
         {
             var sections = _sectionNodeService.GetAllWithDetails();

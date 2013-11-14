@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using CmsLite.Core.Areas.Admin.Menus;
 using CmsLite.Core.Areas.Admin.ViewModels;
 using CmsLite.Core.Attributes;
 using CmsLite.Domains.Entities;
@@ -23,7 +24,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
         }
 
         [ImportModelStateFromTempData]
-        [MenuNode(Key = "EditPage", ParentKey = "SiteSections", Text = "EditPage")]
+        [MenuNode(Key = "EditPage", ParentKey = "SiteSections", Text = "EditPage", Menus = new[] { typeof(AdminSidebarMenu) })]
         public ActionResult EditPage(int id)
         {
             var model = _mapper.Map<PageNode, PageNodeViewModel>(_pageNodeService.GetByIdWithDetails(id));

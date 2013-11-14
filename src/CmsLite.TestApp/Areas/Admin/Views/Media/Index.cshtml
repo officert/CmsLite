@@ -66,7 +66,7 @@
     </div>
 </div>
 <!---------------------------------- Modals ---------------------------------->
-<div id="upload-file-form" class="modal fade" tabindex="-1" role="dialog" data-bind="bootstrapmodal: {}, onhide: hide">
+<div id="upload-file-form" class="modal fade" tabindex="-1" role="dialog" data-bind="bootstrapmodal: { onhide: hide }">
     <div class="modal-dialog">
         @using (Html.BeginForm("Index", "Media", FormMethod.Post, new { @enctype = "multipart/form-data", @class = "modal-content", area = "admin" }))
         {
@@ -80,7 +80,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn" data-dismiss="modal">Close</button>
-                <button class="btn btn-primary" type="submit"><i class="icon-upload"></i>Upload File</button>
+                <button class="btn btn-primary" type="submit"><i class="fa fa-upload"></i>Upload File</button>
             </div>
         }
     </div>
