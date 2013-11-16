@@ -9,7 +9,6 @@ using CmsLite.Resources;
 using CmsLite.Services.Helpers;
 using CmsLite.Utilities;
 using CmsLite.Utilities.Cms;
-using CmsLite.Utilities.Extensions;
 
 namespace CmsLite.Services
 {

@@ -17,6 +17,7 @@ namespace CmsLite.Unit
         private Mock<ISectionNodeService> _sectionNodeServiceMock;
         private Mock<IPageNodeService> _pageNodeServiceMock;
         private Mock<ControllerContext> _controllerContextMock;
+        private Mock<ControllerBase> _controllerBaseMock;
         private RouteData _routeData;
 
         [TestFixtureSetUp]
@@ -62,7 +63,6 @@ namespace CmsLite.Unit
         }
 
         [Test]
-        [Ignore]
         public void InvokeAction_NoSectionNodeExistsForRouteDataControllerName_ReturnsFalse()
         {
             //arrange

@@ -15,8 +15,6 @@ namespace CmsLite.Core.Templating
 {
     public class TemplateEngine : ITemplateEngine
     {
-        public string Foo;
-
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISectionTemplateService _sectionTemplateService;
         private readonly IPageTemplateService _pageTemplateService;
@@ -37,7 +35,7 @@ namespace CmsLite.Core.Templating
         }
 
         public void GenerateTemplates(Assembly assembly)
-        { 
+        {
             _assembly = assembly;
             _controllers = assembly.GetControllers();
 
@@ -53,14 +51,14 @@ namespace CmsLite.Core.Templating
         private void ProcessControllers()
         {
             _controllers = _controllers.ToList();
-            var sectionTemplateDbSet = _sectionTemplateService.GetAllSectionTemplates().ToList();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates().ToList();
 
             var controllerNames = _controllers.Select(y => y.Name).ToList();
-            var sectionTemplateControllerNames = sectionTemplateDbSet.Select(x => x.ControllerName).ToList();
+            var sectionTemplateControllerNames = sectionTemplates.Select(x => x.ControllerName).ToList();
 
-            var sectionTemplatesToRemove = sectionTemplateDbSet.Where(x => !controllerNames.Contains(x.ControllerName)).ToList();
+            var sectionTemplatesToRemove = sectionTemplates.Where(x => !controllerNames.Contains(x.ControllerName)).ToList();
             var newControllerTypes = _controllers.Where(x => !sectionTemplateControllerNames.Contains(x.Name)).ToList();
-            var sectionTemplatesToUpdate = sectionTemplateDbSet.Where(x => controllerNames.Contains(x.ControllerName)).ToList();
+            var sectionTemplatesToUpdate = sectionTemplates.Where(x => controllerNames.Contains(x.ControllerName)).ToList();
 
             //remove any templates that don't have a controller anymore
             RemoveSectionTemplatesWithNoExistingController(sectionTemplatesToRemove);
@@ -149,41 +147,40 @@ namespace CmsLite.Core.Templating
 
         private void UpdateSectionTemplates(IEnumerable<SectionTemplate> sectionTemplates, IEnumerable<Type> controllers)
         {
-            if (sectionTemplates != null && sectionTemplates.Any())
+            if (sectionTemplates == null || sectionTemplates.Any()) return;
+
+            foreach (var sectionTemplate in sectionTemplates)
             {
-                foreach (var sectionTemplate in sectionTemplates)
-                {
-                    var templateController = controllers.FirstOrDefault(x => x.Name == sectionTemplate.ControllerName);
+                var templateController = controllers.FirstOrDefault(x => x.Name == sectionTemplate.ControllerName);
 
-                    if (templateController == null)
-                        throw new ArgumentException(string.Format(Messages.ControllerNotFound, sectionTemplate.ControllerName));
+                if (templateController == null)
+                    throw new ArgumentException(string.Format(Messages.ControllerNotFound, sectionTemplate.ControllerName));
 
-                    var controllerActions = GetActionsForController(templateController).ToList();
+                var controllerActions = GetActionsForController(templateController).ToList();
 
-                    var controllerActionNames = controllerActions.Select(x => x.Name).ToList();
-                    var sectionActionNames = sectionTemplate.PageTemplates.Select(x => x.ActionName).ToList();
+                var controllerActionNames = controllerActions.Select(x => x.Name).ToList();
+                var sectionActionNames = sectionTemplate.PageTemplates.Select(x => x.ActionName).ToList();
 
-                    var sectionTemplateAttribute = (CmsSectionTemplateAttribute)templateController.GetCustomAttributes(typeof(CmsSectionTemplateAttribute), false).FirstOrDefault();
+                var sectionTemplateAttribute = (CmsSectionTemplateAttribute)templateController.GetCustomAttributes(typeof(CmsSectionTemplateAttribute), false).FirstOrDefault();
 
-                    if (sectionTemplateAttribute == null)
-                        throw new ArgumentException(string.Format(Messages.ControllerDoesNotHaveCmsSectionTempalteAttribute, templateController.Name));
+                if (sectionTemplateAttribute == null)
+                    throw new ArgumentException(string.Format(Messages.ControllerDoesNotHaveCmsSectionTempalteAttribute, templateController.Name));
 
-                    //update properties on the section template
-                    _sectionTemplateService.Update(sectionTemplate, sectionTemplateAttribute.Name, sectionTemplateAttribute.IconImageName, false);
+                //update properties on the section template
+                _sectionTemplateService.Update(sectionTemplate, sectionTemplateAttribute.Name, sectionTemplateAttribute.IconImageName, false);
 
-                    var pageTemplatesToRemove = sectionTemplate.PageTemplates.Where(x => !controllerActionNames.Contains(x.ActionName)).ToList();
-                    var newActionsToAdd = controllerActions.Where(x => !sectionActionNames.Contains(x.Name)).ToList();
-                    var pageTemplatesToUpdate = sectionTemplate.PageTemplates.Where(x => controllerActionNames.Contains(x.ActionName)).ToList();
+                var pageTemplatesToRemove = sectionTemplate.PageTemplates.Where(x => !controllerActionNames.Contains(x.ActionName)).ToList();
+                var newActionsToAdd = controllerActions.Where(x => !sectionActionNames.Contains(x.Name)).ToList();
+                var pageTemplatesToUpdate = sectionTemplate.PageTemplates.Where(x => controllerActionNames.Contains(x.ActionName)).ToList();
 
-                    //remove any page templates that don't have an action anymore
-                    RemovePageTemplatesWithNoExistingAction(pageTemplatesToRemove);
+                //remove any page templates that don't have an action anymore
+                RemovePageTemplatesWithNoExistingAction(pageTemplatesToRemove);
 
-                    //create page templates for any actions that don't have a template with that action name
-                    CreatePageTemplatesForActions(sectionTemplate, newActionsToAdd);
+                //create page templates for any actions that don't have a template with that action name
+                CreatePageTemplatesForActions(sectionTemplate, newActionsToAdd);
 
-                    //update any page templates that still have an action
-                    UpdatePageTemplates(pageTemplatesToUpdate, controllerActions);
-                }
+                //update any page templates that still have an action
+                UpdatePageTemplates(pageTemplatesToUpdate, controllerActions);
             }
         }
 
@@ -218,52 +215,51 @@ namespace CmsLite.Core.Templating
 
         private void UpdatePageTemplates(IEnumerable<PageTemplate> pageTemplates, IEnumerable<MethodInfo> actions)
         {
-            if (pageTemplates != null && pageTemplates.Any())
+            if (pageTemplates == null || pageTemplates.Any()) return;
+
+            foreach (var pageTemplate in pageTemplates)
             {
-                foreach (var pageTemplate in pageTemplates)
+                var templateAction = actions.FirstOrDefault(x => x.Name == pageTemplate.ActionName);
+
+                if (templateAction == null)
+                    throw new ArgumentException(string.Format(Messages.ActionNotFound, pageTemplate.ActionName));
+
+                var pageTemplateAttribute = (CmsPageTemplateAttribute)templateAction.GetCustomAttributes(typeof(CmsPageTemplateAttribute), false).FirstOrDefault();
+
+                if (pageTemplateAttribute == null)
+                    throw new ArgumentException(string.Format(Messages.ActionDoesNotHaveCmsPageTemplateAttribute, templateAction.Name));
+
+                var model = _assembly.GetModels().FirstOrDefault(x => x.Name == pageTemplate.ModelName);
+                var modelProperties = GetModelProperties(model).ToList();
+
+                _pageTemplateService.Update(pageTemplate, pageTemplateAttribute.ModelType.Name, pageTemplateAttribute.Name, pageTemplateAttribute.IconImageName, false);
+
+                //if the model name changes the pageTemplateService will remove all propertytemplates
+                //so we need to add any new propertytemplates from the new model
+                if (pageTemplate.ModelName != pageTemplateAttribute.ModelType.Name)
                 {
-                    var templateAction = actions.FirstOrDefault(x => x.Name == pageTemplate.ActionName);
+                    var newModelProperties = GetModelProperties(pageTemplateAttribute.ModelType).ToList();
+                    CreatePropertyTemplatesForProperties(newModelProperties, pageTemplate);
+                }
+                //if this happens there is no need to do the rest of this else {} code - this is only necessary when the model is the same but
+                //some properties in the modal have changes (ie. updated, added, removed)
+                else
+                {
+                    var modelPropertyNames = modelProperties.Select(x => x.Name).ToList();
+                    var pageTemplatePropertyNames = pageTemplate.PropertyTemplates.Select(x => x.PropertyName).ToList();
 
-                    if (templateAction == null)
-                        throw new ArgumentException(string.Format(Messages.ActionNotFound, pageTemplate.ActionName));
+                    var propertyTemplatesToRemove = pageTemplate.PropertyTemplates.Where(x => !modelPropertyNames.Contains(x.PropertyName)).ToList();
+                    var newPropertiesToAdd = modelProperties.Where(x => !pageTemplatePropertyNames.Contains(x.Name)).ToList();
+                    var propertyTemplatesToUpdate = pageTemplate.PropertyTemplates.Where(x => modelPropertyNames.Contains(x.PropertyName)).ToList();
 
-                    var pageTemplateAttribute = (CmsPageTemplateAttribute)templateAction.GetCustomAttributes(typeof(CmsPageTemplateAttribute), false).FirstOrDefault();
+                    //remove any property templates that don't have a property anymore
+                    RemovePropertyTemplatesWithNoExistingModelProperties(propertyTemplatesToRemove);
 
-                    if (pageTemplateAttribute == null)
-                        throw new ArgumentException(string.Format(Messages.ActionDoesNotHaveCmsPageTemplateAttribute, templateAction.Name));
+                    //create property templates for any properties that don't have a template with that property name
+                    CreatePropertyTemplatesForProperties(newPropertiesToAdd, pageTemplate);
 
-                    var model = _assembly.GetModels().FirstOrDefault(x => x.Name == pageTemplate.ModelName);
-                    var modelProperties = GetModelProperties(model).ToList();
-
-                    _pageTemplateService.Update(pageTemplate, pageTemplateAttribute.ModelType.Name, pageTemplateAttribute.Name, pageTemplateAttribute.IconImageName, false);
-
-                    //if the modal name changes the pageTemplateService will remove all propertytemplates
-                    //so we need to add any new propertytemplates from the new model
-                    if (pageTemplate.ModelName != pageTemplateAttribute.ModelType.Name)
-                    {
-                        var newModelProperties = GetModelProperties(pageTemplateAttribute.ModelType).ToList();
-                        CreatePropertyTemplatesForProperties(newModelProperties, pageTemplate);
-                    }
-                    //if this happens there is no need to do the rest of this else {} code - this is only necessary when the model is the same but
-                    //some properties in the modal have changes (ie. updated, added, removed)
-                    else
-                    {
-                        var modelPropertyNames = modelProperties.Select(x => x.Name).ToList();
-                        var pageTemplatePropertyNames = pageTemplate.PropertyTemplates.Select(x => x.PropertyName).ToList();
-
-                        var propertyTemplatesToRemove = pageTemplate.PropertyTemplates.Where(x => !modelPropertyNames.Contains(x.PropertyName)).ToList();
-                        var newPropertiesToAdd = modelProperties.Where(x => !pageTemplatePropertyNames.Contains(x.Name)).ToList();
-                        var propertyTemplatesToUpdate = pageTemplate.PropertyTemplates.Where(x => modelPropertyNames.Contains(x.PropertyName)).ToList();
-
-                        //remove any property templates that don't have a property anymore
-                        RemovePropertyTemplatesWithNoExistingModelProperties(propertyTemplatesToRemove);
-
-                        //create property templates for any properties that don't have a template with that property name
-                        CreatePropertyTemplatesForProperties(newPropertiesToAdd, pageTemplate);
-
-                        //update any property templates that still have a model property
-                        UpdatePropertyTemplates(propertyTemplatesToUpdate, modelProperties);
-                    }
+                    //update any property templates that still have a model property
+                    UpdatePropertyTemplates(propertyTemplatesToUpdate, modelProperties);
                 }
             }
         }

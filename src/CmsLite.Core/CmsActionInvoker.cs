@@ -45,8 +45,8 @@ namespace CmsLite.Core
                 if (i == 0) continue;  //skip the controller route data value
 
                 pageNode = i == 1
-                            ? NodeHelper.GetActionPageNode(sectionNode, routeDataValues[i].Value.ToString())
-                            : NodeHelper.GetActionPageNode(pageNode, routeDataValues[i].Value.ToString());
+                            ? NodeHelper.GetActionPageNode(sectionNode.PageNodes, routeDataValues[i].Value.ToString())
+                            : NodeHelper.GetActionPageNode(pageNode.PageNodes, routeDataValues[i].Value.ToString());
 
                 currentRouteData.Values[string.Format(CmsRoutingConstants.RouteDataNameForAction + "-{0}", i)] = pageNode.UrlName;
             }
@@ -55,8 +55,6 @@ namespace CmsLite.Core
             //also set new values to store the cms version of the controller and action
             currentRouteData.Values["controller"] = sectionNode.SectionTemplate.ControllerName.Replace("Controller", "");
             currentRouteData.Values["action"] = pageNode.PageTemplate.ActionName;
-
-            //PopulateRouteDataWithCmsValues(currentRouteData, sectionNode, pageNode);
 
             return base.InvokeAction(controllerContext, pageNode.PageTemplate.ActionName);
         }

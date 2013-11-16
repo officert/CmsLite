@@ -10,6 +10,7 @@ using CmsLite.Core.Interfaces;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
+using CmsLite.Utilities;
 
 namespace CmsLite.Core.Helpers
 {
@@ -26,8 +27,7 @@ namespace CmsLite.Core.Helpers
         {
             var currentRouteData = httpContextBase.Request.RequestContext.RouteData;
 
-            if (currentRouteData == null)
-                throw new ArgumentException("The RouteData Collection cannot be null.");
+            Ensure.ArgumentIsNotNull(currentRouteData, "currentRouteData");
 
             var routeDataValues = currentRouteData.Values.ToList();
 
@@ -46,8 +46,8 @@ namespace CmsLite.Core.Helpers
                 if (i == 0) continue;  //skip the controller route data value
 
                 pageNode = i == 1
-                            ? NodeHelper.GetActionPageNode(sectionNode, cmsRouteDataValues[i].Value.ToString())
-                            : NodeHelper.GetActionPageNode(pageNode, cmsRouteDataValues[i].Value.ToString());
+                            ? NodeHelper.GetActionPageNode(sectionNode.PageNodes, cmsRouteDataValues[i].Value.ToString())
+                            : NodeHelper.GetActionPageNode(pageNode.PageNodes, cmsRouteDataValues[i].Value.ToString());
 
                 if (pageNode == null)
                     throw new ArgumentException(string.Format("The page with the url name : {0} was not found.", cmsRouteDataValues[i].Value));
@@ -84,10 +84,4 @@ namespace CmsLite.Core.Helpers
             return cmsRouteDataValues;
         }
     }
-
-    //internal struct CmsRouteData
-    //{
-    //    public string ControllerName { get; set; }
-    //    public string ActionName { get; set; }
-    //}
 }
