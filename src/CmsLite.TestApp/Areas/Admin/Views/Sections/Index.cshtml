@@ -42,8 +42,7 @@
         <h3>
             <i class="fa fa-book"></i>Sections</h3>
         <div class="btn-group">
-            @*<button class="btn btn-default" type="button" data-bind="click: toggleSectionsOpen, css: { 'active': allAccordionsOpen() }"><i data-bind="    css: !allAccordionsOpen() ? 'icon-expand' : 'icon-collapse'"></i><span data-bind="    text: !allAccordionsOpen() ? 'Open All' : 'Close All'"></span></button>*@
-            <button id="create-section-trigger" class="btn btn-default" type="button" data-bind="click: createSectionForm.show"><i class="fa fa-expand-o"></i><span>Create new section</span> </button>
+            <button id="create-section-trigger" class="btn btn-default btn-icon-left" type="button" data-bind="click: createSectionForm.show"><i class="fa fa-expand-o"></i><span>Create new section</span> </button>
         </div>
     </header>
     <div class="" data-bind="css: getPageListClass">
@@ -55,28 +54,21 @@
     </div>
     <div id="node-sidebar" class="col-md-3" data-bind="visible: selectedNode()">
         <!-- Selected Node -->
-        <div class="btn-group-vertical col-md-2" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'">
-            <a title="View Section" href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url }, bootstraptooltip : { placement: 'left' }"><i class="fa fa-share-square"></i></a>
-            <a title="Trash Section" href="#" class="btn btn-default" data-bind="click: function() { $root.deleteSectionForm.show($root.selectedNode()) }, bootstraptooltip : { placement: 'left' }"><i class="fa fa-trash-o"></i></a>
-            <a title="Create Child Page" href="#" class="btn btn-default" data-bind="click: function() { $root.createPageForm.show($root.selectedNode()) }, bootstraptooltip : { placement: 'left' }"><i class="fa fa-plus-circle"></i></a>
+        <div class="btn-group-vertical col-md-2 node-actions-list" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'">
+            <a title="View Section" href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url }, bootstraptooltip : { container: 'body', placement: 'left' }"><i class="fa fa-share-square"></i></a>
+            <a title="Trash Section" href="#" class="btn btn-default" data-bind="click: function() { $root.deleteSectionForm.show($root.selectedNode()) }, bootstraptooltip : { container: 'body', placement: 'left' }"><i class="fa fa-trash-o"></i></a>
+            <a title="Create Child Page" href="#" class="btn btn-default" data-bind="click: function() { $root.createPageForm.show($root.selectedNode()) }, bootstraptooltip : { container: 'body', placement: 'left' }"><i class="fa fa-plus-circle"></i></a>
         </div>
-        <div class="btn-group-vertical col-md-2" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'">
-            <a title="View Page" href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url }, bootstraptooltip : { placement: 'left' }"><i class="fa fa-share-square"></i></a>
-            <a title="Trash Page" href="#" class="btn btn-default" data-bind="click: function() { $root.deletePageForm.show($root.selectedNode()) }, bootstraptooltip : { placement: 'left' }"><i class="fa fa-trash-o"></i></a>
-            <a title="Create Child Page" href="#" class="btn btn-default" data-bind="visible: selectedNode() && selectedNode().pageTemplates().length > 0, click: function() { $root.createPageForm.show($root.selectedNode()) }, bootstraptooltip : { placement: 'left' }"><i class="fa fa-plus-circle"></i></a>
-            <a title="Edit Page" href="#" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().editUrl  }, bootstraptooltip : { placement: 'left' }"><i class="fa fa-edit"></i></a>
+        <div class="btn-group-vertical col-md-2 node-actions-list" data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'">
+            <a title="View Page" href="#" target="_blank" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().url }, bootstraptooltip : { container: 'body', placement: 'left' }"><i class="fa fa-share-square"></i></a>
+            <a title="Trash Page" href="#" class="btn btn-default" data-bind="click: function() { $root.deletePageForm.show($root.selectedNode()) }, bootstraptooltip : { container: 'body', placement: 'left' }"><i class="fa fa-trash-o"></i></a>
+            <a title="Create Child Page" href="#" class="btn btn-default" data-bind="visible: selectedNode() && selectedNode().pageTemplates().length > 0, click: function() { $root.createPageForm.show($root.selectedNode()) }, bootstraptooltip : { container: 'body', placement: 'left' }"><i class="fa fa-plus-circle"></i></a>
+            <a title="Edit Page" href="#" class="btn btn-default" data-bind="attr: { href : selectedNode() && selectedNode().editUrl  }, bootstraptooltip : { container: 'body', placement: 'left' }"><i class="fa fa-edit"></i></a>
         </div>
         <div class="panel panel-default col-md-10" data-bind="visible: selectedNode()">
-            <div class="panel-heading">
-                <i class="fa fa-info-circle"></i>
-                <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'section'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span>Section Info</h4>
-                <h4 data-bind="visible: selectedNode() && $root.selectedNode().nodeType == 'page'"><span data-bind="text:selectedNode() && selectedNode().displayName"></span>Page Info</h4>
-                <div class="btn-group pull-right">
-                    <button type="button" class="btn btn-default" data-bind="click: self.hideNodeInfo">
-                        <i class="fa fa-times-circle"></i>
-                    </button>
-                </div>
-            </div>
+            <button type="button" class="btn btn-default close-button" data-bind="click: self.hideNodeInfo">
+                <i class="fa fa-times-circle"></i>
+            </button>
             <div class="panel-body">
                 <div class="form-group">
                     <label class="control-label">Display name :</label>
@@ -85,6 +77,10 @@
                 <div class="form-group">
                     <label class="control-label">Url name :</label>
                     <span data-bind="text: selectedNode() && selectedNode().urlName"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Full Url :</label>
+                    <span data-bind="text: selectedNode() && selectedNode().url"></span>
                 </div>
             </div>
         </div>
@@ -113,8 +109,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-default" type="button" data-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary" type="submit" data-bind="click: create"><i class="fa fa-plus-circle"></i>Create Section</button>
+                <button class="btn btn-default btn-icon-left" type="button" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary btn-icon-left" type="submit" data-bind="click: create"><i class="fa fa-plus-circle"></i>Create Section</button>
             </div>
         </form>
     </div>
@@ -142,7 +138,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-default" type="button" data-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary" type="submit" data-bind="click: create"><i class="fa fa-plus-circle"></i>Create Page</button>
+                <button class="btn btn-primary btn-icon-left" type="submit" data-bind="click: create"><i class="fa fa-plus-circle"></i>Create Page</button>
             </div>
         </form>
     </div>
@@ -156,7 +152,7 @@
                 </div>
                 <div class="pull-right">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger" data-bind="click: cms.viewmodel.deleteSectionForm.delete">Delete</button>
+                    <button type="submit" class="btn btn-danger btn-icon-left" data-bind="click: cms.viewmodel.deleteSectionForm.delete">Delete</button>
                 </div>
             </div>
         </div>
@@ -171,7 +167,7 @@
                 </div>
                 <div class="pull-right">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger" data-bind="click: cms.viewmodel.deletePageForm.delete">Delete</button>
+                    <button type="submit" class="btn btn-danger btn-icon-left" data-bind="click: cms.viewmodel.deletePageForm.delete">Delete</button>
                 </div>
             </div>
         </div>

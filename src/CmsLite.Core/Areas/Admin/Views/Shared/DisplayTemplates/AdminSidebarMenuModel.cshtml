@@ -1,20 +1,10 @@
 ﻿@model MenuGen.Models.MenuModel
-@{
-    var routeData = Request.RequestContext.RouteData;
-    const string activeClass = "active";
-    var currentController = routeData.GetRequiredString("controller");
-}
 @if (Model.MenuNodes != null)
 {
     <ul class="nav list-group">
         @foreach (var node in Model.MenuNodes)
         {
-            var cssClass = "";
-            if (currentController.ToLower() == node.Text.Replace(" ", "").ToLower())
-            {
-                cssClass = "active";
-            }
-            <li class="@cssClass" >
+            <li class="@node.IsCurrentNode() ? 'active' : ''" >
                 @*<a class="list-group-item" href="@node.Url"><i class="@node.IconClass icon-left"></i><span>@node.Text</span></a>*@
                 <a class="list-group-item" href="@Url.Action(node.ActionName, node.ControllerName, node.RouteValues)"><span>@node.Text</span></a>
             </li>

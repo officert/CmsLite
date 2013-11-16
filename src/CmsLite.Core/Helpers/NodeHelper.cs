@@ -11,9 +11,9 @@ namespace CmsLite.Core.Helpers
     {
         public static PageNode GetActionPageNode(INode parentNode, string urlName)
         {
-            Ensure.ArgumentNotNull(parentNode, "parentNode");
-            Ensure.ArgumentNotNull(parentNode.PageNodes, "parentNode.PageNodes");
-            Ensure.ArgumentNotNullOrEmpty(urlName, "urlName");
+            Ensure.ArgumentIsNotNull(parentNode, "parentNode");
+            Ensure.ArgumentIsNotNull(parentNode.PageNodes, "parentNode.PageNodes");
+            Ensure.ArgumentIsNotNullOrEmpty(urlName, "urlName");
 
             //if the action name is index use the first page for this section, otherwise find the page by action name
 

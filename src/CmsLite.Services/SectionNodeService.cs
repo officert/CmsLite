@@ -7,6 +7,7 @@ using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
 using CmsLite.Services.Helpers;
+using CmsLite.Utilities;
 using CmsLite.Utilities.Cms;
 using CmsLite.Utilities.Extensions;
 
@@ -32,7 +33,7 @@ namespace CmsLite.Services
 
         public SectionNode GetByUrlName(string urlName)
         {
-            if(urlName.IsNullOrEmpty()) throw new ArgumentException("urlName");
+            Ensure.ArgumentIsNotNullOrEmpty(urlName, "urlName");
 
             return _unitOfWork.Context.GetDbSet<SectionNode>()
                 .Include(x => x.SectionTemplate)
@@ -55,10 +56,7 @@ namespace CmsLite.Services
         {
             var sectionNodes = _unitOfWork.Context.GetDbSet<SectionNode>().AsQueryable();
 
-            if (!includeTrashed)
-            {
-                sectionNodes = sectionNodes.Where(x => !x.InTrash);
-            }
+            if (!includeTrashed) sectionNodes = sectionNodes.Where(x => !x.InTrash);
 
             return sectionNodes;
         }
@@ -68,13 +66,10 @@ namespace CmsLite.Services
             return _unitOfWork.Context.GetDbSet<SectionNode>().Where(x => x.InTrash);
         }
 
-        public SectionNode Create(int sectionTemplateId, string displayName, string urlName, bool commit = true)
+        public SectionNode CreateSectionNode(int sectionTemplateId, string displayName, string urlName, bool commit = true)
         {
-            if(displayName.IsNullOrEmpty())
-                throw new ArgumentException(Messages.SectionNodeDisplayNameCannotBeNull);
-
-            if(urlName.IsNullOrEmpty())
-                throw new ArgumentException(Messages.SectionNodeUrlNameCannotBeNull);
+            Ensure.ArgumentIsNotNullOrEmpty(displayName, "displayName");
+            Ensure.ArgumentIsNotNullOrEmpty(urlName, "urlName");
 
             var sectionNodeDbSet = _unitOfWork.Context.GetDbSet<SectionNode>();
             var orderedSectionNodes = sectionNodeDbSet.OrderBy(x => x.Order);
@@ -101,9 +96,6 @@ namespace CmsLite.Services
             section.InTrash = false;
 
             sectionNodeDbSet.Add(section);
-
-            //TODO: need to better understand the rules for automatically creating a page
-            //_pageNodeService.CreateForSection(section, sectionTemplate.PageTemplates.First(x => x.ActionName == "Index").Id, section.DisplayName, section.DisplayName.ToLower());
 
             if (commit)
             {

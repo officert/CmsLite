@@ -15,7 +15,7 @@ namespace CmsLite.Interfaces.Services
 
         IEnumerable<SectionNode> GetAllTrashed();
 
-        SectionNode Create(int sectionTemplateId, string displayName, string urlName, bool commit = true);
+        SectionNode CreateSectionNode(int sectionTemplateId, string displayName, string urlName, bool commit = true);
 
         void Trash(int id, bool commit = false);
 

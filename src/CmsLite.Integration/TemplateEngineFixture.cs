@@ -92,7 +92,7 @@ namespace CmsLite.Integration
         }
 
         [Test]
-        public void ProcessMvcFiles_ControllerDoesHaveCmsSectionTemplateAttribute_DoesNotCreateSectionTemplate()
+        public void ProcessMvcFiles_ControllerDoesNotHaveCmsSectionTemplateAttribute_DoesNotCreateSectionTemplate()
         {
             //arrange
 
@@ -105,7 +105,7 @@ namespace CmsLite.Integration
         }
 
         [Test]
-        public void ProcessMvcFiles_ControllerHasAttributeAndSubClassCmsController_CreatesSectionTemplate()
+        public void ProcessMvcFiles_ControllerHasAttributeAndSubClassesCmsController_CreatesSectionTemplate()
         {
             //arrange
 

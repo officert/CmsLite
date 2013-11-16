@@ -6,6 +6,7 @@ using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
 using CmsLite.Services;
+using CmsLite.Utilities;
 using CmsLite.Utilities.Cms;
 using Moq;
 using NUnit.Framework;
@@ -90,8 +91,8 @@ namespace CmsLite.Unit.Services
 
             //act + assert
             Assert.That(() => _propertyService.Create(pageNode, null),
-                Throws.Exception.TypeOf<ArgumentException>()
-                .With.Message.EqualTo(Messages.PageNodeCannotBeNull));
+                Throws.Exception.TypeOf<ArgumentNullException>()
+                .With.Message.EqualTo(string.Format(Ensure.ArgumentIsNullMessageFormatMessage, "pageNode")));
         }
 
         [Test]
@@ -104,8 +105,8 @@ namespace CmsLite.Unit.Services
 
             //act + assert
             Assert.That(() => _propertyService.Create(pageNode, propertyTemplate),
-                Throws.Exception.TypeOf<ArgumentException>()
-                .With.Message.EqualTo(Messages.PropertyTemplateCannotBeNull));
+                Throws.Exception.TypeOf<ArgumentNullException>()
+                .With.Message.EqualTo(string.Format(Ensure.ArgumentIsNullMessageFormatMessage, "propertyTemplate")));
         }
 
         [Test]

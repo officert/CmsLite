@@ -7,6 +7,7 @@ using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
 using CmsLite.Services.Helpers;
+using CmsLite.Utilities;
 using CmsLite.Utilities.Cms;
 using CmsLite.Utilities.Extensions;
 
@@ -38,11 +39,8 @@ namespace CmsLite.Services
 
         public PageNode CreateForSection(int sectionId, int pageTemplateId, string displayName, string urlName, bool commit = true)
         {
-            if (displayName.IsNullOrEmpty())
-                throw new ArgumentException(Messages.PageNodeDisplayNameCannotBeNull);
-
-            if (urlName.IsNullOrEmpty())
-                throw new ArgumentException(Messages.PageNodeUrlNameCannotBeNull);
+            Ensure.ArgumentIsNotNullOrEmpty(displayName, "displayName");
+            Ensure.ArgumentIsNotNullOrEmpty(urlName, "urlName");
 
             var pageNodeDbSet = _unitOfWork.Context.GetDbSet<PageNode>();
 
@@ -90,11 +88,8 @@ namespace CmsLite.Services
 
         public PageNode CreateForPage(int pageId, int pageTemplateId, string displayName, string urlName)
         {
-            if (displayName.IsNullOrEmpty())
-                throw new ArgumentException(Messages.PageNodeDisplayNameCannotBeNull);
-
-            if (urlName.IsNullOrEmpty())
-                throw new ArgumentException(Messages.PageNodeUrlNameCannotBeNull);
+            Ensure.ArgumentIsNotNullOrEmpty(displayName, "displayName");
+            Ensure.ArgumentIsNotNullOrEmpty(urlName, "urlName");
 
             var pageNodeDbSet = _unitOfWork.Context.GetDbSet<PageNode>();
             var pageNodes = pageNodeDbSet

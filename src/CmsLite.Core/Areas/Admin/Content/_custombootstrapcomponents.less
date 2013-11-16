@@ -4,10 +4,14 @@
 /* Page Header */
 .page-header {
     margin: 10px 0 20px;
+    border-bottom:0;
 
     > h3 {
+        border-bottom:1px solid @gray-lighter;
+        padding-bottom:10px;
+        margin-bottom:10px;
         > i {
-            font-size: @font-size-large;
+            font-size: 24px;
         }
     }
 }
@@ -59,6 +63,19 @@
 .btn-info {
     .box-shadow-inset-top(lighten(@btn-info-bg, 35%));
     #gradient.vertical(@btn-info-bg, darken(@btn-info-bg, 5%));
+}
+
+//buttons with icon
+.btn-icon-left {
+    > i {
+        margin-right: @btn-icon-margin;
+    }
+}
+
+.btn-icon-right {
+    > i {
+        margin-left: @btn-icon-margin;
+    }
 }
 
 /* Button Groups */

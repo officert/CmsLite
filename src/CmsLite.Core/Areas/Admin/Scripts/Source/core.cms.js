@@ -1,14 +1,14 @@
 ﻿///<reference path="~/Areas/Admin/Scripts/_references.js" />
 var cms = (function ($) { //define our namespace
 
-    (function () {
+    $(document).ready(function () {
         var header = $('#header');
         var headerViewModel = {
 
         };
         ko.applyBindings(headerViewModel, header[0]);
 
-        //j!uery ajax setup
+        //jQuery ajax setup
         $.ajaxSetup({
             contentType: 'application/json',
             beforeSend: function () {

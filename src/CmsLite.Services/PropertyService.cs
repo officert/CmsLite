@@ -5,6 +5,7 @@ using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
+using CmsLite.Utilities;
 using CmsLite.Utilities.Cms;
 
 namespace CmsLite.Services
@@ -20,11 +21,8 @@ namespace CmsLite.Services
 
         public Property Create(PageNode pageNode, PropertyTemplate propertyTemplate, string text = null, bool commit = true)
         {
-            if (pageNode == null)
-                throw new ArgumentException(Messages.PageNodeCannotBeNull);
-
-            if (propertyTemplate == null)
-                throw new ArgumentException(Messages.PropertyTemplateCannotBeNull);
+            Ensure.ArgumentIsNotNull(pageNode, "pageNode");
+            Ensure.ArgumentIsNotNull(propertyTemplate, "propertyTemplate");
 
             return CreateProperty(pageNode, propertyTemplate, text, commit);
         }
@@ -68,6 +66,9 @@ namespace CmsLite.Services
 
         private Property CreateProperty(PageNode pageNode, PropertyTemplate propertyTemplate, string text = null, bool commit = true)
         {
+            Ensure.ArgumentIsNotNull(pageNode, "pageNode");
+            Ensure.ArgumentIsNotNull(propertyTemplate, "propertyTemplate");
+
             var propertyDbSet = _unitOfWork.Context.GetDbSet<Property>();
 
             var property = propertyDbSet.Create();

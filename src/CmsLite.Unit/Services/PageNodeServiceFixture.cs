@@ -7,6 +7,7 @@ using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
 using CmsLite.Services;
 using CmsLite.Services.Helpers;
+using CmsLite.Utilities;
 using CmsLite.Utilities.Cms;
 using Moq;
 using NUnit.Framework;
@@ -56,7 +57,7 @@ namespace CmsLite.Unit.Services
             //act + assert
             Assert.That(() => _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, displayName, "foobar"),
                 Throws.Exception.TypeOf<ArgumentException>()
-                .With.Message.EqualTo(Messages.PageNodeDisplayNameCannotBeNull));
+                .With.Message.EqualTo(string.Format(Ensure.ArgumentIsNullOrEmptyMessageFormat, "displayName")));
         }
 
         [Test]
@@ -70,7 +71,7 @@ namespace CmsLite.Unit.Services
             //act + assert
             Assert.That(() => _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", urlName),
                 Throws.Exception.TypeOf<ArgumentException>()
-                .With.Message.EqualTo(Messages.PageNodeUrlNameCannotBeNull));
+                .With.Message.EqualTo(string.Format(Ensure.ArgumentIsNullOrEmptyMessageFormat, "urlName")));
         }
 
         [Test]
@@ -354,7 +355,7 @@ namespace CmsLite.Unit.Services
             //act + assert
             Assert.That(() => _pageNodeService.CreateForPage(pageNode.Id, pageTemplate.Id, displayName, "foobar"),
                 Throws.Exception.TypeOf<ArgumentException>()
-                .With.Message.EqualTo(Messages.PageNodeDisplayNameCannotBeNull));
+                .With.Message.EqualTo(string.Format(Ensure.ArgumentIsNullOrEmptyMessageFormat, "displayName")));
         }
 
         [Test]
@@ -368,7 +369,7 @@ namespace CmsLite.Unit.Services
             //act + assert
             Assert.That(() => _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar", urlName),
                 Throws.Exception.TypeOf<ArgumentException>()
-                .With.Message.EqualTo(Messages.PageNodeUrlNameCannotBeNull));
+                .With.Message.EqualTo(string.Format(Ensure.ArgumentIsNullOrEmptyMessageFormat, "urlName")));
         }
 
         [Test]
@@ -670,7 +671,7 @@ namespace CmsLite.Unit.Services
         {
             //arrange
             var sectionTemplate = SectionTemplateService.Create("Foobar");
-            var sectionNode = SectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar");
+            var sectionNode = SectionNodeService.CreateSectionNode(sectionTemplate.Id, "Foobar", "foobar");
             var pageTemplate = PageTemplateService.CreateForSectionTemplate(sectionTemplate.Id, "Foobar", "FoobarModel");
             var propertyTemplate1 = PropertyTemplateService.Create(pageTemplate.Id, "Foobar1", CmsPropertyType.ImagePicker, null);
             var propertyTemplate2 = PropertyTemplateService.Create(pageTemplate.Id, "Foobar2", CmsPropertyType.RichTextEditor, null);

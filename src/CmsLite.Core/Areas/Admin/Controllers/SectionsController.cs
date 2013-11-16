@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using CmsLite.Core.Areas.Admin.Menus;
@@ -29,8 +30,8 @@ namespace CmsLite.Core.Areas.Admin.Controllers
         [MenuNode(Key = "SiteSections", Text = "Site Sections", Menus = new[] { typeof(AdminSidebarMenu) })]
         public ActionResult Index()
         {
-            var sections = _sectionNodeService.GetAllWithDetails();
-            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
+            var sections = _sectionNodeService.GetAllWithDetails().ToList();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates().ToList();
 
             var model = new SiteSectionsModel
             {
@@ -49,7 +50,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
                 return JsonError(JsonRequestBehavior.DenyGet);
 
             var newSectionNode =
-                _mapper.Map<SectionNode, SectionNodeViewModel>(_sectionNodeService.Create(model.SectionTemplateId,
+                _mapper.Map<SectionNode, SectionNodeViewModel>(_sectionNodeService.CreateSectionNode(model.SectionTemplateId,
                     model.DisplayName, model.UrlName));
 
             return Json(newSectionNode, JsonRequestBehavior.DenyGet);

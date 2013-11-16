@@ -7,7 +7,9 @@ using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
 using CmsLite.Services;
 using CmsLite.Services.Helpers;
+using CmsLite.Utilities;
 using CmsLite.Utilities.Cms;
+using CmsLite.Utilities.Extensions;
 using Moq;
 using NUnit.Framework;
 using SharpTestsEx;
@@ -123,9 +125,9 @@ namespace CmsLite.Unit.Services
             var displayName = string.Empty;
 
             //act + assert
-            Assert.That(() => _sectionNodeService.Create(sectionTemplate.Id, displayName, "Foobar"),
+            Assert.That(() => _sectionNodeService.CreateSectionNode(sectionTemplate.Id, displayName, "Foobar"),
                 Throws.Exception.TypeOf<ArgumentException>()
-                .With.Message.EqualTo(Messages.SectionNodeDisplayNameCannotBeNull));
+                .With.Message.EqualTo(string.Format(Ensure.ArgumentIsNullOrEmptyMessageFormat, "displayName")));
         }
 
         [Test]
@@ -136,9 +138,9 @@ namespace CmsLite.Unit.Services
             var urlName = string.Empty;
 
             //act + assert
-            Assert.That(() => _sectionNodeService.Create(sectionTemplate.Id, "Foobar", urlName),
+            Assert.That(() => _sectionNodeService.CreateSectionNode(sectionTemplate.Id, "Foobar", urlName),
                 Throws.Exception.TypeOf<ArgumentException>()
-                .With.Message.EqualTo(Messages.SectionNodeUrlNameCannotBeNull));
+                .With.Message.EqualTo(string.Format(Ensure.ArgumentIsNullOrEmptyMessageFormat, "urlName")));
         }
 
         [Test]
@@ -159,7 +161,7 @@ namespace CmsLite.Unit.Services
 
 
             //act + assert
-            Assert.That(() => _sectionNodeService.Create(sectionTemplate.Id, "Foobar", urlName),
+            Assert.That(() => _sectionNodeService.CreateSectionNode(sectionTemplate.Id, "Foobar", urlName),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(string.Format(Messages.SectionNodeUrlNameMustBeUnique, formattedUrlName)));
         }
@@ -173,7 +175,7 @@ namespace CmsLite.Unit.Services
             _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns((SectionTemplate)null);
 
             //act + assert
-            Assert.That(() => _sectionNodeService.Create(sectionTemplateId, "Foobar", "foobar"),
+            Assert.That(() => _sectionNodeService.CreateSectionNode(sectionTemplateId, "Foobar", "foobar"),
                 Throws.Exception.TypeOf<ArgumentException>()
                 .With.Message.EqualTo(string.Format(Messages.SectionTemplateNotFound, sectionTemplateId)));
         }
@@ -189,7 +191,7 @@ namespace CmsLite.Unit.Services
             _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
-            var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", urlName);
+            var sectionNode = _sectionNodeService.CreateSectionNode(sectionTemplate.Id, "Foobar", urlName);
 
             //assert
             sectionNode.UrlName.Should().Be.EqualTo(formattedUrlName);
@@ -204,7 +206,7 @@ namespace CmsLite.Unit.Services
             _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
-            var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", "Foobar");
+            var sectionNode = _sectionNodeService.CreateSectionNode(sectionTemplate.Id, "Foobar", "Foobar");
 
             //assert
             sectionNode.Order.Should().Be.EqualTo(CmsConstants.FirstOrderNumber);
@@ -225,7 +227,7 @@ namespace CmsLite.Unit.Services
             _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
-            var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar2");
+            var sectionNode = _sectionNodeService.CreateSectionNode(sectionTemplate.Id, "Foobar", "foobar2");
 
             //assert
             sectionNode.Order.Should().Be.EqualTo(1);
@@ -240,7 +242,7 @@ namespace CmsLite.Unit.Services
             _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
-            var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar2");
+            var sectionNode = _sectionNodeService.CreateSectionNode(sectionTemplate.Id, "Foobar", "foobar2");
 
             //assert
             sectionNode.CreatedOn.Should().Not.Be.EqualTo(null);
@@ -255,7 +257,7 @@ namespace CmsLite.Unit.Services
             _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
-            var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar2");
+            var sectionNode = _sectionNodeService.CreateSectionNode(sectionTemplate.Id, "Foobar", "foobar2");
 
             //assert
             sectionNode.ModifiedOn.Should().Not.Be.EqualTo(null);
@@ -270,7 +272,7 @@ namespace CmsLite.Unit.Services
             _sectionTemplateServiceMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(sectionTemplate);
 
             //act
-            var sectionNode = _sectionNodeService.Create(sectionTemplate.Id, "Foobar", "foobar2");
+            var sectionNode = _sectionNodeService.CreateSectionNode(sectionTemplate.Id, "Foobar", "foobar2");
 
             //assert
             sectionNode.InTrash.Should().Be.False();

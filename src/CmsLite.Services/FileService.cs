@@ -28,8 +28,8 @@ namespace CmsLite.Services
 
         public void Create(byte[] fileData, string mimeType, string name)
         {
-            Ensure.ArgumentNotNull(fileData, "fileData");
-            Ensure.ArgumentNotNull(mimeType, "mimeType");
+            Ensure.ArgumentIsNotNull(fileData, "fileData");
+            Ensure.ArgumentIsNotNull(mimeType, "mimeType");
 
             var fileDbSet = _unitOfWork.Context.GetDbSet<File>();
 

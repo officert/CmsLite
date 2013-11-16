@@ -49,5 +49,27 @@ namespace CmsLite.TestApp.Models.Pages
         public string BannerTextLeft { get; set; }
 
         #endregion
+
+        #region Additional Info Properties
+
+        [CmsModelProperty(
+            DisplayName = "Foobar 1",
+            PropertyType = CmsPropertyType.RichTextEditor,
+            Description = "Some stuff goes here",
+            TabName = "Additional Info",
+            TabOrder = 3
+            )]
+        public string Foobar1 { get; set; }
+
+        [CmsModelProperty(
+            DisplayName = "Foobar 2",
+            PropertyType = CmsPropertyType.RichTextEditor,
+            Description = "Text to go under the banner asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as",
+            TabName = "Additional Info",
+            TabOrder = 3
+            )]
+        public string Foobar2 { get; set; }
+
+        #endregion
     }
 }

@@ -1,25 +1,5 @@
 ﻿///<reference path="~/Areas/Admin/Scripts/_references.js" />
 (function (window, $, cms) {
-    //function initContextMenus() {
-    //    var contextMenuOptions = {
-    //        getContextMenuFromParent: function (parentElement) {
-    //            return parentElement.next('div.context-menu');
-    //        },
-    //        onShow: function (menu, parentElement) {
-    //            parentElement.addClass('active');
-    //        },
-    //        onHide: function (menu, parentElement) {
-    //            parentElement.removeClass('active');
-    //        },
-    //        contextMenuPosition: function (event) {
-    //            return {
-    //                top: event.pageY - 42,
-    //                left: event.pageX - 228
-    //            };
-    //        }
-    //    };
-    //    $('#sections > div.page-content ul li.node a').contextmenu(contextMenuOptions);
-    //}
     
     cms.viewmodel = (function () {
         var self = this;
@@ -31,6 +11,12 @@
             });
             data.isSelected(true);
             self.selectedNode(data);
+        };
+        self.deselectNodes = function () {
+            self.selectedNode(null);
+            cms.viewmodel.recurseNodes(self.sectionNodes(), function (node) {
+                node.isSelected(false);
+            });
         };
         self.sectionNodes = ko.observableArray();
         //create sectionNodes
@@ -183,7 +169,7 @@
                             self.createPageForm.hide(true);
                         },
                         success: function (json) {
-                            var newPage = cms.mapping.mapJsonToPageNodeViewModel(json, data);
+                            var newPage = cms.mapping.mapJsonToPageNodeViewModel(json, data.parentNode());
                             data.parentNode().pageNodes.push(newPage);
                         }
                     });
@@ -232,8 +218,8 @@
         self.getPageListClass = ko.computed(function() {
             return self.selectedNode() ? 'page-content col-md-9' : 'page-content col-md-12';
         });
-        self.hideNodeInfo = function() {
-            self.selectedNode(null);
+        self.hideNodeInfo = function () {
+            self.deselectNodes();
         };
         return self;
     })();

@@ -52,7 +52,7 @@
             section.id = json.Id;
             section.order = json.Order;
             section.urlName = json.UrlName;
-            section.url = cms.utils.mapPath("~/" + section.urlName);
+            section.url = cms.utils.mapPath("~/" + json.UrlName);
             section.displayName = json.DisplayName;
             section.iconImageName = cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/' + json.IconImageName);
             section.isSelected = ko.observable(false);
@@ -79,7 +79,7 @@
             page.id = json.Id;
             page.order = json.Order;
             page.displayName = json.DisplayName;
-            page.urlName = parentNode ? parentNode.url + "/" + json.UrlName : null;
+            page.urlName = json.UrlName;
             page.url = parentNode ? parentNode.url + "/" + json.UrlName : null;
             page.iconImageName = cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/' + json.IconImageName);
             page.parentNode = parentNode;
