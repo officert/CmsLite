@@ -1,58 +1,68 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
 using CmsLite.Core.App_Start;
 using CmsLite.Core.Ioc;
-using CmsLite.Interfaces.Authentication;
+using CmsLite.Data.Ioc;
 using CmsLite.Interfaces.Templating;
+using CmsLite.Services.Ioc;
+using IocLite;
 using IocLite.Interfaces;
-using MenuGen;
-using Ninject;
+using IContainer = IocLite.Interfaces.IContainer;
 
 namespace CmsLite.Core
 {
     public class CmsModule
     {
         private ITemplateEngine _templateEngine;
-        private readonly IKernel _kernel;
+        private readonly IContainer _container;
 
         public CmsModule()
         {
-            _kernel = new StandardKernel();
+            _container = new Container();
         }
 
         public void Init()
         {
-            IocConfig.Configure(_kernel);
+            var cmsRegistry = new CmsIocModule();
+            var dataRegistry = new DataNinectModule();
+
+            _container.Register(new List<IRegistry>
+            {
+                cmsRegistry,
+                new ServicesNinjectModule(),
+                dataRegistry
+            });
+            MenuGen.MenuGen.Init(x => x.Container.Register(new List<IRegistry>
+            {
+                //dataRegistry
+            }));
+
+            //IocConfig.Configure(_container);
             AutoMapperConfiguration.Configure();
             RazorViewEngineConfig.Configure();
             RouteConfig.RegisterRoutes(RouteTable.Routes);      //TODO: need to think more about what routes to add to a user's MVC project
 
-            ControllerBuilder.Current.SetControllerFactory(new IocControllerFactory(_kernel));
-
-            _templateEngine = _kernel.Get<ITemplateEngine>();
+            _templateEngine = (ITemplateEngine)_container.Resolve<ITemplateEngine>();
             _templateEngine.GenerateTemplates(Assembly.GetCallingAssembly());
 
-            MenuGen.MenuGen.Init(x =>
-            {
-                x.ContainerAdapter = new NinjectContainerAdapter(_kernel);
-            });
+            ControllerBuilder.Current.SetControllerFactory(new IocControllerFactory(_container));
         }
     }
 
-    internal class NinjectContainerAdapter : IContainerAdapter
-    {
-        private readonly IKernel _kernel;
+    //internal class NinjectContainerAdapter : IContainerAdapter
+    //{
+    //    private readonly IKernel _kernel;
 
-        public NinjectContainerAdapter(IKernel kernel)
-        {
-            _kernel = kernel;
-        }
+    //    public NinjectContainerAdapter(IKernel kernel)
+    //    {
+    //        _kernel = kernel;
+    //    }
 
-        public object TryResolve(Type type)
-        {
-            return _kernel.TryGet(type);
-        }
-    }
+    //    public object TryResolve(Type type)
+    //    {
+    //        return _kernel.TryGet(type);
+    //    }
+    //}
 }

@@ -5,7 +5,6 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.WebPages;
-using CmsLite.Core.Helpers;
 
 namespace CmsLite.Core.Extensions
 {

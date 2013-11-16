@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using CmsLite.Domains.Entities;
+﻿using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
 
 namespace CmsLite.Services.Extensions

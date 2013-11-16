@@ -1,5 +1,4 @@
-﻿using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using AutoMapper;
 using CmsLite.Core.Authetication;
 using CmsLite.Core.Helpers;
@@ -7,26 +6,25 @@ using CmsLite.Core.Interfaces;
 using CmsLite.Core.Templating;
 using CmsLite.Interfaces.Authentication;
 using CmsLite.Interfaces.Templating;
-using Ninject.Modules;
-using Ninject.Web.Common;
+using IocLite;
 
 namespace CmsLite.Core.Ioc
 {
-    public class CmsIocModule : NinjectModule
+    public class CmsIocModule : Registry
     {
         public override void Load()
         {
-            Bind<ICmsLiteHttpContext>().To<CmsHttpContext>().InRequestScope();
+            For<ICmsLiteHttpContext>().Use<CmsHttpContext>().InHttpRequestScope();
 
-            Bind<IAuthenticationProvider>().To<SimpleAuthenticationProvider>().InSingletonScope();
+            For<IAuthenticationProvider>().Use<SimpleAuthenticationProvider>().InSingletonScope();
 
-            Bind<IMappingEngine>().ToMethod(ctx => Mapper.Engine);
+            For<IMappingEngine>().Use(Mapper.Engine);
 
-            Bind<ITemplateEngine>().To<TemplateEngine>();
+            For<ITemplateEngine>().Use<TemplateEngine>().InHttpRequestScope();
 
-            Bind<IActionInvoker>().To<CmsActionInvoker>();
+            For<IActionInvoker>().Use<CmsActionInvoker>().InHttpRequestScope();
 
-            Bind<ICmsModelHelper>().To<CmsModelHelper>();
+            For<ICmsModelHelper>().Use<CmsModelHelper>().InHttpRequestScope();
         }
     }
 }

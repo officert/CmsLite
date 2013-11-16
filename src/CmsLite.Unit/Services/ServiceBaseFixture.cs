@@ -5,8 +5,8 @@ using CmsLite.Data.Ioc;
 using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
 using CmsLite.Services.Ioc;
-using Ninject;
-using Ninject.Modules;
+using IocLite;
+using IocLite.Interfaces;
 using NUnit.Framework;
 
 namespace CmsLite.Unit.Services
@@ -14,7 +14,7 @@ namespace CmsLite.Unit.Services
     [TestFixture]
     public abstract class ServiceBaseFixture : IDisposable
     {
-        protected IKernel Kernel;
+        protected IContainer Container;
         protected IUnitOfWork UnitOfWork;
         protected ISectionTemplateService SectionTemplateService;
         protected IPageTemplateService PageTemplateService;
@@ -26,21 +26,21 @@ namespace CmsLite.Unit.Services
         [TestFixtureSetUp]
         public void SetupFixture()
         {
-            Kernel = new StandardKernel();
-            Kernel.Load(new List<INinjectModule>
+            Container = new Container();
+            Container.Register(new List<IRegistry>
                              {
                                  new CmsIocModule(),
                                  new ServicesNinjectModule(),
                                  new DataNinectModule()
                              });
 
-            UnitOfWork = Kernel.Get<IUnitOfWork>();
-            SectionTemplateService = Kernel.Get<ISectionTemplateService>();
-            PageTemplateService = Kernel.Get<IPageTemplateService>();
-            SectionNodeService = Kernel.Get<ISectionNodeService>();
-            PageNodeService = Kernel.Get<IPageNodeService>();
-            PropertyTemplateService = Kernel.Get<IPropertyTemplateService>();
-            PropertyService = Kernel.Get<IPropertyService>();
+            UnitOfWork = Container.Resolve<IUnitOfWork>();
+            SectionTemplateService = Container.Resolve<ISectionTemplateService>();
+            PageTemplateService = Container.Resolve<IPageTemplateService>();
+            SectionNodeService = Container.Resolve<ISectionNodeService>();
+            PageNodeService = Container.Resolve<IPageNodeService>();
+            PropertyTemplateService = Container.Resolve<IPropertyTemplateService>();
+            PropertyService = Container.Resolve<IPropertyService>();
 
             PostFixtureSetup();
         }
@@ -51,7 +51,7 @@ namespace CmsLite.Unit.Services
 
         public void Dispose()
         {
-            if(Kernel != null) Kernel.Dispose();
+            //if(Container != null) Container.Dispose();
         }
 
         protected void CleanupSectionTemplates(IEnumerable<int> sectionTemplateIds)

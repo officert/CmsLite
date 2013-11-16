@@ -1,84 +1,29 @@
 ﻿///<reference path="~/Areas/Admin/Scripts/_references.js" />
 (function (window, $, cms) {
-    function initContextMenus() {
-        var contextMenuOptions = {
-            getContextMenuFromParent: function (parentElement) {
-                return parentElement.next('div.context-menu');
-            },
-            onShow: function (menu, parentElement) {
-                parentElement.addClass('active');
-            },
-            onHide: function (menu, parentElement) {
-                parentElement.removeClass('active');
-            },
-            contextMenuPosition: function (event) {
-                return {
-                    top: event.pageY - 42,
-                    left: event.pageX - 228
-                };
-            }
-        };
-        $('#sections > div.page-content ul li.node a').contextmenu(contextMenuOptions);
-    }
-    //var accordionOptions = {
-    //    collapseAll: false,
-    //    headerElements: function () {
-    //        return $(this).find('li.node a');
-    //    },
-    //    headerToContainer: function () {
-    //        return $(this).siblings('ul');
-    //    },
-    //    onOpen: function () {
-    //        $(this).children('i').removeClass('icon-caret-right');
-    //        $(this).children('i').addClass('icon-caret-down');
-    //        //$(this).children('img').attr('src', cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/folderopen.png'));
-
-    //        cms.viewmodel.allAccordionsOpen(true);
-    //    },
-    //    onClose: function () {
-    //        $(this).children('i').removeClass('icon-caret-down');
-    //        $(this).children('i').addClass('icon-caret-right');
-    //        //$(this).children('img').attr('src', cms.utils.mapPath('~/Areas/Admin/Content/Images/icons/folder.png'));
-
-    //        var accordions = $('#sitesections-content > ul').accordion('accordions');
-    //        var anyAccordionsOpen = false;
-    //        $(accordions).each(function () {
-    //            this.IsOpen() ? anyAccordionsOpen = true : anyAccordionsOpen = false;
-    //        });
-    //        if (!anyAccordionsOpen) {
-    //            cms.viewmodel.allAccordionsOpen(false);
+    //function initContextMenus() {
+    //    var contextMenuOptions = {
+    //        getContextMenuFromParent: function (parentElement) {
+    //            return parentElement.next('div.context-menu');
+    //        },
+    //        onShow: function (menu, parentElement) {
+    //            parentElement.addClass('active');
+    //        },
+    //        onHide: function (menu, parentElement) {
+    //            parentElement.removeClass('active');
+    //        },
+    //        contextMenuPosition: function (event) {
+    //            return {
+    //                top: event.pageY - 42,
+    //                left: event.pageX - 228
+    //            };
     //        }
-    //    },
-    //    IsOpen: function () {
-    //        return this.Content.is(':visible');
-    //    }
-    //};
-    //function initAccordions(options) {
-    //    $('#sections > div.page-content > ul').accordion(options);
+    //    };
+    //    $('#sections > div.page-content ul li.node a').contextmenu(contextMenuOptions);
     //}
     
-    function initTooltips() {
-        $('a.btn').tooltip();
-    }
-
     cms.viewmodel = (function () {
         var self = this;
         //Properties
-        //allAccordionsOpen: ko.observable(false),
-        //toggleSectionsOpen: function () {
-        //    var toggleSectionOpen;
-        //    if (cms.viewmodel.allAccordionsOpen()) {
-        //        $('#sections > div.page-content > ul').accordion('closeAll');
-        //        toggleSectionOpen = false;
-        //    } else {
-        //        $('#sections > div.page-content > ul').accordion('openAll');
-        //        toggleSectionOpen = true;
-        //    }
-        //    cms.viewmodel.allAccordionsOpen(toggleSectionOpen);
-        //},
-        //modal windowsopenall
-
-        //create sectionNodes
         self.selectedNode = ko.observable();
         self.selectNode = function (data) {
             cms.viewmodel.recurseNodes(self.sectionNodes(), function (node) {
@@ -88,6 +33,7 @@
             self.selectedNode(data);
         };
         self.sectionNodes = ko.observableArray();
+        //create sectionNodes
         self.createSectionForm = {
             sectionTemplates: ko.observableArray(),
             selectedSectionTemplateId: ko.observable(),
@@ -274,7 +220,7 @@
         };
         //utils
         self.recurseNodes = function (nodes, delegate) {  //takes a collection of nodes and a delegate function to apply to all nodes and child nodes
-            if (typeof delegate !== 'function') throw new Error("Delegate must be a function.");
+            if (typeof delegate !== 'function') throw new Error("Delegate arg must be a function.");
 
             ko.utils.arrayForEach(nodes, function (node) {
                 if (node.pageNodes() && node.pageNodes().length > 0) {
@@ -305,21 +251,6 @@
         });
 
         ko.applyBindings(cms.viewmodel, $('#sections')[0]);
-
-        //init plugins
-        initContextMenus();
-        //initAccordions(accordionOptions);
-        //$('#sections > div.page-content > ul').accordion('openAll');       //start with accordions open
-        initTooltips();
-
-        //jquery ajax setup
-        $.ajaxSetup({
-            contentType: 'application/json',
-            beforeSend: function () {
-            },
-            complete: function () {
-            }
-        });
 
         //setup the create section form view model
         var createSectionForm = $('#create-sections-form');

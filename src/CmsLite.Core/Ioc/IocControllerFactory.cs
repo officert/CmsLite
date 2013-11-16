@@ -4,23 +4,22 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
-using CmsLite.Core.Interfaces;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Data;
 using CmsLite.Resources;
-using Ninject;
+using IocLite.Interfaces;
 
 namespace CmsLite.Core.Ioc
 {
     public class IocControllerFactory : DefaultControllerFactory
     {
-        private readonly IKernel _container;
+        private readonly IContainer _container;
         private readonly IDbContext _dbContext;
 
-        public IocControllerFactory(IKernel container)
+        public IocControllerFactory(IContainer container)
         {
             _container = container;
-            _dbContext = _container.Get<IDbContext>();
+            _dbContext = _container.Resolve<IDbContext>();
         }
 
         public override IController CreateController(RequestContext requestContext, string controllerName)
@@ -53,7 +52,7 @@ namespace CmsLite.Core.Ioc
         {
             return controllerType == null
                        ? null
-                       : (IController)_container.Get(controllerType);
+                       : (IController)_container.Resolve(controllerType);
         }
 
         #region Private Helpers

@@ -34,7 +34,10 @@ namespace CmsLite.Services
         {
             if(urlName.IsNullOrEmpty()) throw new ArgumentException("urlName");
 
-            return _unitOfWork.Context.GetDbSet<SectionNode>().FirstOrDefault(x => x.UrlName.ToLower() == urlName.ToLower());
+            return _unitOfWork.Context.GetDbSet<SectionNode>()
+                .Include(x => x.SectionTemplate)
+                .Include(x=> x.PageNodes)
+                .FirstOrDefault(x => x.UrlName.ToLower() == urlName.ToLower());
         }
 
         /// <summary>

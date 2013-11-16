@@ -4,6 +4,6 @@
 @Html.Script(@<script src="@Url.Content("~/Areas/Admin/Scripts/PropertyPlugins/RichTextEditor/ckeditor/ckeditor.js")"></script>)
 @Html.Script(@<script src="@Url.Content("~/Areas/Admin/Scripts/PropertyPlugins/RichTextEditor/RichTextEditor.js")"></script>)
 
-@Html.TextAreaFor(x => x.Text, new { @class = "richtexteditor" })
+@Html.TextAreaFor(x => x.Text, new { @class = "richtexteditor form-control" })
 
 @Html.HiddenFor(m => m.Id)

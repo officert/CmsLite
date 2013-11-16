@@ -1,5 +1,4 @@
-﻿using System;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using CmsLite.Core.Areas.Admin.Menus;
 using CmsLite.Core.Areas.Admin.Models;
 using MenuGen.Attributes;

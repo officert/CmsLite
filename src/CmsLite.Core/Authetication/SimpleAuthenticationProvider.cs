@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Net;
-using System.Net.Mail;
-using System.Web.Helpers;
 using System.Web.Security;
 using CmsLite.Domains.Entities;
 using CmsLite.Interfaces.Authentication;
-using CmsLite.Resources;
 using CmsLite.Services.Helpers;
 
 namespace CmsLite.Core.Authetication

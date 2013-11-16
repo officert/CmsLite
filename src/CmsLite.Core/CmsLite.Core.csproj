@@ -56,14 +56,6 @@
       <HintPath>..\..\lib\MenuGen.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Ninject.3.0.2-unstable-9037\lib\net45-full\Ninject.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject.Web.Common, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Ninject.Web.Common.3.0.0.7\lib\net45-full\Ninject.Web.Common.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
@@ -134,10 +126,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="WebActivator, Version=1.5.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\WebActivator.1.5.3\lib\net40\WebActivator.dll</HintPath>
-    </Reference>
     <Reference Include="WebGrease">
       <HintPath>..\packages\WebGrease.1.1.0\lib\WebGrease.dll</HintPath>
     </Reference>
@@ -149,7 +137,9 @@
     <Compile Include="Areas\Admin\Controllers\SectionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaController.cs" />
     <Compile Include="Areas\Admin\Controllers\TrashController.cs" />
+    <Compile Include="Areas\Admin\MenuNodeGenerators\CmsNodeMenuNodeGenerator.cs" />
     <Compile Include="Areas\Admin\Menus\AdminSidebarMenu.cs" />
+    <Compile Include="Areas\Admin\Menus\CmsNodeMenu.cs" />
     <Compile Include="Areas\Admin\Models\TrashModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\EditPageNodeViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\PageNodeLightViewModel.cs" />
@@ -255,6 +245,10 @@
     <Content Include="Areas\Admin\Scripts\Libs\jquery.validate.js" />
     <Content Include="Areas\Admin\Scripts\Libs\jquery.validate.unobtrusive.js" />
     <Content Include="Areas\Admin\Scripts\Libs\knockout-2.2.1.debug.js" />
+    <Content Include="Areas\Admin\Scripts\Libs\moment\moment-with-langs.js" />
+    <Content Include="Areas\Admin\Scripts\Libs\moment\moment-with-langs.min.js" />
+    <Content Include="Areas\Admin\Scripts\Libs\moment\moment.js" />
+    <Content Include="Areas\Admin\Scripts\Libs\moment\moment.min.js" />
     <Content Include="Areas\Admin\Scripts\PropertyPlugins\RichTextEditor\ckeditor\adapters\jquery.js" />
     <Content Include="Areas\Admin\Scripts\PropertyPlugins\RichTextEditor\ckeditor\ckeditor.js" />
     <Content Include="Areas\Admin\Scripts\PropertyPlugins\RichTextEditor\ckeditor\config.js" />
@@ -400,6 +394,7 @@
     <Content Include="Areas\Admin\Scripts\Source\core.cms.js" />
     <Content Include="Areas\Admin\Scripts\Source\core.mapping.js" />
     <Content Include="Areas\Admin\Scripts\Source\core.utils.js" />
+    <Content Include="Areas\Admin\Scripts\Source\ko.bindinghandlers\ko.bootstraptooltip.js" />
     <Content Include="Areas\Admin\Scripts\Source\ko.bindinghandlers\ko.tabs.js" />
     <Content Include="Areas\Admin\Scripts\Source\page.editpage.js" />
     <Content Include="Areas\Admin\Scripts\Source\ko.bindinghandlers\ko.bootstrapmodal.js" />

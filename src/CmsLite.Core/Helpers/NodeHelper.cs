@@ -2,6 +2,7 @@
 using System.Linq;
 using CmsLite.Domains.Entities;
 using CmsLite.Domains.Interfaces;
+using CmsLite.Utilities;
 using CmsLite.Utilities.Cms;
 
 namespace CmsLite.Core.Helpers
@@ -10,6 +11,10 @@ namespace CmsLite.Core.Helpers
     {
         public static PageNode GetActionPageNode(INode parentNode, string urlName)
         {
+            Ensure.ArgumentNotNull(parentNode, "parentNode");
+            Ensure.ArgumentNotNull(parentNode.PageNodes, "parentNode.PageNodes");
+            Ensure.ArgumentNotNullOrEmpty(urlName, "urlName");
+
             //if the action name is index use the first page for this section, otherwise find the page by action name
 
             var pageNode = urlName.ToLower() == "index" ? parentNode.PageNodes.FirstOrDefault(x => x.Order == CmsConstants.FirstOrderNumber) : parentNode.PageNodes.FirstOrDefault(x => x.UrlName == urlName.ToLower());

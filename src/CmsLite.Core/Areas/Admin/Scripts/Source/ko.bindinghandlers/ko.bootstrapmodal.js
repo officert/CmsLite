@@ -7,7 +7,7 @@
             var value = valueAccessor(), allBindings = allBindingsAccessor();
             var valueUnwrapped = ko.utils.unwrapObservable(value);
 
-            var modaloptions = value;
+            var modaloptions = valueUnwrapped;
             modaloptions.backdrop = modaloptions.backdrop === null || modaloptions.backdrop === undefined ? true : modaloptions.backdrop;
             modaloptions.keyboard = modaloptions.keyboard === null || modaloptions.keyboard === undefined ? true : modaloptions.keyboard;
             modaloptions.show = modaloptions.show === null || modaloptions.show === undefined ? false : modaloptions.show;

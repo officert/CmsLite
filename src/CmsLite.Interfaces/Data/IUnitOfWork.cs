@@ -1,6 +1,4 @@
-﻿using System.Data.Entity;
-
-namespace CmsLite.Interfaces.Data
+﻿namespace CmsLite.Interfaces.Data
 {
     public interface IUnitOfWork
     {

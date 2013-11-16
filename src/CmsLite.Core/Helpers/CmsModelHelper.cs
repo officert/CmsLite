@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -9,9 +8,7 @@ using CmsLite.Core.Constants;
 using CmsLite.Core.Extensions;
 using CmsLite.Core.Interfaces;
 using CmsLite.Domains.Entities;
-using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
-using CmsLite.Interfaces.Templating;
 using CmsLite.Resources;
 
 namespace CmsLite.Core.Helpers

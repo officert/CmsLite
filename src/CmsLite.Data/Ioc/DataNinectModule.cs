@@ -1,15 +1,14 @@
 ﻿using CmsLite.Interfaces.Data;
-using Ninject.Modules;
-using Ninject.Web.Common;
+using IocLite;
 
 namespace CmsLite.Data.Ioc
 {
-    public class DataNinectModule : NinjectModule
+    public class DataNinectModule : Registry
     {
         public override void Load()
         {
-            Bind<IUnitOfWork>().To<UnitOfWork>().InSingletonScope();
-            Bind<IDbContext>().To<CmsDbContext>().InRequestScope();
+            For<IUnitOfWork>().Use<UnitOfWork>().InHttpRequestScope();
+            For<IDbContext>().Use<CmsDbContext>().InHttpRequestScope();
         }
     }
 }

@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
-using System.Web.UI;
 using CmsLite.Core.Constants;
 using CmsLite.Core.Helpers;
 using CmsLite.Domains.Entities;
-using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
 using CmsLite.Resources;
 

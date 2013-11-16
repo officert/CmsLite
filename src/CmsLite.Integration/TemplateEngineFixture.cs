@@ -14,11 +14,11 @@ using CmsLite.Interfaces.Data;
 using CmsLite.Interfaces.Services;
 using CmsLite.Interfaces.Templating;
 using CmsLite.Services.Ioc;
-using CmsLite.Utilities.Cms;
+using IocLite.Interfaces;
 using NUnit.Framework;
-using Ninject;
-using Ninject.Modules;
 using SharpTestsEx;
+using Container = IocLite.Container;
+using IContainer = IocLite.Interfaces.IContainer;
 
 namespace CmsLite.Integration
 {
@@ -27,7 +27,7 @@ namespace CmsLite.Integration
     public class TemplateEngineFixture : IDisposable
     {
         private ITemplateEngine _templateEngine;
-        private IKernel _kernel;
+        private IContainer _container;
         private IUnitOfWork _unitOfWork;
         private IDbContext _dbContext;
         private Assembly _assembly;
@@ -42,20 +42,22 @@ namespace CmsLite.Integration
         [TestFixtureSetUp]
         public void SetupFixture()
         {
-            _kernel = new StandardKernel();
-            _kernel.Load(new List<INinjectModule>
+            _container = new Container();
+            _container.Register(new List<IRegistry>
                              {
                                  new CmsIocModule(),
-                                 new DataNinectModule(),
-                                 new ServicesNinjectModule()
+                                 new ServicesNinjectModule(),
+                                 new DataNinectModule()
                              });
-            _unitOfWork = _kernel.Get<IUnitOfWork>();
-            _dbContext = _kernel.Get<IDbContext>();
 
-            _sectionTemplateService = _kernel.Get<ISectionTemplateService>();
-            _pageTemplateService = _kernel.Get<IPageTemplateService>();
 
-            _templateEngine = _kernel.Get<ITemplateEngine>();
+            _unitOfWork = _container.Resolve<IUnitOfWork>();
+            _dbContext = _container.Resolve<IDbContext>();
+
+            _sectionTemplateService = _container.Resolve<ISectionTemplateService>();
+            _pageTemplateService = _container.Resolve<IPageTemplateService>();
+
+            _templateEngine = _container.Resolve<ITemplateEngine>();
 
             _assembly = Assembly.GetExecutingAssembly();
 
@@ -71,7 +73,7 @@ namespace CmsLite.Integration
         [TestFixtureTearDown]
         public void Dispose()
         {
-            _kernel.Dispose();
+            //_container.Dispose();
         }
 
         #region Creating SectionTemplates

@@ -1,23 +1,22 @@
 ﻿using CmsLite.Interfaces.Services;
-using Ninject.Modules;
-using Ninject.Web.Common;
+using IocLite;
 
 namespace CmsLite.Services.Ioc
 {
-    public class ServicesNinjectModule : NinjectModule
+    public class ServicesNinjectModule : Registry
     {
         public override void Load()
         {
-            Bind<IUserService>().To<UserService>().InRequestScope();
+            For<IUserService>().Use<UserService>().InHttpRequestScope();
 
-            Bind<IPageNodeService>().To<PageNodeService>().InRequestScope();
-            Bind<ISectionNodeService>().To<SectionNodeService>();
-            Bind<ISectionTemplateService>().To<SectionTemplateService>().InRequestScope();
-            Bind<IPageTemplateService>().To<PageTemplateService>().InRequestScope();
-            Bind<IPropertyTemplateService>().To<PropertyTemplateService>().InRequestScope();
-            Bind<IPropertyService>().To<PropertyService>().InRequestScope();
+            For<IPageNodeService>().Use<PageNodeService>().InHttpRequestScope();
+            For<ISectionNodeService>().Use<SectionNodeService>().InHttpRequestScope();
+            For<ISectionTemplateService>().Use<SectionTemplateService>().InHttpRequestScope();
+            For<IPageTemplateService>().Use<PageTemplateService>().InHttpRequestScope();
+            For<IPropertyTemplateService>().Use<PropertyTemplateService>().InHttpRequestScope();
+            For<IPropertyService>().Use<PropertyService>().InHttpRequestScope();
 
-            Bind<IFileService>().To<FileService>().InRequestScope();
+            For<IFileService>().Use<FileService>().InHttpRequestScope();
         }
     }
 }
