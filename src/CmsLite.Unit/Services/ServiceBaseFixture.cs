@@ -20,8 +20,8 @@ namespace CmsLite.Unit.Services
         protected IPageTemplateService PageTemplateService;
         protected ISectionNodeService SectionNodeService;
         protected IPageNodeService PageNodeService;
-        protected IPropertyTemplateService PropertyTemplateService;
-        protected IPropertyService PropertyService;
+        protected IPagePropertyTemplateService PropertyTemplateService;
+        protected IPagePropertyService PropertyService;
 
         [TestFixtureSetUp]
         public void SetupFixture()
@@ -39,8 +39,8 @@ namespace CmsLite.Unit.Services
             PageTemplateService = Container.Resolve<IPageTemplateService>();
             SectionNodeService = Container.Resolve<ISectionNodeService>();
             PageNodeService = Container.Resolve<IPageNodeService>();
-            PropertyTemplateService = Container.Resolve<IPropertyTemplateService>();
-            PropertyService = Container.Resolve<IPropertyService>();
+            PropertyTemplateService = Container.Resolve<IPagePropertyTemplateService>();
+            PropertyService = Container.Resolve<IPagePropertyService>();
 
             PostFixtureSetup();
         }

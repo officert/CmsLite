@@ -13,7 +13,7 @@ namespace CmsLite.Interfaces.Services
 
         PageNode CreateForPage(int parentPageId, int pageTemplateId, string displayName, string urlName);
 
-        void Update(int pageId, IEnumerable<Property> properties);
+        void Update(int pageId, IEnumerable<PageProperty> properties);
 
         void Delete(PageNode pageNode, bool commit = true);
 

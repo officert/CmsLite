@@ -14,9 +14,9 @@ namespace CmsLite.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPageNodeService _pageNodeService;
-        private readonly IPropertyTemplateService _propertyTemplateService;
+        private readonly IPagePropertyTemplateService _propertyTemplateService;
 
-        public PageTemplateService(IUnitOfWork unitOfWork,IPageNodeService pageNodeService, IPropertyTemplateService propertyTemplateService)
+        public PageTemplateService(IUnitOfWork unitOfWork,IPageNodeService pageNodeService, IPagePropertyTemplateService propertyTemplateService)
         {
             _unitOfWork = unitOfWork;
             _pageNodeService = pageNodeService;

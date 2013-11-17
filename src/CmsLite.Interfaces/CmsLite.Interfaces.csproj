@@ -59,8 +59,8 @@
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\IPageNodeService.cs" />
     <Compile Include="Services\IPageTemplateService.cs" />
-    <Compile Include="Services\IPropertyService.cs" />
-    <Compile Include="Services\IPropertyTemplateService.cs" />
+    <Compile Include="Services\IPagePropertyService.cs" />
+    <Compile Include="Services\IPagePropertyTemplateService.cs" />
     <Compile Include="Services\ISectionNodeService.cs" />
     <Compile Include="Services\ISectionTemplateService.cs" />
     <Compile Include="Services\IUserService.cs" />

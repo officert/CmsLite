@@ -22,6 +22,6 @@ namespace CmsLite.Domains.Entities
         public virtual ICollection<PageNode> PageNodes { get; set; }
 
         [InverseProperty("ParentPageNode")]
-        public virtual ICollection<Property> Properties { get; set; }
+        public virtual ICollection<PageProperty> Properties { get; set; }
     }
 }

@@ -54,9 +54,9 @@
     <Compile Include="Entities\PageNode.cs" />
     <Compile Include="Entities\Node.cs" />
     <Compile Include="Entities\PageTemplate.cs" />
-    <Compile Include="Entities\PropertyTemplate.cs" />
+    <Compile Include="Entities\PagePropertyTemplate.cs" />
     <Compile Include="Entities\SectionNode.cs" />
-    <Compile Include="Entities\Property.cs" />
+    <Compile Include="Entities\PageProperty.cs" />
     <Compile Include="Entities\Role.cs" />
     <Compile Include="Entities\SectionTemplate.cs" />
     <Compile Include="Entities\User.cs" />

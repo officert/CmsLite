@@ -3,7 +3,7 @@
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <id>CmsLite</id>
     <title>CmsLite</title>
-    <version>1.0</version>
+    <version>1.1</version>
     <authors>Tim Officer</authors>
     <owners>Tim Officer</owners>
     <summary>Opensource .NET MVC CMS</summary>
@@ -17,8 +17,6 @@
     <copyright></copyright>
     <dependencies>
       <dependency id="EntityFramework" version="5.0.0" />
-      <dependency id="Ninject" version="3.0.0" />
-      <dependency id="Ninject.Web.Common" version="3.0.0" />
       <dependency id="AutoMapper" version="2.2.1" />
     </dependencies>
   </metadata>

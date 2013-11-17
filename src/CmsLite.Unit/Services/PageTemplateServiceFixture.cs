@@ -19,7 +19,7 @@ namespace CmsLite.Unit.Services
     {
         private IPageTemplateService _pageTemplateService;
         private Mock<IPageNodeService> _pageNodeServiceMock;
-        private Mock<IPropertyTemplateService> _propertyTemplateServiceMock;
+        private Mock<IPagePropertyTemplateService> _propertyTemplateServiceMock;
         private Mock<IUnitOfWork> _unitOfWorkMock;
         private Mock<IDbContext> _dbContextMock;
 
@@ -29,7 +29,7 @@ namespace CmsLite.Unit.Services
             _dbContextMock = new Mock<IDbContext>();
             _unitOfWorkMock.Setup(x => x.Context).Returns(_dbContextMock.Object);
             _pageNodeServiceMock = new Mock<IPageNodeService>();
-            _propertyTemplateServiceMock = new Mock<IPropertyTemplateService>();
+            _propertyTemplateServiceMock = new Mock<IPagePropertyTemplateService>();
             _pageTemplateService = new PageTemplateService(_unitOfWorkMock.Object, _pageNodeServiceMock.Object, _propertyTemplateServiceMock.Object);
         }
 

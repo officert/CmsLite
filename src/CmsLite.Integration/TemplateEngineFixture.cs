@@ -50,7 +50,6 @@ namespace CmsLite.Integration
                                  new DataNinectModule()
                              });
 
-
             _unitOfWork = _container.Resolve<IUnitOfWork>();
             _dbContext = _container.Resolve<IDbContext>();
 
@@ -67,7 +66,49 @@ namespace CmsLite.Integration
         [TearDown]
         public void TearDown()
         {
-            RunGoCommand("deleteintdata");  //deletes all data from integration testing database
+            //RunGoCommand("deleteintdata");  //deletes all data from integration testing database
+
+            var pagePropertyDbset = _dbContext.GetDbSet<PageProperty>();
+            foreach (var pageProperty in pagePropertyDbset.ToList())
+            {
+                pagePropertyDbset.Remove(pageProperty);
+            }
+            _unitOfWork.Commit();
+
+            var pagePropertyTemplateDbset = _dbContext.GetDbSet<PagePropertyTemplate>();
+            foreach (var pagePropertyTemplate in pagePropertyTemplateDbset.ToList())
+            {
+                pagePropertyTemplateDbset.Remove(pagePropertyTemplate);
+            }
+            _unitOfWork.Commit();
+
+            var pageNodeDbSet = _dbContext.GetDbSet<PageNode>();
+            foreach (var pageNode in pageNodeDbSet.ToList())
+            {
+                pageNodeDbSet.Remove(pageNode);
+            }
+            _unitOfWork.Commit();
+
+            var pageTemplateDbSet = _dbContext.GetDbSet<PageTemplate>();
+            foreach (var pageTemplate in pageTemplateDbSet.ToList())
+            {
+                pageTemplateDbSet.Remove(pageTemplate);
+            }
+            _unitOfWork.Commit();
+
+            var sectionNodeDbSet = _dbContext.GetDbSet<SectionNode>();
+            foreach (var sectionNode in sectionNodeDbSet.ToList())
+            {
+                sectionNodeDbSet.Remove(sectionNode);
+            }
+            _unitOfWork.Commit();
+
+            var sectionTemplateDbSet = _dbContext.GetDbSet<SectionTemplate>();
+            foreach (var sectionTemplate in sectionTemplateDbSet.ToList())
+            {
+                sectionTemplateDbSet.Remove(sectionTemplate);
+            }
+            _unitOfWork.Commit();
         }
 
         [TestFixtureTearDown]
@@ -813,7 +854,7 @@ namespace CmsLite.Integration
 
         private void DeleteAllSectionTemplates()
         {
-            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates();
+            var sectionTemplates = _sectionTemplateService.GetAllSectionTemplates().ToList();
             foreach (var sectionTemplate in sectionTemplates)
             {
                 _sectionTemplateService.Delete(sectionTemplate.Id);
@@ -852,7 +893,7 @@ namespace CmsLite.Integration
             //when creating entities EF doesn't instantiate proxy collections, so we need to force it to be instantiated using this hack :(
             if (pageTemplate.PropertyTemplates == null)
             {
-                var propertyTemplateDbSet = _dbContext.GetDbSet<PropertyTemplate>();
+                var propertyTemplateDbSet = _dbContext.GetDbSet<PagePropertyTemplate>();
                 var newPropertyTemplate = propertyTemplateDbSet.Create();
                 newPropertyTemplate.ParentPageTemplate = pageTemplate;
                 propertyTemplateDbSet.Add(newPropertyTemplate);

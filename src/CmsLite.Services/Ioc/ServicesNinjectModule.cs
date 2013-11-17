@@ -13,8 +13,8 @@ namespace CmsLite.Services.Ioc
             For<ISectionNodeService>().Use<SectionNodeService>().InHttpRequestScope();
             For<ISectionTemplateService>().Use<SectionTemplateService>().InHttpRequestScope();
             For<IPageTemplateService>().Use<PageTemplateService>().InHttpRequestScope();
-            For<IPropertyTemplateService>().Use<PropertyTemplateService>().InHttpRequestScope();
-            For<IPropertyService>().Use<PropertyService>().InHttpRequestScope();
+            For<IPagePropertyTemplateService>().Use<PagePropertyTemplateService>().InHttpRequestScope();
+            For<IPagePropertyService>().Use<PagePropertyService>().InHttpRequestScope();
 
             For<IFileService>().Use<FileService>().InHttpRequestScope();
         }

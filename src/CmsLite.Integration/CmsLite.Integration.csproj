@@ -102,7 +102,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MvcFiles\Controllers\TestController2_NoCmsControllerBaseClass.cs" />
     <Compile Include="MvcFiles\Controllers\TestController1_Valid.cs" />
-    <Compile Include="Services\ServiceBaseFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

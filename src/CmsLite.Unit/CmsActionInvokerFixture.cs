@@ -63,6 +63,7 @@ namespace CmsLite.Unit
         }
 
         [Test]
+        [Ignore]
         public void InvokeAction_NoSectionNodeExistsForRouteDataControllerName_ReturnsFalse()
         {
             //arrange

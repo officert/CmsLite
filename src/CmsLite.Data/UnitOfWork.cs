@@ -1,4 +1,5 @@
-﻿using CmsLite.Interfaces.Data;
+﻿using System;
+using CmsLite.Interfaces.Data;
 
 namespace CmsLite.Data
 {

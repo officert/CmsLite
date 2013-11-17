@@ -40,7 +40,7 @@ namespace CmsLite.Domains.Entities
         public string ModelName { get; set; }
 
         [InverseProperty("ParentModelTemplate")]
-        public virtual ICollection<PropertyTemplate> PropertyTemplates { get; set; }
+        public virtual ICollection<PagePropertyTemplate> PropertyTemplates { get; set; }
 
         [StringLength(128)]
         public string IconImageName { get; set; }

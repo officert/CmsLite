@@ -9,6 +9,9 @@ properties {
   $tools_dir = "$base_dir\tools"
   $nuget_dir = "$base_dir\nuget"
   $build_dir = "$base_dir\build"
+  #Build properties
+  $build_config = 'debug'
+  $buildArtifactsDir = "$base_dir\build_artifacts"
   #Project settings
   $projectName = 'CmsLite'
   #Database properties
@@ -18,6 +21,10 @@ properties {
   $nuget_tempdir = "$base_dir\nuget-temp"
   $nuget_packageName = 'CmsLiteCore'
   $nuget_version = '6.0'
+  #Nunit - Unit Tests
+  $nunit = "$tools_dir\NUnit-2.6.2\bin\nunit-console.exe"
+  $unit_test_assembly = "$source_dir\CmsLite.Unit\bin\$build_config\CmsLite.Unit.dll"
+  $integration_test_assembly = "$source_dir\CmsLite.Integration\bin\$build_config\CmsLite.Integration.dll"
 }
 
 task default -depends Test
@@ -33,11 +40,6 @@ task Compile -depends Clean {
 task Clean { 
   $cleanMessage
 }
-
-task ? -Description "Helper to display task info" {
-	Write-Documentation
-}
-
 # ------------------------------------ Database Tasks ------------------------------- 
 
 task CreateUsers {
@@ -68,13 +70,7 @@ task Nuget-Pack {
 	#create new directory
 	New-Item $nuget_tempdir\$nuget_packageName\lib\net35 -type directory -force
 	#copy CmsLite.Core.dll to that dir
-	Copy-Item $source_dir\cmslite.core\bin\CmsLite.Core.dll $nuget_tempdir\$nuget_packageName\lib\net35 -force
-	Copy-Item $source_dir\cmslite.core\bin\CmsLite.Data.dll $nuget_tempdir\$nuget_packageName\lib\net35 -force
-	Copy-Item $source_dir\cmslite.core\bin\CmsLite.Domains.dll $nuget_tempdir\$nuget_packageName\lib\net35 -force
-	Copy-Item $source_dir\cmslite.core\bin\CmsLite.Interfaces.dll $nuget_tempdir\$nuget_packageName\lib\net35 -force
-	Copy-Item $source_dir\cmslite.core\bin\CmsLite.Services.dll $nuget_tempdir\$nuget_packageName\lib\net35 -force
-	Copy-Item $source_dir\cmslite.core\bin\CmsLite.Utilities.dll $nuget_tempdir\$nuget_packageName\lib\net35 -force
-	Copy-Item $source_dir\cmslite.core\bin\CmsLite.Resources.dll $nuget_tempdir\$nuget_packageName\lib\net35 -force
+	Copy-Item $buildArtifactsDir\CmsLite.dll $nuget_tempdir\$nuget_packageName\lib\net35 -force
 	#copy admin content to content dir
 	Copy-Item $source_dir\cmslite.core\Areas\Admin\Content $nuget_tempdir\$nuget_packageName\content\Areas\Admin\Content -recurse -force
 	Copy-Item $source_dir\cmslite.core\Areas\Admin\Views $nuget_tempdir\$nuget_packageName\content\Areas\Admin\Views -recurse -force
@@ -109,6 +105,34 @@ task DeleteAllMvc {
 }
 
 # ------------------------------------ Build Tasks ---------------------------------- 
+task UnitTest -depends Clean -description "Executes all unit tests" {
+	Exec { & $nunit $unit_test_assembly /nologo /nodots }
+}
+
+task IntegrationTest -depends Clean -description "Executes all integration tests" {
+	Exec { & $nunit $integration_test_assembly /nologo /nodots }
+}
+
+task Merge -description "Executes all integration tests" {
+	$srcPath = "$source_dir\CmsLite.Core\bin"
+	
+	new-item $buildArtifactsDir -itemtype directory
+	
+	& $tools_dir\ilmerge\ILMerge.exe $srcPath\CmsLite.Core.dll `
+        $srcPath\CmsLite.Data.dll `
+        $srcPath\CmsLite.Domains.dll `
+        $srcPath\CmsLite.Interfaces.dll `
+        $srcPath\CmsLite.Resources.dll `
+        $srcPath\CmsLite.Services.dll `
+        $srcPath\CmsLite.Utilities.dll `
+        $srcPath\IocLite.dll `
+        $srcPath\MenuGen.dll `
+		/targetplatform:"v4,C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" `
+		/out:"$buildArtifactsDir\CmsLite.dll"
+    if ($lastExitCode -ne 0) {
+        throw "Error: Failed to merge assemblies!"
+    }
+}
 
 task CreateAdminZip {
 	New-Item $build_dir\build-artifacts -type directory -force

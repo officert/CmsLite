@@ -16,9 +16,9 @@ namespace CmsLite.Services
     public class PageNodeService : IPageNodeService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IPropertyService _propertyService;
+        private readonly IPagePropertyService _propertyService;
 
-        public PageNodeService(IUnitOfWork unitOfWork, IPropertyService propertyService)
+        public PageNodeService(IUnitOfWork unitOfWork, IPagePropertyService propertyService)
         {
             _unitOfWork = unitOfWork;
             _propertyService = propertyService;
@@ -132,7 +132,7 @@ namespace CmsLite.Services
             return pageNode;
         }
 
-        public void Update(int pageId, IEnumerable<Property> properties)
+        public void Update(int pageId, IEnumerable<PageProperty> properties)
         {
             var page = GetById(pageId);
 

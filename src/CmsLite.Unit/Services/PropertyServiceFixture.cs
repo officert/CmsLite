@@ -18,7 +18,7 @@ namespace CmsLite.Unit.Services
     [Category("Unit")]
     public class PropertyServiceFixture : ServiceBaseFixture
     {
-        private IPropertyService _propertyService;
+        private IPagePropertyService _propertyService;
         private Mock<IUnitOfWork> _unitOfWorkMock;
         private Mock<IDbContext> _dbContextMock;
 
@@ -28,7 +28,7 @@ namespace CmsLite.Unit.Services
             _dbContextMock = new Mock<IDbContext>();
             _unitOfWorkMock.Setup(x => x.Context).Returns(_dbContextMock.Object);
 
-            _propertyService = new PropertyService(_unitOfWorkMock.Object);
+            _propertyService = new PagePropertyService(_unitOfWorkMock.Object);
         }
 
         [TestFixtureTearDown]
@@ -68,7 +68,7 @@ namespace CmsLite.Unit.Services
                 PageTemplate = new PageTemplate
                 {
                     Id = 1,
-                    PropertyTemplates = new Collection<PropertyTemplate>()
+                    PropertyTemplates = new Collection<PagePropertyTemplate>()
                 }
             };
             _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>
@@ -101,7 +101,7 @@ namespace CmsLite.Unit.Services
             //arrange
             var pageNode = new PageNode{ Id = 1};
 
-            PropertyTemplate propertyTemplate = null;
+            PagePropertyTemplate propertyTemplate = null;
 
             //act + assert
             Assert.That(() => _propertyService.Create(pageNode, propertyTemplate),
@@ -116,16 +116,16 @@ namespace CmsLite.Unit.Services
             var pageNode = new PageNode
             {
                 Id = 1,
-                Properties = new Collection<Property>
+                Properties = new Collection<PageProperty>
                 {
-                    new Property { Id = 1, Order = 1 },
-                    new Property { Id = 2, Order = 2 }
+                    new PageProperty { Id = 1, Order = 1 },
+                    new PageProperty { Id = 2, Order = 2 }
                 },
                 PageTemplate = new PageTemplate
                 {
-                    PropertyTemplates = new Collection<PropertyTemplate>()
+                    PropertyTemplates = new Collection<PagePropertyTemplate>()
                     {
-                        new PropertyTemplate
+                        new PagePropertyTemplate
                         {
                             Id = 1,
                             CmsPropertyType = CmsPropertyType.RichTextEditor.ToString()
@@ -137,7 +137,7 @@ namespace CmsLite.Unit.Services
             {
                 pageNode
             });
-            _dbContextMock.Setup(x => x.GetDbSet<Property>()).Returns(new InMemoryDbSet<Property>());
+            _dbContextMock.Setup(x => x.GetDbSet<PageProperty>()).Returns(new InMemoryDbSet<PageProperty>());
 
             //act
             var property = _propertyService.Create(pageNode.Id, pageNode.PageTemplate.PropertyTemplates.First().Id);
@@ -168,8 +168,8 @@ namespace CmsLite.Unit.Services
         public void Delete_DeletesProperty()
         {
             //arrange
-            var property = new Property { Id = 1 };
-            _dbContextMock.Setup(x => x.GetDbSet<Property>()).Returns(new InMemoryDbSet<Property>
+            var property = new PageProperty { Id = 1 };
+            _dbContextMock.Setup(x => x.GetDbSet<PageProperty>()).Returns(new InMemoryDbSet<PageProperty>
             {
                 property
             });
@@ -178,7 +178,7 @@ namespace CmsLite.Unit.Services
             _propertyService.Delete(property.Id);
 
             //assert
-            var deletedProperty = _dbContextMock.Object.GetDbSet<Property>().FirstOrDefault(x => x.Id == property.Id);
+            var deletedProperty = _dbContextMock.Object.GetDbSet<PageProperty>().FirstOrDefault(x => x.Id == property.Id);
             deletedProperty.Should().Be.Null();
         }
 

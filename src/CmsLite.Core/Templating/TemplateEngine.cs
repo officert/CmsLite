@@ -18,7 +18,7 @@ namespace CmsLite.Core.Templating
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISectionTemplateService _sectionTemplateService;
         private readonly IPageTemplateService _pageTemplateService;
-        private readonly IPropertyTemplateService _propertyTemplateService;
+        private readonly IPagePropertyTemplateService _propertyTemplateService;
 
         private IEnumerable<Type> _controllers;
         private Assembly _assembly;
@@ -26,7 +26,7 @@ namespace CmsLite.Core.Templating
         public TemplateEngine(IUnitOfWork unitOfWork,
             ISectionTemplateService sectionTemplateService,
             IPageTemplateService pageTemplateService,
-            IPropertyTemplateService propertyTemplateService)
+            IPagePropertyTemplateService propertyTemplateService)
         {
             _unitOfWork = unitOfWork;
             _sectionTemplateService = sectionTemplateService;
@@ -74,41 +74,40 @@ namespace CmsLite.Core.Templating
         {
             var sectionTemplates = _unitOfWork.Context.GetDbSet<SectionTemplate>();
 
-            if (sectionTemplates != null && sectionTemplates.Any())
+            if (sectionTemplates == null || !sectionTemplates.Any()) return;
+
+            var pageTemplateGroupings = sectionTemplates.SelectMany(x => x.PageTemplates).GroupBy(x => x.ParentSectionTemplate.ControllerName).ToList();
+
+            if (pageTemplateGroupings.Any())
             {
-                var pageTemplateGroupings = sectionTemplates.SelectMany(x => x.PageTemplates).GroupBy(x => x.ParentSectionTemplate.ControllerName).ToList();
-
-                if (pageTemplateGroupings.Any())
+                foreach (var pageTemplateGroup in pageTemplateGroupings)
                 {
-                    foreach (var pageTemplateGroup in pageTemplateGroupings)
+                    var count = pageTemplateGroupings.Count;
+                    var controller = _controllers.FirstOrDefault(x => x.Name == pageTemplateGroup.First().ParentSectionTemplate.ControllerName);
+                    var actions = GetActionsForController(controller);
+
+                    var grouping = pageTemplateGroup;
+                    foreach (var pageTemplate in grouping)
                     {
-                        var count = pageTemplateGroupings.Count;
-                        var controller = _controllers.FirstOrDefault(x => x.Name == pageTemplateGroup.First().ParentSectionTemplate.ControllerName);
-                        var actions = GetActionsForController(controller);
+                        HackToInstantiateAllowedChildPageTemplatesCollection(pageTemplate);
 
-                        var grouping = pageTemplateGroup;
-                        foreach (var pageTemplate in grouping)
+                        var templateAction = actions.FirstOrDefault(x => x.Name == pageTemplate.ActionName);
+
+                        if (templateAction == null) break;
+
+                        var pageTemplateAttribute = (CmsPageTemplateAttribute)templateAction.GetCustomAttributes(typeof(CmsPageTemplateAttribute), false).FirstOrDefault();
+
+                        var allowedChildPageTemplateName = pageTemplateAttribute.AllowedChildPageTemplates;
+
+                        if (allowedChildPageTemplateName == null) break;
+
+                        foreach (var pageTemplateName in allowedChildPageTemplateName)
                         {
-                            HackToInstantiateAllowedChildPageTemplatesCollection(pageTemplate);
+                            var pageTemplateToAdd = pageTemplateGroup.First(x => x.ActionName == pageTemplateName);
 
-                            var templateAction = actions.FirstOrDefault(x => x.Name == pageTemplate.ActionName);
+                            if (pageTemplateToAdd == null) throw new ArgumentException(string.Format("The action {0} does not exist on the controller {1}.", pageTemplateName, controller.Name));
 
-                            if (templateAction == null) break;
-
-                            var pageTemplateAttribute = (CmsPageTemplateAttribute)templateAction.GetCustomAttributes(typeof(CmsPageTemplateAttribute), false).FirstOrDefault();
-
-                            var allowedChildPageTemplateName = pageTemplateAttribute.AllowedChildPageTemplates;
-
-                            if (allowedChildPageTemplateName == null) break;
-
-                            foreach (var pageTemplateName in allowedChildPageTemplateName)
-                            {
-                                var pageTemplateToAdd = pageTemplateGroup.First(x => x.ActionName == pageTemplateName);
-
-                                if (pageTemplateToAdd == null) throw new ArgumentException(string.Format("The action {0} does not exist on the controller {1}.", pageTemplateName, controller.Name));
-
-                                pageTemplate.PageTemplates.Add(pageTemplateToAdd);
-                            }
+                            pageTemplate.PageTemplates.Add(pageTemplateToAdd);
                         }
                     }
                 }
@@ -119,35 +118,33 @@ namespace CmsLite.Core.Templating
 
         private void RemoveSectionTemplatesWithNoExistingController(IEnumerable<SectionTemplate> sectionTemplates)
         {
-            if (sectionTemplates != null && sectionTemplates.Any())
+            if (sectionTemplates == null || !sectionTemplates.Any()) return;
+
+            foreach (var sectionTemplate in sectionTemplates.ToList())
             {
-                foreach (var sectionTemplate in sectionTemplates.ToList())
-                {
-                    _sectionTemplateService.Delete(sectionTemplate.Id, false);
-                }
+                _sectionTemplateService.Delete(sectionTemplate.Id, false);
             }
         }
 
         private void CreateSectionTemplatesForNewControllers(IEnumerable<Type> controllers)
         {
-            if (controllers != null && controllers.Any())
+            if (controllers == null || !controllers.Any()) return;
+
+            foreach (var controller in controllers)
             {
-                foreach (var controller in controllers)
-                {
-                    var attribute = (CmsSectionTemplateAttribute)controller.GetCustomAttributes(typeof(CmsSectionTemplateAttribute), false).FirstOrDefault();
+                var attribute = (CmsSectionTemplateAttribute)controller.GetCustomAttributes(typeof(CmsSectionTemplateAttribute), false).FirstOrDefault();
 
-                    var sectionTemplate = _sectionTemplateService.Create(controller.Name, attribute.Name, commit: false);
+                var sectionTemplate = _sectionTemplateService.Create(controller.Name, attribute.Name, commit: false);
 
-                    var controllerActions = GetActionsForController(controller);
+                var controllerActions = GetActionsForController(controller);
 
-                    CreatePageTemplatesForActions(sectionTemplate, controllerActions);
-                }
+                CreatePageTemplatesForActions(sectionTemplate, controllerActions);
             }
         }
 
         private void UpdateSectionTemplates(IEnumerable<SectionTemplate> sectionTemplates, IEnumerable<Type> controllers)
         {
-            if (sectionTemplates == null || sectionTemplates.Any()) return;
+            if (sectionTemplates == null || !sectionTemplates.Any()) return;
 
             foreach (var sectionTemplate in sectionTemplates)
             {
@@ -190,12 +187,11 @@ namespace CmsLite.Core.Templating
 
         private void RemovePageTemplatesWithNoExistingAction(IEnumerable<PageTemplate> pageTemplates)
         {
-            if (pageTemplates != null && pageTemplates.Any())
+            if (pageTemplates == null || !pageTemplates.Any()) return;
+
+            foreach (var pageTemplate in pageTemplates.ToList())
             {
-                foreach (var pageTemplate in pageTemplates.ToList())
-                {
-                    _pageTemplateService.Delete(pageTemplate.Id, false);
-                }
+                _pageTemplateService.Delete(pageTemplate.Id, false);
             }
         }
 
@@ -215,7 +211,7 @@ namespace CmsLite.Core.Templating
 
         private void UpdatePageTemplates(IEnumerable<PageTemplate> pageTemplates, IEnumerable<MethodInfo> actions)
         {
-            if (pageTemplates == null || pageTemplates.Any()) return;
+            if (pageTemplates == null || !pageTemplates.Any()) return;
 
             foreach (var pageTemplate in pageTemplates)
             {
@@ -268,7 +264,7 @@ namespace CmsLite.Core.Templating
 
         #region Add/Update/Delete Property Templates
 
-        private void RemovePropertyTemplatesWithNoExistingModelProperties(IEnumerable<PropertyTemplate> propertyTemplates)
+        private void RemovePropertyTemplatesWithNoExistingModelProperties(IEnumerable<PagePropertyTemplate> propertyTemplates)
         {
             if (propertyTemplates != null && propertyTemplates.Any())
             {
@@ -300,7 +296,7 @@ namespace CmsLite.Core.Templating
             }
         }
 
-        private void UpdatePropertyTemplates(IEnumerable<PropertyTemplate> propertyTemplates, IEnumerable<PropertyInfo> properties)
+        private void UpdatePropertyTemplates(IEnumerable<PagePropertyTemplate> propertyTemplates, IEnumerable<PropertyInfo> properties)
         {
             if (propertyTemplates != null && propertyTemplates.Any())
             {

@@ -40,7 +40,7 @@ namespace CmsLite.Core.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return RedirectToAction("EditPage", new { id = model.Id });
 
-            _pageNodeService.Update(model.Id, _mapper.Map<IEnumerable<PropertyViewModel>, IEnumerable<Property>>(model.Properties));
+            _pageNodeService.Update(model.Id, _mapper.Map<IEnumerable<PropertyViewModel>, IEnumerable<PageProperty>>(model.Properties));
 
             return RedirectToAction("EditPage", new { id = model.Id });
         }

@@ -13,11 +13,11 @@ namespace CmsLite.Data
         public DbSet<SectionNode> SectionNodes { get; set; }
         public DbSet<PageNode> PageNodes { get; set; }
 
-        public DbSet<Property> Properties { get; set; }
+        public DbSet<PageProperty> Properties { get; set; }
 
         public DbSet<SectionTemplate> SectionTemplates { get; set; }
         public DbSet<PageTemplate> PageTemplates { get; set; }
-        public DbSet<PropertyTemplate> PropertyTemplates { get; set; }
+        public DbSet<PagePropertyTemplate> PropertyTemplates { get; set; }
 
         public DbSet<File> Files { get; set; }
 
@@ -42,12 +42,12 @@ namespace CmsLite.Data
             }
 
             var orphanedProperties = ChangeTracker.Entries().Where(e => (e.State == EntityState.Modified) &&
-                                                                                    e.Entity is Property &&
+                                                                                    e.Entity is PageProperty &&
                                                                                     e.Reference("ParentPageNode").CurrentValue == null);
 
             foreach (var dbEntityEntry in orphanedProperties)
             {
-                Properties.Remove(dbEntityEntry.Entity as Property);
+                Properties.Remove(dbEntityEntry.Entity as PageProperty);
             }
             
             return base.SaveChanges();
@@ -106,7 +106,7 @@ namespace CmsLite.Data
                 .WillCascadeOnDelete(true);
 
             //when a PropertyTemplate is deleted, delete any Properties that use that PropertyTemplate
-            modelBuilder.Entity<PropertyTemplate>()
+            modelBuilder.Entity<PagePropertyTemplate>()
                 .HasMany(x => x.Properties)
                 .WithRequired(x => x.PropertyTemplate)
                 .WillCascadeOnDelete(true);

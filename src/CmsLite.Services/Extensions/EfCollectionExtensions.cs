@@ -35,12 +35,12 @@ namespace CmsLite.Services.Extensions
            sectionNode.PageNodes.Add(pageNode);
        }
 
-       public static void AddProperty(this PageNode pageNode, IUnitOfWork unitOfWork, Property property)
+       public static void AddProperty(this PageNode pageNode, IUnitOfWork unitOfWork, PageProperty property)
        {
            //when creating entities EF doesn't instantiate proxy collections, so we need to force it to be instantiated using this hack :(
            if (pageNode.Properties == null)
            {
-               var propertyDbSet = unitOfWork.Context.GetDbSet<Property>();
+               var propertyDbSet = unitOfWork.Context.GetDbSet<PageProperty>();
                var newProperty = propertyDbSet.Create();
                newProperty.ParentPageNode = pageNode;
                propertyDbSet.Add(newProperty);

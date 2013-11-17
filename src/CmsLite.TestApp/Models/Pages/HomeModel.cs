@@ -52,23 +52,32 @@ namespace CmsLite.TestApp.Models.Pages
 
         #region Additional Info Properties
 
-        [CmsModelProperty(
-            DisplayName = "Foobar 1",
-            PropertyType = CmsPropertyType.RichTextEditor,
-            Description = "Some stuff goes here",
-            TabName = "Additional Info",
-            TabOrder = 3
-            )]
-        public string Foobar1 { get; set; }
+        //[CmsModelProperty(
+        //    DisplayName = "Foobar 1",
+        //    PropertyType = CmsPropertyType.RichTextEditor,
+        //    Description = "Some stuff goes here",
+        //    TabName = "Additional Info",
+        //    TabOrder = 3
+        //    )]
+        //public string Foobar1 { get; set; }
+
+        //[CmsModelProperty(
+        //    DisplayName = "Foobar 2",
+        //    PropertyType = CmsPropertyType.RichTextEditor,
+        //    Description = "Text to go under the banner asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as",
+        //    TabName = "Additional Info",
+        //    TabOrder = 3
+        //    )]
+        //public string Foobar2 { get; set; }
 
         [CmsModelProperty(
-            DisplayName = "Foobar 2",
+            DisplayName = "Foobar 3",
             PropertyType = CmsPropertyType.RichTextEditor,
             Description = "Text to go under the banner asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as asdfas fsf asfasfdsadfsfsf as",
-            TabName = "Additional Info",
+            TabName = "Foobar 3 Tab",
             TabOrder = 3
             )]
-        public string Foobar2 { get; set; }
+        public string Foobar3 { get; set; }
 
         #endregion
     }

@@ -20,7 +20,7 @@ namespace CmsLite.Unit.Services
     public class PageNodeServiceFixture : ServiceBaseFixture
     {
         private IPageNodeService _pageNodeService;
-        private Mock<IPropertyService> _propertyServiceMock;
+        private Mock<IPagePropertyService> _propertyServiceMock;
         private Mock<IUnitOfWork> _unitOfWorkMock;
         private Mock<IDbContext> _dbContextMock;
 
@@ -29,7 +29,7 @@ namespace CmsLite.Unit.Services
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _dbContextMock = new Mock<IDbContext>();
             _unitOfWorkMock.Setup(x => x.Context).Returns(_dbContextMock.Object);
-            _propertyServiceMock = new Mock<IPropertyService>();
+            _propertyServiceMock = new Mock<IPagePropertyService>();
             _pageNodeService = new PageNodeService(_unitOfWorkMock.Object, _propertyServiceMock.Object);
         }
 
@@ -299,10 +299,10 @@ namespace CmsLite.Unit.Services
             var pageTemplate = new PageTemplate
             {
                 Id = 1,
-                PropertyTemplates = new Collection<PropertyTemplate>
+                PropertyTemplates = new Collection<PagePropertyTemplate>
                 {
-                    new PropertyTemplate { Id = 1, CmsPropertyType = CmsPropertyType.RichTextEditor.ToString() },
-                    new PropertyTemplate { Id = 2, CmsPropertyType = CmsPropertyType.ImagePicker.ToString() }
+                    new PagePropertyTemplate { Id = 1, CmsPropertyType = CmsPropertyType.RichTextEditor.ToString() },
+                    new PagePropertyTemplate { Id = 2, CmsPropertyType = CmsPropertyType.ImagePicker.ToString() }
                 }
             };
             var sectionNode = new SectionNode
@@ -329,8 +329,8 @@ namespace CmsLite.Unit.Services
 
             _dbContextMock.Setup(x => x.GetDbSet<PageNode>()).Returns(new InMemoryDbSet<PageNode>());
 
-            _propertyServiceMock.Setup(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[0], "", false)).Returns(It.IsAny<Property>);
-            _propertyServiceMock.Setup(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[1], "", false)).Returns(It.IsAny<Property>);
+            _propertyServiceMock.Setup(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[0], "", false)).Returns(It.IsAny<PageProperty>);
+            _propertyServiceMock.Setup(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[1], "", false)).Returns(It.IsAny<PageProperty>);
 
             //act
             var pageNode = _pageNodeService.CreateForSection(sectionNode.Id, pageTemplate.Id, "Foobar2", "foobar2");
@@ -593,10 +593,10 @@ namespace CmsLite.Unit.Services
                         new PageTemplate
                         {
                             Id = 44,
-                            PropertyTemplates = new Collection<PropertyTemplate>
+                            PropertyTemplates = new Collection<PagePropertyTemplate>
                             {
-                                new PropertyTemplate { Id = 1, CmsPropertyType = CmsPropertyType.RichTextEditor.ToString() },
-                                new PropertyTemplate { Id = 2, CmsPropertyType = CmsPropertyType.ImagePicker.ToString() }
+                                new PagePropertyTemplate { Id = 1, CmsPropertyType = CmsPropertyType.RichTextEditor.ToString() },
+                                new PagePropertyTemplate { Id = 2, CmsPropertyType = CmsPropertyType.ImagePicker.ToString() }
                             }
                         }
                     }
@@ -608,8 +608,8 @@ namespace CmsLite.Unit.Services
             });
             var propertyTemplates = pageNodeForSection.PageTemplate.PageTemplates.First().PropertyTemplates.ToList();
 
-            _propertyServiceMock.Setup(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[0], "", false)).Returns(It.IsAny<Property>);
-            _propertyServiceMock.Setup(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[1], "", false)).Returns(It.IsAny<Property>);
+            _propertyServiceMock.Setup(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[0], "", false)).Returns(It.IsAny<PageProperty>);
+            _propertyServiceMock.Setup(x => x.Create(It.IsAny<PageNode>(), propertyTemplates[1], "", false)).Returns(It.IsAny<PageProperty>);
 
             //act
             var pageNode = _pageNodeService.CreateForPage(pageNodeForSection.Id, pageNodeForSection.PageTemplate.PageTemplates.First().Id, "Foobar2", "foobar2");
@@ -683,7 +683,7 @@ namespace CmsLite.Unit.Services
             PageNodeService.Delete(pageNode);
 
             //assert
-            var propertiesForDeletedPageNode = UnitOfWork.Context.GetDbSet<Property>().Where(x => x.ParentPageNodeId == pageNode.Id);
+            var propertiesForDeletedPageNode = UnitOfWork.Context.GetDbSet<PageProperty>().Where(x => x.ParentPageNodeId == pageNode.Id);
             propertiesForDeletedPageNode.Should().Be.Empty();
         }
 
